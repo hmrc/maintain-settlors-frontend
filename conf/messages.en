@@ -428,7 +428,7 @@ businessSettlor.countryOfResidenceYesNo.title = Do you know the settlor’s coun
 businessSettlor.countryOfResidenceYesNo.heading = Do you know {0}’s country of residence?
 businessSettlor.countryOfResidenceYesNo.checkYourAnswersLabel = Do you know {0}’s country of residence?
 businessSettlor.countryOfResidenceYesNo.error.required = Select yes if you know the settlor’s country of residence
-businessSettlor.countryOfResidenceYesNo.hint = The country of residence is usually where the settlor lived and worked most of the time during the tax year.
+businessSettlor.countryOfResidenceYesNo.hint = The country of residence is usually where the business is registered (incorporated). The business has UK residency if it is registered with Companies House.
 
 businessSettlor.countryOfResidenceInTheUkYesNo.title = Does the settlor have UK residency?
 businessSettlor.countryOfResidenceInTheUkYesNo.heading = Does {0} have UK residency?
