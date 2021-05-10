@@ -44,8 +44,6 @@ class MentalCapacityYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.MentalCapacityYesNoController.onSubmit(NormalMode).url)
 
-    //behave like pageWithHint(form, applyView, s"$messageKeyPrefix.hint")
-
     behave like pageWithASubmitButton(applyView(form))
   }
 }
