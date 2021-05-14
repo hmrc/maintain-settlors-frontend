@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.DeedOfVariation.PreviouslyAbsoluteInterestUnderWill
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{CompanyType, Name, RemoveSettlor, SettlorType, TrustDetails, TypeOfTrust}
+import models.{CompanyType, Name, RemoveSettlor, SettlorType, TaxableMigrationFlag, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
@@ -72,6 +72,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def amendDeceasedSettlorUrl(identifier: String) = s"$settlorsUrl/amend-deceased/$identifier"
   private def removeSettlorUrl(identifier: String) = s"$settlorsUrl/$identifier/remove"
   private def isTrust5mldUrl(identifier: String) = s"$trustsUrl/$identifier/is-trust-5mld"
+  private def getTrustMigrationFlagUrl(identifier: String) = s"$trustsUrl/$identifier/taxable-migration/migrating-to-taxable"
 
   private val individual = IndividualSettlor(
     name = Name("Carmel", None, "Settlor"),
@@ -670,6 +671,73 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
               r mustBe false
           }
         }
+      }
+    }
+
+    "getTrustMigrationFlag" when {
+
+      "value defined" in {
+
+        val json = Json.parse(
+          """
+            |{
+            | "value": true
+            |}
+            |""".stripMargin)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          get(urlEqualTo(getTrustMigrationFlagUrl(identifier)))
+            .willReturn(okJson(json.toString))
+        )
+
+        val result = connector.getTrustMigrationFlag(identifier)
+
+        whenReady(result) { r =>
+          r mustBe TaxableMigrationFlag(Some(true))
+        }
+
+        application.stop()
+      }
+
+      "value undefined" in {
+
+        val json = Json.parse(
+          """
+            |{}
+            |""".stripMargin)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustConnector]
+
+        server.stubFor(
+          get(urlEqualTo(getTrustMigrationFlagUrl(identifier)))
+            .willReturn(okJson(json.toString))
+        )
+
+        val result = connector.getTrustMigrationFlag(identifier)
+
+        whenReady(result) { r =>
+          r mustBe TaxableMigrationFlag(None)
+        }
+
+        application.stop()
       }
     }
   }
