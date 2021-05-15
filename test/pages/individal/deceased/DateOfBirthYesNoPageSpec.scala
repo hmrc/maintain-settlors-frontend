@@ -16,11 +16,10 @@
 
 package pages.individal.deceased
 
-import java.time.LocalDate
-
-import models.UserAnswers
 import pages.behaviours.PageBehaviours
 import pages.individual.deceased.{DateOfBirthPage, DateOfBirthYesNoPage}
+
+import java.time.LocalDate
 
 
 class DateOfBirthYesNoPageSpec extends PageBehaviours {
@@ -34,7 +33,7 @@ class DateOfBirthYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](DateOfBirthYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, None, None, isDateOfDeathRecorded = true)
+      val userAnswers = emptyUserAnswers
         .set(DateOfBirthPage, LocalDate.now)
         .flatMap(_.set(DateOfBirthYesNoPage, false))
 

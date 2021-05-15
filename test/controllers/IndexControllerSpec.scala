@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import connectors.TrustConnector
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{Name, TrustDetails, TypeOfTrust, UserAnswers}
+import models.{Name, TaxableMigrationFlag, TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
@@ -42,6 +42,7 @@ class IndexControllerSpec extends SpecBase {
     val is5mldEnabled = false
     val isTaxable = false
     val isUnderlyingData5mld = false
+    val migratingFromNonTaxableToTaxable = false
 
     "redirect to task list when there are living settlors" in {
 
@@ -49,7 +50,14 @@ class IndexControllerSpec extends SpecBase {
       val mockFeatureFlagService = mock[FeatureFlagService]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), typeOfTrust = typeOfTrust, deedOfVariation = None, trustTaxable = Some(isTaxable))))
+        .thenReturn(Future.successful(
+          TrustDetails(
+            startDate = LocalDate.parse(startDate),
+            typeOfTrust = typeOfTrust,
+            deedOfVariation = None,
+            trustTaxable = Some(isTaxable)
+          )
+        ))
 
       when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
         .thenReturn(Future.successful(is5mldEnabled))
@@ -59,20 +67,22 @@ class IndexControllerSpec extends SpecBase {
 
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
-            Settlors(
-              settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, None, None, None, LocalDate.now, provisional = false)),
-              settlorCompany = Nil,
-              deceased = Some(DeceasedSettlor(
-                None,
-                Name("First", None, "Last"),
-                None, None, None, None
-              )
-            )
+          Settlors(
+            settlor = List(IndividualSettlor(Name("Adam", None, "Test"), None, None, None, None, None, None, LocalDate.now, provisional = false)),
+            settlorCompany = Nil,
+            deceased = Some(DeceasedSettlor(
+              None,
+              Name("First", None, "Last"),
+              None, None, None, None
+            ))
           )
         ))
 
       when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
         .thenReturn(Future.successful(true))
+
+      when(mockTrustConnector.getTrustMigrationFlag(any())(any(), any()))
+        .thenReturn(Future.successful(TaxableMigrationFlag(Some(migratingFromNonTaxableToTaxable))))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(
@@ -96,6 +106,8 @@ class IndexControllerSpec extends SpecBase {
       uaCaptor.getValue.whenTrustSetup mustBe LocalDate.parse(startDate)
       uaCaptor.getValue.is5mldEnabled mustBe is5mldEnabled
       uaCaptor.getValue.isTaxable mustBe isTaxable
+      uaCaptor.getValue.isUnderlyingData5mld mustBe isUnderlyingData5mld
+      uaCaptor.getValue.migratingFromNonTaxableToTaxable mustBe migratingFromNonTaxableToTaxable
 
       application.stop()
     }
@@ -106,7 +118,14 @@ class IndexControllerSpec extends SpecBase {
       val mockFeatureFlagService = mock[FeatureFlagService]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), typeOfTrust = typeOfTrust, deedOfVariation = None, trustTaxable = Some(isTaxable))))
+        .thenReturn(Future.successful(
+          TrustDetails(
+            startDate = LocalDate.parse(startDate),
+            typeOfTrust = typeOfTrust,
+            deedOfVariation = None,
+            trustTaxable = Some(isTaxable)
+          )
+        ))
 
       when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
         .thenReturn(Future.successful(is5mldEnabled))
@@ -123,13 +142,15 @@ class IndexControllerSpec extends SpecBase {
               None,
               Name("First", None, "Last"),
               None, None, None, None
-            )
-            )
+            ))
           )
         ))
 
       when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
         .thenReturn(Future.successful(true))
+
+      when(mockTrustConnector.getTrustMigrationFlag(any())(any(), any()))
+        .thenReturn(Future.successful(TaxableMigrationFlag(None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value))
         .overrides(
@@ -153,7 +174,14 @@ class IndexControllerSpec extends SpecBase {
       val mockFeatureFlagService = mock[FeatureFlagService]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = LocalDate.parse(startDate), typeOfTrust = typeOfTrust, deedOfVariation = None, trustTaxable = Some(isTaxable))))
+        .thenReturn(Future.successful(
+          TrustDetails(
+            startDate = LocalDate.parse(startDate),
+            typeOfTrust = typeOfTrust,
+            deedOfVariation = None,
+            trustTaxable = Some(isTaxable)
+          )
+        ))
 
       when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
         .thenReturn(Future.successful(is5mldEnabled))
@@ -173,8 +201,11 @@ class IndexControllerSpec extends SpecBase {
               None, Name("First", None, "Last"),
               None, None, None, None
             ))
-          ))
-        )
+          )
+        ))
+
+      when(mockTrustConnector.getTrustMigrationFlag(any())(any(), any()))
+        .thenReturn(Future.successful(TaxableMigrationFlag(None)))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(

@@ -16,12 +16,10 @@
 
 package controllers.individual.living.add
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.DateAddedToTrustFormProvider
-import models.{Name, UserAnswers}
+import models.Name
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -35,6 +33,7 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.individual.living.add.StartDateView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class StartDateControllerSpec extends SpecBase with MockitoSugar {
@@ -51,7 +50,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
   val name = Name("New", None, "Settlor")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name)
     .success.value
 

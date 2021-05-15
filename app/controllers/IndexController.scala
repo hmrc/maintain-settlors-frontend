@@ -51,6 +51,7 @@ class IndexController @Inject()(
         isUnderlyingData5mld <- connector.isTrust5mld(identifier)
         allSettlors <- connector.getSettlors(identifier)
         isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(identifier)
+        taxableMigrationFlag <- connector.getTrustMigrationFlag(identifier)
         ua <- Future.successful {
           request.userAnswers match {
             case Some(userAnswers) => userAnswers.copy(
@@ -59,7 +60,8 @@ class IndexController @Inject()(
               isDateOfDeathRecorded = isDateOfDeathRecorded,
               is5mldEnabled = is5mldEnabled,
               isTaxable = details.isTaxable,
-              isUnderlyingData5mld = isUnderlyingData5mld
+              isUnderlyingData5mld = isUnderlyingData5mld,
+              migratingFromNonTaxableToTaxable = taxableMigrationFlag.migratingFromNonTaxableToTaxable
             )
             case None => UserAnswers(
               internalId = request.user.internalId,
@@ -70,7 +72,8 @@ class IndexController @Inject()(
               isDateOfDeathRecorded = isDateOfDeathRecorded,
               is5mldEnabled = is5mldEnabled,
               isTaxable = details.isTaxable,
-              isUnderlyingData5mld = isUnderlyingData5mld
+              isUnderlyingData5mld = isUnderlyingData5mld,
+              migratingFromNonTaxableToTaxable = taxableMigrationFlag.migratingFromNonTaxableToTaxable
             )
           }
         }

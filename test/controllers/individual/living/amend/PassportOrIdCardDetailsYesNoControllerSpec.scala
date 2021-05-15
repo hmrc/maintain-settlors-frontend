@@ -16,8 +16,6 @@
 
 package controllers.individual.living.amend
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
@@ -42,14 +40,8 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
   private val form: Form[Boolean] = formProvider.withPrefix("livingSettlor.passportOrIdCardDetailsYesNo")
   private val name: Name = Name("Joe", None, "Bloggs")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers(
-    "id",
-    "UTRUTRUTR",
-    LocalDate.now(),
-    None,
-    None,
-    isDateOfDeathRecorded = false
-  ).set(NamePage, name).success.value
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
   
   private lazy val passportOrIdCardDetailsYesNoRoute: String = routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url
 

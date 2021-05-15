@@ -16,12 +16,10 @@
 
 package controllers.business
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -44,7 +42,7 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider.withPrefix("businessSettlor.addressYesNo")
   val name = "Name"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url

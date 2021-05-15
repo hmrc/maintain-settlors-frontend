@@ -16,8 +16,6 @@
 
 package controllers.individual.living
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.DateOfBirthFormProvider
@@ -34,6 +32,7 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.individual.living.DateOfBirthView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {

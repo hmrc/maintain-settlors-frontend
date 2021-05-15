@@ -33,19 +33,9 @@ class DeceasedSettlorPrintHelperSpec extends SpecBase {
   private val nonUkAddress = NonUkAddress("value 1", "value 2", None, "DE")
 
   private def fillUserAnswers(bpMatchStatus: BpMatchStatus,
-                              isDateOfDeathRecorded: Boolean
-                             ): UserAnswers = {
+                              isDateOfDeathRecorded: Boolean): UserAnswers = {
 
-    val userAnswers = UserAnswers(
-      userInternalId,
-      "UTRUTRUTR",
-      LocalDate.now(),
-      None,
-      None,
-      isDateOfDeathRecorded = isDateOfDeathRecorded
-    )
-
-    userAnswers
+    emptyUserAnswers.copy(isDateOfDeathRecorded = isDateOfDeathRecorded)
       .set(BpMatchStatusPage, bpMatchStatus).success.value
       .set(NamePage, name).success.value
       .set(DateOfDeathYesNoPage, true).success.value

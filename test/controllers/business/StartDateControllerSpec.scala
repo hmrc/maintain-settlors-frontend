@@ -16,12 +16,9 @@
 
 package controllers.business
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.DateAddedToTrustFormProvider
-import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -35,6 +32,7 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.business.StartDateView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class StartDateControllerSpec extends SpecBase with MockitoSugar {
@@ -51,7 +49,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
   val name = "Name"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date, None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =

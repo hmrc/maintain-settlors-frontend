@@ -16,8 +16,6 @@
 
 package controllers.individual.living.add
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
@@ -44,7 +42,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute: Call = Call("GET", "/foo")
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad().url

@@ -16,8 +16,6 @@
 
 package controllers.individual.living.amend
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.CombinedPassportOrIdCardDetailsFormProvider
@@ -35,6 +33,7 @@ import repositories.PlaybackRepository
 import utils.countryOptions.CountryOptions
 import views.html.individual.living.amend.PassportOrIdCardDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
@@ -45,14 +44,8 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   private val countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers(
-    "id",
-    "UTRUTRUTR",
-    LocalDate.now(),
-    None,
-    None,
-    isDateOfDeathRecorded = false
-  ).set(NamePage, name).success.value
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
+    .set(NamePage, name).success.value
   
   private lazy val passportOrIdCardDetailsRoute: String = routes.PassportOrIdCardDetailsController.onPageLoad().url
 

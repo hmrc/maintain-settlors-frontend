@@ -16,8 +16,6 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.NonUkAddressFormProvider
@@ -45,7 +43,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad().url

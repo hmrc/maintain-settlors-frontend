@@ -16,12 +16,10 @@
 
 package controllers.business
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.CompanyTypeFormProvider
-import models.{CompanyType, NormalMode, TypeOfTrust, UserAnswers}
+import models.{CompanyType, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -45,7 +43,7 @@ class CompanyTypeControllerSpec extends SpecBase with MockitoSugar {
   val name = "Name"
   val validAnswer = CompanyType.Investment
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), Some(TypeOfTrust.WillTrustOrIntestacyTrust), None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   lazy val companyTypeControllerRoute = routes.CompanyTypeController.onPageLoad(NormalMode).url
