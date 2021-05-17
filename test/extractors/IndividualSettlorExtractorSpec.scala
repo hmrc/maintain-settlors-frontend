@@ -16,28 +16,20 @@
 
 package extractors
 
+import base.SpecBase
 import generators.ModelGenerators
 import models.Constant.GB
 import models.settlors.IndividualSettlor
 import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, UkAddress, UserAnswers}
-import org.scalatest.{FreeSpec, MustMatchers}
+import org.scalatest.MustMatchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.living._
-import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
+class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
 
-  val answers: UserAnswers = UserAnswers(
-    "Id",
-    "UTRUTRUTR",
-    LocalDate.of(1987, 12, 31),
-    None,
-    None,
-    isDateOfDeathRecorded = true,
-    Json.obj()
-  )
+  val answers: UserAnswers = emptyUserAnswers
 
   val index = 0
 
@@ -199,7 +191,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
   }
 
-  "should populate user answers when an individual has extra 5mld data" - {
+  "should populate user answers when an individual has extra 5mld data" when {
 
     "with UK country of Nationality and Residence" in {
 
@@ -325,7 +317,7 @@ class IndividualSettlorExtractorSpec extends FreeSpec with ScalaCheckPropertyChe
     }
   }
 
-  "should populate user answers when a non taxable trust" - {
+  "should populate user answers when a non taxable trust" when {
 
     "with UK country of Nationality and Residence" in {
 

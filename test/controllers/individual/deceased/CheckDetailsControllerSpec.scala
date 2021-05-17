@@ -16,8 +16,6 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{TrustConnector, TrustStoreConnector}
@@ -39,6 +37,7 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.DeceasedSettlorPrintHelper
 import views.html.individual.deceased.CheckDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
@@ -74,20 +73,10 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
   )
 
   private def userAnswers(bpMatchStatus: BpMatchStatus = FullyMatched,
-                      isDateOfDeathRecorded: Boolean = true,
-                      addAdditionalSettlors: Boolean = false
-                     ): UserAnswers = {
+                          isDateOfDeathRecorded: Boolean = true,
+                          addAdditionalSettlors: Boolean = false): UserAnswers = {
 
-    val userAnswers = UserAnswers(
-      userInternalId,
-      "UTRUTRUTR",
-      LocalDate.now(),
-      None,
-      None,
-      isDateOfDeathRecorded = isDateOfDeathRecorded
-    )
-
-    userAnswers
+    emptyUserAnswers.copy(isDateOfDeathRecorded = isDateOfDeathRecorded)
       .set(BpMatchStatusPage, bpMatchStatus).success.value
       .set(NamePage, name).success.value
       .set(DateOfDeathYesNoPage, true).success.value

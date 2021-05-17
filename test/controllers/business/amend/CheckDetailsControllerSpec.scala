@@ -16,8 +16,6 @@
 
 package controllers.business.amend
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import models.UkAddress
@@ -36,6 +34,7 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.BusinessSettlorPrintHelper
 import views.html.business.amend.CheckDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {

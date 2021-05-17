@@ -16,11 +16,8 @@
 
 package pages.individal.living
 
-import models.UserAnswers
 import pages.behaviours.PageBehaviours
 import pages.individual.living.{CountryOfNationalityPage, CountryOfNationalityUkYesNoPage, CountryOfNationalityYesNoPage}
-
-import java.time.LocalDate
 
 class CountryOfNationalityYesNoPageSpec extends PageBehaviours {
 
@@ -33,7 +30,7 @@ class CountryOfNationalityYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](CountryOfNationalityYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "identifier", LocalDate.now, None, None, isDateOfDeathRecorded = true)
+      val userAnswers = emptyUserAnswers
         .set(CountryOfNationalityUkYesNoPage, false).success.value
         .set(CountryOfNationalityPage, "FR").success.value
 

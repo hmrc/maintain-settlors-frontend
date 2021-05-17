@@ -16,11 +16,9 @@
 
 package pages.individal.deceased
 
-import java.time.LocalDate
-
-import models.{UkAddress, UserAnswers}
+import models.UkAddress
 import pages.behaviours.PageBehaviours
-import pages.individual.deceased.{AddressYesNoPage, LivedInTheUkYesNoPage, NationalInsuranceNumberPage, NationalInsuranceNumberYesNoPage, UkAddressPage}
+import pages.individual.deceased._
 
 class NationalInsuranceYesNoPageSpec extends PageBehaviours {
 
@@ -34,7 +32,7 @@ class NationalInsuranceYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
 
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, None, None, isDateOfDeathRecorded = true)
+      val userAnswers = emptyUserAnswers
         .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
         .set(LivedInTheUkYesNoPage, true)
         .flatMap(_.set(AddressYesNoPage, true))
@@ -46,7 +44,7 @@ class NationalInsuranceYesNoPageSpec extends PageBehaviours {
     }
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now, None, None, isDateOfDeathRecorded = true)
+      val userAnswers = emptyUserAnswers
         .set(NationalInsuranceNumberPage, "nino")
         .flatMap(_.set(NationalInsuranceNumberYesNoPage, false))
 

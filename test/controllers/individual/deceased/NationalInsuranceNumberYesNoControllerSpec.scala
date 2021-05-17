@@ -16,12 +16,10 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
+import models.Name
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -41,7 +39,7 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
   val form = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumberYesNo")
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad().url

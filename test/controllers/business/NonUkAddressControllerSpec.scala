@@ -16,8 +16,6 @@
 
 package controllers.business
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.NonUkAddressFormProvider
@@ -45,7 +43,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
   val name: String = "Name"
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(NormalMode).url

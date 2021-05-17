@@ -16,8 +16,6 @@
 
 package controllers.business.add
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustConnector
 import org.mockito.Matchers.any
@@ -33,6 +31,7 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.BusinessSettlorPrintHelper
 import views.html.business.add.CheckDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {

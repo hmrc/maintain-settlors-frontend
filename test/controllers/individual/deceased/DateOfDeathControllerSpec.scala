@@ -16,8 +16,6 @@
 
 package controllers.individual.deceased
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
@@ -35,6 +33,7 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.individual.deceased.DateOfDeathView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {

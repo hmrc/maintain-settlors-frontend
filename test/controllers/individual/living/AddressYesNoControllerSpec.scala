@@ -16,12 +16,10 @@
 
 package controllers.individual.living
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -45,7 +43,7 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
   val trusteeName = "FirstName LastName"
   val name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url

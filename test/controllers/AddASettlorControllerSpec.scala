@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustStoreConnector
 import forms.AddASettlorFormProvider
@@ -35,6 +33,7 @@ import utils.AddASettlorViewHelper
 import viewmodels.addAnother.AddRow
 import views.html.{AddASettlorView, MaxedOutSettlorsView}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddASettlorControllerSpec extends SpecBase with ScalaFutures {

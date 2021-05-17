@@ -16,12 +16,13 @@
 
 package utils.mappers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.Constant.GB
-import models.{CompanyType, NonUkAddress, TypeOfTrust, UkAddress}
+import models.TypeOfTrust.EmployeeRelated
+import models.{CompanyType, NonUkAddress, UkAddress}
 import pages.business._
+
+import java.time.LocalDate
 
 class BusinessSettlorMapperSpec extends SpecBase {
 
@@ -154,11 +155,11 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
     "non-employee-related trust" must {
 
-      val emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now(), Some(TypeOfTrust.EmployeeRelated), None, isDateOfDeathRecorded = true)
+      val baseAnswers = emptyUserAnswers.copy(trustType = Some(EmployeeRelated))
 
       "generate business settlor model with no utr and no address" in {
 
-        val userAnswers = emptyUserAnswers
+        val userAnswers = baseAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
           .set(CountryOfResidenceYesNoPage, false).success.value
@@ -176,7 +177,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
       "generate business settlor model with utr and no address" in {
 
-        val userAnswers = emptyUserAnswers
+        val userAnswers = baseAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, true).success.value
           .set(UtrPage, utr).success.value
@@ -198,7 +199,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
       "generate business settlor model with UK address and no utr" in {
 
-        val userAnswers = emptyUserAnswers
+        val userAnswers = baseAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
           .set(CountryOfResidenceYesNoPage, false).success.value
@@ -222,7 +223,7 @@ class BusinessSettlorMapperSpec extends SpecBase {
 
       "generate business settlor model with non-UK address and no utr" in {
 
-        val userAnswers = emptyUserAnswers
+        val userAnswers = baseAnswers
           .set(NamePage, name).success.value
           .set(UtrYesNoPage, false).success.value
           .set(CountryOfResidenceYesNoPage, false).success.value

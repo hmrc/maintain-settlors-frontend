@@ -16,8 +16,6 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.DateOfBirthFormProvider
@@ -34,6 +32,7 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.individual.deceased.DateOfBirthView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {

@@ -16,8 +16,6 @@
 
 package controllers.individual.living.add
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.PassportDetailsFormProvider
@@ -36,6 +34,7 @@ import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.html.individual.living.add.PassportDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
@@ -46,7 +45,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute: Call = Call("GET", "/foo")
   val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   val passportDetailsRoute: String = routes.PassportDetailsController.onPageLoad().url

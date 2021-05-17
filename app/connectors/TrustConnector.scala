@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{RemoveSettlor, TrustDetails}
+import models.{RemoveSettlor, TaxableMigrationFlag, TrustDetails}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
@@ -90,4 +90,10 @@ class TrustConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
     val url: String = s"$trustsUrl/$identifier/is-trust-5mld"
     http.GET[Boolean](url)
   }
+
+  def getTrustMigrationFlag(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TaxableMigrationFlag] = {
+    val url = s"$trustsUrl/$identifier/taxable-migration/migrating-to-taxable"
+    http.GET[TaxableMigrationFlag](url)
+  }
+
 }

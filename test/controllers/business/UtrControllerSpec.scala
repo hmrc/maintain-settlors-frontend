@@ -16,12 +16,10 @@
 
 package controllers.business
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.UtrFormProvider
-import models.{NormalMode, UserAnswers}
+import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -46,7 +44,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = "1234567890"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now(), None, None, isDateOfDeathRecorded = true)
+  override val emptyUserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   lazy val utrRoute = routes.UtrController.onPageLoad(NormalMode).url
