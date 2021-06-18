@@ -1,5 +1,3 @@
-site.sign_in=Mewngofnodi
-session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ymddiriedolaeth.
 livingSettlor.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd y setlwr?
 livingSettlor.countryOfNationalityYesNo.heading=A ydych yn gwybod gwlad cenedligrwydd {0}?
 livingSettlor.countryOfNationalityYesNo.checkYourAnswersLabel=A ydych yn gwybod gwlad cenedligrwydd {0}?
@@ -37,20 +35,7 @@ livingSettlor.mentalCapacityYesNo.bulletpoint1=salwch meddwl
 livingSettlor.mentalCapacityYesNo.bulletpoint2=anabledd dysgu
 livingSettlor.mentalCapacityYesNo.bulletpoint3=dementia neu gyflwr cysylltiedig
 livingSettlor.mentalCapacityYesNo.bulletpoint4=methu â chyfathrebu
-businessSettlor.countryOfResidenceYesNo.title=A ydych yn gwybod gwlad breswyl y setlwr?
-businessSettlor.countryOfResidenceYesNo.heading=A ydych yn gwybod gwlad breswyl {0}?
-businessSettlor.countryOfResidenceYesNo.checkYourAnswersLabel=A ydych yn gwybod gwlad breswyl {0}?
-businessSettlor.countryOfResidenceYesNo.error.required=Dewiswch ‘Iawn’ os ydych yn gwybod gwlad breswyl y setlwr
-businessSettlor.countryOfResidenceYesNo.hint=Fel arfer, y wlad breswyl yw lle mae’r busnes wedi’i gofrestru (ymgorffori). Mae’r busnes yn breswyl yn y DU os ydyw wedi’i gofrestru gyda Thŷ’r Cwmnïau.
-businessSettlor.countryOfResidenceInTheUkYesNo.title=A yw’r setlwr yn breswyl yn y DU?
-businessSettlor.countryOfResidenceInTheUkYesNo.heading=A yw {0} yn breswyl yn y DU?
-businessSettlor.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel=A yw {0} yn breswyl yn y DU?
-businessSettlor.countryOfResidenceInTheUkYesNo.error.required=Dewiswch ‘Iawn’ os yw’r setlwr yn breswyl yn y DU
-businessSettlor.countryOfResidence.title=Beth yw gwlad breswyl y setlwr?
-businessSettlor.countryOfResidence.heading=Beth yw gwlad breswyl {0}?
-businessSettlor.countryOfResidence.checkYourAnswersLabel=Beth yw gwlad breswyl {0}?
-businessSettlor.countryOfResidence.error.required=Nodwch wlad
-businessSettlor.countryOfResidence.error.length=Mae’n rhaid i’r wlad breswyl fod yn 100 o gymeriadau neu lai
+
 site.back=Yn ôl
 site.delete=Tynnu
 site.edit=Newid
@@ -72,9 +57,6 @@ site.complete=Wedi cwblhau
 site.error=Gwall:
 site.cannotRemove=Methu tynnu
 site.cannotRemove-hidden=Methu tynnu {0}
-timeout.title=Bydd eich cais yn dod i ben cyn hir
-timeout.message=Byddwn yn ailosod eich cais os na fyddwch yn ymateb cyn pen
-timeout.keep-alive-button=Yn eich blaen â’r cais
 site.return.link=Dychwelwch i ychwanegu setlwr
 site.settlor.defaultText=y setlwr
 site.address.uk.title=Beth yw’r cyfeiriad?
@@ -85,17 +67,25 @@ site.address.uk.line3=Cyfeiriad – llinell 3 (dewisol)
 site.address.uk.line4=Cyfeiriad – llinell 4 (dewisol)
 site.address.uk.postcode=Cod post
 site.address.uk.postcode.hint=Er enghraifft, AB1 1AB.
-address.country.select=Dewiswch wlad
 site.address.nonUk.title=Beth yw’r cyfeiriad?
 site.address.nonUk.heading=Beth yw cyfeiriad {0}?
 site.address.nonUk.line1=Cyfeiriad – llinell 1
 site.address.nonUk.line2=Cyfeiriad – llinell 2
 site.address.nonUk.line3=Cyfeiriad - llinell 3 (dewisol)
 site.address.nonUk.country=Gwlad
+site.sign_in=Mewngofnodi
+
+address.country.select=Dewiswch wlad
+
 entities.settlor=Setlwyr
 entities.settlor.individual=Setlwr yr unigolyn
 entities.settlor.deceased=Setlwr yr ewyllys
 entities.settlor.business=Setlwr y busnes
+
+timeout.title=Bydd eich cais yn dod i ben cyn hir
+timeout.message=Byddwn yn ailosod eich cais os na fyddwch yn ymateb cyn pen
+timeout.keep-alive-button=Yn eich blaen â’r cais
+
 createAgentServicesAccount.title=Creu cyfrif gwasanaethau asiant
 createAgentServicesAccount.heading=Creu cyfrif gwasanaethau asiant
 createAgentServicesAccount.paragraph1=Cyn i chi allu cofrestru ymddiriedolaeth, bydd angen i chi greu cyfrif gwasanaethau asiant. Gallwch wneud hyn nawr.
@@ -125,6 +115,7 @@ nonUkAddress.error.line3.length=Mae’n rhaid i gyfeiriad – llinell 3 fod yn 3
 nonUkAddress.error.line1.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 1 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 nonUkAddress.error.line2.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 2 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 nonUkAddress.error.line3.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 3 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
+
 error.browser.title.prefix=Gwall:
 error.boolean=Rhowch ateb
 error.invalid_date=Rhowch ddyddiad cywir
@@ -140,14 +131,19 @@ error.number=Nodwch rif dilys
 error.required=Nodwch werth
 error.summary.title=Mae problem wedi codi
 error.postcodeInvalid=Nodwch god post go iawn
+
 checkYourAnswers.title=Gwirio’ch Atebion
 checkYourAnswers.heading=Gwirio’ch Atebion
+
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
+
 session_expired.title=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.heading=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.guidance=Mae’r manylion a roddwyd gennych wedi’u dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth ers 15 munud.
+session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ymddiriedolaeth.
+
 unauthorised.title=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 unauthorised.heading=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 featureNotAvailable.title=Nid yw rhan hon y gwasanaeth ar-lein ar gael eto
@@ -378,9 +374,26 @@ businessSettlor.startDate.error.future=Mae’n rhaid i’r dyddiad yr ychwanegwy
 businessSettlor.startDate.error.past=Ni all y dyddiad yr ychwanegwyd y setlwr at yr ymddiriedolaeth fod cyn dyddiad dechrau’r ymddiriedolaeth
 businessSettlor.checkDetails.title=Gwiriwch fanylion setlwr y busnes
 businessSettlor.checkDetails.heading=Gwiriwch fanylion setlwr y busnes
+
+businessSettlor.countryOfResidenceYesNo.title=A ydych yn gwybod gwlad breswyl y setlwr?
+businessSettlor.countryOfResidenceYesNo.heading=A ydych yn gwybod gwlad breswyl {0}?
+businessSettlor.countryOfResidenceYesNo.checkYourAnswersLabel=A ydych yn gwybod gwlad breswyl {0}?
+businessSettlor.countryOfResidenceYesNo.error.required=Dewiswch ‘Iawn’ os ydych yn gwybod gwlad breswyl y setlwr
+businessSettlor.countryOfResidenceYesNo.hint=Fel arfer, y wlad breswyl yw lle mae’r busnes wedi’i gofrestru (ymgorffori). Mae’r busnes yn breswyl yn y DU os ydyw wedi’i gofrestru gyda Thŷ’r Cwmnïau.
+businessSettlor.countryOfResidenceInTheUkYesNo.title=A yw’r setlwr yn breswyl yn y DU?
+businessSettlor.countryOfResidenceInTheUkYesNo.heading=A yw {0} yn breswyl yn y DU?
+businessSettlor.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel=A yw {0} yn breswyl yn y DU?
+businessSettlor.countryOfResidenceInTheUkYesNo.error.required=Dewiswch ‘Iawn’ os yw’r setlwr yn breswyl yn y DU
+businessSettlor.countryOfResidence.title=Beth yw gwlad breswyl y setlwr?
+businessSettlor.countryOfResidence.heading=Beth yw gwlad breswyl {0}?
+businessSettlor.countryOfResidence.checkYourAnswersLabel=Beth yw gwlad breswyl {0}?
+businessSettlor.countryOfResidence.error.required=Nodwch wlad
+businessSettlor.countryOfResidence.error.length=Mae’n rhaid i’r wlad breswyl fod yn 100 o gymeriadau neu lai
+
 removeBusinessSettlor.title=A ydych yn siŵr eich bod am dynnu setlwr y busnes?
 removeBusinessSettlor.heading=A ydych yn siŵr eich bod am dynnu {0}?
 removeBusinessSettlor.error.required=Dewiswch ‘Iawn’ os ydych am dynnu setlwr y busnes
+
 deceasedSettlor.name.default=setlwr yr ewyllys
 deceasedSettlor.name.checkYourAnswersLabel=Beth oedd enw’r setlwr?
 deceasedSettlor.name.title=Beth oedd enw’r setlwr?
