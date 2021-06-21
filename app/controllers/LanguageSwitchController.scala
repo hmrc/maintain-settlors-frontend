@@ -29,7 +29,7 @@ class LanguageSwitchController @Inject()(
                                           override implicit val messagesApi: MessagesApi,
                                           languageUtils: LanguageUtils,
                                           cc: MessagesControllerComponents
-                                        ) extends LanguageController(configuration, languageUtils, cc) {
+                                        ) extends LanguageController(languageUtils, cc) {
 
   override def fallbackURL: String = appConfig.loginContinueUrl
 
