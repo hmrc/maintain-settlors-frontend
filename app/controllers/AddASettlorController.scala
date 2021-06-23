@@ -20,10 +20,12 @@ import config.FrontendAppConfig
 import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.AddASettlorFormProvider
+
 import javax.inject.Inject
 import models.DeedOfVariation.AdditionToWillTrust
 import models.requests.DataRequest
 import models.{AddASettlor, TypeOfTrust}
+import navigation.SettlorNavigator
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,7 +48,8 @@ class AddASettlorController @Inject()(
                                        repository: PlaybackRepository,
                                        addAnotherView: AddASettlorView,
                                        completeView: MaxedOutSettlorsView,
-                                       viewHelper: AddASettlorViewHelper
+                                       viewHelper: AddASettlorViewHelper,
+                                       navigator: SettlorNavigator
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val addAnotherForm: Form[AddASettlor] = addAnotherFormProvider()
@@ -115,7 +118,7 @@ class AddASettlorController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.AddNowController.onPageLoad())
+              } yield Redirect(navigator.addSettlorRoute(settlors))
 
             case AddASettlor.YesLater =>
               Future.successful(Redirect(appConfig.maintainATrustOverview))

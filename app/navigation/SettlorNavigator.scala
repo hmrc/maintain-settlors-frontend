@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package models
+package navigation
 
-object Constant {
+import models.Constant.MAX
+import models.NormalMode
+import models.settlors.Settlors
+import play.api.mvc.Call
 
-  final val GB = "GB"
-  final val MAX = 25
+class SettlorNavigator {
 
+  def addSettlorRoute(settlors: Settlors): Call = {
+    settlors match {
+      case Settlors(individuals, _, _) if individuals.size >= MAX =>
+        controllers.business.routes.NameController.onPageLoad(NormalMode)
+      case Settlors(_, businesses, _) if businesses.size >= MAX =>
+        controllers.individual.living.routes.NameController.onPageLoad(NormalMode)
+      case _ =>
+        controllers.routes.AddNowController.onPageLoad()
+    }
+  }
 }

@@ -16,6 +16,7 @@
 
 package models.settlors
 
+import models.Constant.MAX
 import models.{SettlorType, TypeOfTrust}
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.libs.functional.syntax._
@@ -40,7 +41,7 @@ case class Settlors(settlor: List[IndividualSettlor] = Nil,
   def addToHeading()(implicit mp: MessagesProvider): String = {
 
     size match {
-      case c if c >= 1 => Messages("addASettlor.count.heading", c)
+      case c if c > 1 => Messages("addASettlor.count.heading", c)
       case _ => Messages("addASettlor.heading")
     }
   }
@@ -50,8 +51,6 @@ case class Settlors(settlor: List[IndividualSettlor] = Nil,
       (settlorCompany.size, SettlorType.BusinessSettlor) ::
       Nil
   }
-
-  private final val MAX = 25
 
   val nonMaxedOutOptions: List[RadioOption] = {
     options.filter(x => x._1 < MAX).map {
