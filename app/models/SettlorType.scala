@@ -23,6 +23,8 @@ sealed trait SettlorType
 
 object SettlorType extends Enumerable.Implicits {
 
+  val prefix = "whatTypeOfSettlor"
+
   case object IndividualSettlor extends WithName("individual") with SettlorType
   case object BusinessSettlor extends WithName("business") with SettlorType
 
@@ -32,13 +34,13 @@ object SettlorType extends Enumerable.Implicits {
 
   val options: List[RadioOption] = values.map {
     value =>
-      RadioOption("whatTypeOfSettlor", value.toString)
+      RadioOption(prefix, value.toString)
   }
 
   implicit val enumerable: Enumerable[SettlorType] =
     Enumerable(values.map(v => v.toString -> v): _*)
 
-  val writesToTrusts : Writes[SettlorType] = Writes {
+  val writesToTrusts: Writes[SettlorType] = Writes {
     case IndividualSettlor => JsString("settlor")
     case BusinessSettlor => JsString("settlorCompany")
   }

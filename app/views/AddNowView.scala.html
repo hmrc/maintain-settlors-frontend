@@ -27,7 +27,7 @@
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("addNow.title")}"
-    ) {
+) {
 
     @formHelper(action = AddNowController.onSubmit(), 'autoComplete -> "off") {
 

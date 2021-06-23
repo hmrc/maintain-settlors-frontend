@@ -16,10 +16,11 @@
 
 package models.settlors
 
-import models.TypeOfTrust
+import models.{SettlorType, TypeOfTrust}
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsSuccess, Reads, __}
+import viewmodels.RadioOption
 
 import java.time.LocalDate
 
@@ -44,18 +45,34 @@ case class Settlors(settlor: List[IndividualSettlor] = Nil,
     }
   }
 
-  val isMaxedOut: Boolean = {
-    (settlor ++ settlorCompany).size >= 25
+  private val options: List[(Int, SettlorType)] = {
+    (settlor.size, SettlorType.IndividualSettlor) ::
+      (settlorCompany.size, SettlorType.BusinessSettlor) ::
+      Nil
+  }
+
+  private final val MAX = 25
+
+  val nonMaxedOutOptions: List[RadioOption] = {
+    options.filter(x => x._1 < MAX).map {
+      x => RadioOption(SettlorType.prefix, x._2.toString)
+    }
+  }
+
+  val maxedOutOptions: List[RadioOption] = {
+    options.filter(x => x._1 >= MAX).map {
+      x => RadioOption(SettlorType.prefix, x._2.toString)
+    }
   }
 
 }
 
 object Settlors {
-  implicit val reads: Reads[Settlors] =
-    ((__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
+  implicit val reads: Reads[Settlors] = (
+    (__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
       and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
       and (__ \ "settlors" \ "deceased").readNullable[DeceasedSettlor]
-      ).apply(Settlors.apply _)
+    ).apply(Settlors.apply _)
 }
 
 trait SettlorReads {

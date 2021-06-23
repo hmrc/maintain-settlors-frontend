@@ -26,15 +26,18 @@
     config: FrontendAppConfig
 )
 
-@(form: Form[_],
+@(
+    form: Form[_],
     trustDescription: Option[String],
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
-    heading: String)(implicit request: Request[_], messages: Messages)
+    heading: String,
+    maxedOut: List[String]
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}$heading"
-    ) {
+) {
 
     @formHelper(action = AddASettlorController.submit(), 'autoComplete -> "off") {
 
@@ -43,13 +46,21 @@
         @components.heading(heading)
 
         @if(trustDescription.nonEmpty){
-        <p>@trustDescription</p>
+            <p>@trustDescription</p>
         }
+
         @components.data_list(inProgressSettlors, "inprogress")
 
         @components.data_list(completeSettlors, "complete")
 
         @components.details("addASettlor.details", config)
+
+        @if(maxedOut.nonEmpty) {
+            <ul>
+                <li class="panel-indent"><p>@messages("addASettlor.maxedOut.just1", messages(maxedOut.head).toLowerCase)</p></li>
+                <li class="panel-indent"><p>@messages("addASettlor.maxedOut.just1.paragraph")</p></li>
+            </ul>
+        }
 
         @components.input_radio(
             field = form("value"),

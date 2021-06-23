@@ -66,7 +66,7 @@ class AddASettlorController @Inject()(
           trustType = updatedAnswers.trustType
         )
 
-        if (settlors.isMaxedOut) {
+        if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
             trustDescription,
             inProgressSettlors = settlorRows.inProgress,
@@ -79,7 +79,8 @@ class AddASettlorController @Inject()(
             trustDescription,
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
-            heading = settlors.addToHeading
+            heading = settlors.addToHeading,
+            maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
           ))
         }
       }
@@ -104,7 +105,8 @@ class AddASettlorController @Inject()(
                 trustDescription,
                 rows.inProgress,
                 rows.complete,
-                settlors.addToHeading
+                settlors.addToHeading,
+                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
               )
             ))
           },

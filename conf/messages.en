@@ -133,6 +133,8 @@ addASettlor.add-them-now = Yes, I want to add them now
 addASettlor.add-them-later = No, not now
 addASettlor.no-complete = No, all the settlors are up to date
 addASettlor.error.required = Select yes if you want to add a new settlor
+addASettlor.maxedOut.just1 = You cannot add another {0} as you have entered a maximum of 25.
+addASettlor.maxedOut.just1.paragraph = Check the settlors you have added. If you have further settlors to add within this type, write to HMRC with their details.
 addASettlor.maxedOut = You cannot enter another settlor as you have entered a maximum of {0}.
 addASettlor.maxedOut.paragraph = Check the settlors you have added. If you have further settlors to add, write to HMRC with their details.
 
