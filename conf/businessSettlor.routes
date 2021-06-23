@@ -66,6 +66,7 @@ GET         /check-details                                  controllers.business
 POST        /check-details                                  controllers.business.add.CheckDetailsController.onSubmit()
 
 GET        /:index/check-details                            controllers.business.amend.CheckDetailsController.extractAndRender(index: Int)
+GET        /:index/update-details                           controllers.business.amend.CheckDetailsController.extractAndRedirect(index: Int)
 GET        /:index/updated-details                          controllers.business.amend.CheckDetailsController.renderFromUserAnswers(index: Int)
 POST       /:index/check-details                            controllers.business.amend.CheckDetailsController.onSubmit(index: Int)
 

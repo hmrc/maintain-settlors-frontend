@@ -124,7 +124,6 @@ featureNotAvailable.link = contact our trusts helpline (opens in a new window or
 featureNotAvailable.p2 = You will be able to update these details online in the future.
 
 addASettlor.heading = Add a settlor
-addASettlor.singular.heading = Add a settlor
 addASettlor.count.heading = The trust has {0} settlors
 addASettlor.details = Why you cannot remove some settlors
 addASettlor.details.text = You will be unable to remove a settlor after you make a declaration. If you have declared a settlor by mistake you can

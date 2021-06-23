@@ -16,6 +16,7 @@
 
 package models.settlors
 
+import models.TypeOfTrust
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsSuccess, Reads, __}
@@ -24,11 +25,12 @@ import java.time.LocalDate
 
 trait Settlor {
   val startDate: Option[LocalDate]
+  def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean
 }
 
-case class Settlors(settlor: List[IndividualSettlor],
-                    settlorCompany: List[BusinessSettlor],
-                    deceased: Option[DeceasedSettlor]) {
+case class Settlors(settlor: List[IndividualSettlor] = Nil,
+                    settlorCompany: List[BusinessSettlor] = Nil,
+                    deceased: Option[DeceasedSettlor] = None) {
 
   val size: Int = (settlor ++ settlorCompany ++ deceased).size
 
@@ -37,9 +39,8 @@ case class Settlors(settlor: List[IndividualSettlor],
   def addToHeading()(implicit mp: MessagesProvider): String = {
 
     size match {
-      case 0 => Messages("addASettlor.heading")
-      case 1 => Messages("addASettlor.singular.heading")
-      case l => Messages("addASettlor.count.heading", l)
+      case c if c >= 1 => Messages("addASettlor.count.heading", c)
+      case _ => Messages("addASettlor.heading")
     }
   }
 

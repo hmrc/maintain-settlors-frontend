@@ -21,8 +21,7 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import extractors.BusinessSettlorExtractor
-import javax.inject.Inject
-import models.UserAnswers
+import models.{CheckMode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -33,6 +32,7 @@ import utils.print.BusinessSettlorPrintHelper
 import viewmodels.AnswerSection
 import views.html.business.amend.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -59,7 +59,11 @@ class CheckDetailsController @Inject()(
     Ok(view(section, index))
   }
 
-  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
+  def extractAndRender(index: Int): Action[AnyContent] = extractAndDoAction(index, redirect = false)
+
+  def extractAndRedirect(index: Int): Action[AnyContent] = extractAndDoAction(index, redirect = true)
+
+  private def extractAndDoAction(index: Int, redirect: Boolean): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
       service.getBusinessSettlor(request.userAnswers.identifier, index) flatMap {
@@ -68,7 +72,11 @@ class CheckDetailsController @Inject()(
             extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, Some(index)))
             _ <- playbackRepository.set(extractedF)
           } yield {
+            if (redirect) {
+              Redirect(controllers.business.routes.NameController.onPageLoad(CheckMode))
+            } else {
               render(extractedF, index, settlor.name)
+            }
           }
       }
   }

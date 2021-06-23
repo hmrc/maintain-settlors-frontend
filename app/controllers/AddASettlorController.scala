@@ -45,10 +45,11 @@ class AddASettlorController @Inject()(
                                        addAnotherFormProvider: AddASettlorFormProvider,
                                        repository: PlaybackRepository,
                                        addAnotherView: AddASettlorView,
-                                       completeView: MaxedOutSettlorsView
+                                       completeView: MaxedOutSettlorsView,
+                                       viewHelper: AddASettlorViewHelper
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val addAnotherForm : Form[AddASettlor] = addAnotherFormProvider()
+  private val addAnotherForm: Form[AddASettlor] = addAnotherFormProvider()
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
@@ -58,7 +59,12 @@ class AddASettlorController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        val settlorRows = new AddASettlorViewHelper(settlors).rows
+
+        val settlorRows = viewHelper.rows(
+          settlors = settlors,
+          migratingFromNonTaxableToTaxable = updatedAnswers.migratingFromNonTaxableToTaxable,
+          trustType = updatedAnswers.trustType
+        )
 
         if (settlors.isMaxedOut) {
           Ok(completeView(
@@ -86,7 +92,11 @@ class AddASettlorController @Inject()(
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val rows = new AddASettlorViewHelper(settlors).rows
+            val rows = viewHelper.rows(
+              settlors = settlors,
+              migratingFromNonTaxableToTaxable = request.userAnswers.migratingFromNonTaxableToTaxable,
+              trustType = request.userAnswers.trustType
+            )
 
             Future.successful(BadRequest(
               addAnotherView(
@@ -143,7 +153,7 @@ class AddASettlorController @Inject()(
       request.messages(messagesApi)(s"trustDescription.$description")
     }
 
-    request.userAnswers.trustType.map(getDescription(_))
+    request.userAnswers.trustType.map(getDescription)
   }
 
 }

@@ -16,11 +16,11 @@
 
 package models.settlors
 
-import java.time.LocalDate
-
-import models.{Address, BpMatchStatus, IndividualIdentification, Name}
+import models.{Address, BpMatchStatus, IndividualIdentification, Name, TypeOfTrust}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+
+import java.time.LocalDate
 
 final case class DeceasedSettlor(bpMatchStatus: Option[BpMatchStatus],
                                  name: Name,
@@ -30,6 +30,7 @@ final case class DeceasedSettlor(bpMatchStatus: Option[BpMatchStatus],
                                  address: Option[Address]) extends Settlor {
 
   override val startDate: Option[LocalDate] = None
+  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean = true
 }
 
 object DeceasedSettlor extends SettlorReads {
