@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import models.Constant.MAX
 import models.settlors.{BusinessSettlor, IndividualSettlor, Settlors}
-import models.{Name, NormalMode}
+import models.{Name, NormalMode, SettlorType}
 
 import java.time.LocalDate
 
@@ -80,6 +80,25 @@ class SettlorNavigatorSpec extends SpecBase {
 
           navigator.addSettlorRoute(settlors).url mustBe
             controllers.routes.AddNowController.onPageLoad().url
+        }
+      }
+    }
+
+    ".addSettlorNowRoute" when {
+
+      "individual" must {
+        "redirect to individual name page" in {
+
+          navigator.addSettlorNowRoute(SettlorType.IndividualSettlor).url mustBe
+            controllers.individual.living.routes.NameController.onPageLoad(NormalMode).url
+        }
+      }
+
+      "business" must {
+        "redirect to business name page" in {
+
+          navigator.addSettlorNowRoute(SettlorType.BusinessSettlor).url mustBe
+            controllers.business.routes.NameController.onPageLoad(NormalMode).url
         }
       }
     }

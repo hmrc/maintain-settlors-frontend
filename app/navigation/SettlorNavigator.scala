@@ -17,20 +17,29 @@
 package navigation
 
 import models.Constant.MAX
-import models.NormalMode
-import models.settlors.Settlors
+import models.SettlorType.{BusinessSettlor, IndividualSettlor}
+import models.settlors.{Settlor, Settlors}
+import models.{NormalMode, SettlorType}
 import play.api.mvc.Call
 
 class SettlorNavigator {
 
   def addSettlorRoute(settlors: Settlors): Call = {
-    settlors match {
-      case Settlors(individuals, _, _) if individuals.size >= MAX =>
-        controllers.business.routes.NameController.onPageLoad(NormalMode)
-      case Settlors(_, businesses, _) if businesses.size >= MAX =>
-        controllers.individual.living.routes.NameController.onPageLoad(NormalMode)
-      case _ =>
-        controllers.routes.AddNowController.onPageLoad()
+    val routes: List[(List[Settlor], Call)] = List(
+      (settlors.settlor, addSettlorNowRoute(IndividualSettlor)),
+      (settlors.settlorCompany, addSettlorNowRoute(BusinessSettlor))
+    )
+
+    routes.filter(_._1.size < MAX) match {
+      case (_, x) :: Nil => x
+      case _ => controllers.routes.AddNowController.onPageLoad()
+    }
+  }
+
+  def addSettlorNowRoute(`type`: SettlorType): Call = {
+    `type` match {
+      case IndividualSettlor => controllers.individual.living.routes.NameController.onPageLoad(NormalMode)
+      case BusinessSettlor => controllers.business.routes.NameController.onPageLoad(NormalMode)
     }
   }
 }
