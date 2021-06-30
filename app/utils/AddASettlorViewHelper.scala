@@ -16,72 +16,78 @@
 
 package utils
 
-import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
+import models.TypeOfTrust
+import models.settlors._
 import play.api.i18n.Messages
 import viewmodels.addAnother.{AddRow, AddToRows}
 
-class AddASettlorViewHelper(settlors: Settlors)(implicit messages: Messages) {
+class AddASettlorViewHelper {
 
-  private def deceasedSettlorRow(settlor: DeceasedSettlor): AddRow = {
-    AddRow(
-      name = settlor.name.displayName,
-      typeLabel = messages("entities.settlor.deceased"),
-      changeLabel = messages("site.change.details"),
-      changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url),
-      removeLabel =  Some(messages("site.delete")),
-      removeUrl = None
-    )
-  }
+  def rows(settlors: Settlors, migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust] = None)
+          (implicit messages: Messages): AddToRows = {
 
-  private def individualSettlorRow(settlor: IndividualSettlor, index: Int): AddRow = {
-    AddRow(
-      name = settlor.name.displayName,
-      typeLabel = messages("entities.settlor.individual"),
-      changeLabel = messages("site.change.details"),
-      changeUrl = Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url),
-      removeLabel =
-        if (settlor.provisional) {
-          Some(messages("site.delete"))
-        } else {
-          Some(messages("site.cannotRemove"))
-        },
-      removeUrl =
-        if (settlor.provisional) {
+    implicit class SettlorRows[T <: Settlor](settlors: List[T]) {
+      def zipThenGroupThenMap(row: (T, Int) => AddRow, isComplete: Boolean): List[AddRow] = settlors
+        .zipWithIndex
+        .groupBy(_._1.hasRequiredData(migratingFromNonTaxableToTaxable, trustType))
+        .getOrElse(isComplete, Nil)
+        .map(x => row(x._1, x._2))
+    }
+
+    def deceasedSettlorRow(settlor: DeceasedSettlor): AddRow = {
+      AddRow(
+        name = settlor.name.displayName,
+        typeLabel = messages("entities.settlor.deceased"),
+        changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url),
+        removeUrl = None
+      )
+    }
+
+    def individualSettlorRow(settlor: IndividualSettlor, index: Int): AddRow = {
+      AddRow(
+        name = settlor.name.displayName,
+        typeLabel = messages("entities.settlor.individual"),
+        changeUrl = Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url),
+        removeUrl = if (settlor.provisional) {
           Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url)
         } else {
           None
         }
-    )
-  }
+      )
+    }
 
-  private def businessSettlorRow(settlor: BusinessSettlor, index: Int): AddRow = {
-    AddRow(
-      name = settlor.name,
-      typeLabel = messages("entities.settlor.business"),
-      changeLabel = messages("site.change.details"),
-      changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
-      removeLabel =
-        if (settlor.provisional) {
-          Some(messages("site.delete"))
+    def businessSettlorRow(settlor: BusinessSettlor, index: Int): AddRow = {
+      AddRow(
+        name = settlor.name,
+        typeLabel = messages("entities.settlor.business"),
+        changeUrl = if (settlor.hasRequiredData(migratingFromNonTaxableToTaxable, trustType)) {
+          Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url)
         } else {
-          Some(messages("site.cannotRemove"))
+          Some(controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url)
         },
-      removeUrl =
-        if (settlor.provisional) {
+        removeUrl = if (settlor.provisional) {
           Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
         } else {
           None
         }
-    )
-  }
+      )
+    }
 
-  def rows: AddToRows = {
-    val complete =
+    def rows(isComplete: Boolean): List[AddRow] = {
       settlors.deceased.map(deceasedSettlorRow).toList ++
-      settlors.settlor.zipWithIndex.map(x => individualSettlorRow(x._1, x._2)) ++
-      settlors.settlorCompany.zipWithIndex.map(x => businessSettlorRow(x._1, x._2))
+        settlors.settlor.zipThenGroupThenMap(individualSettlorRow, isComplete) ++
+        settlors.settlorCompany.zipThenGroupThenMap(businessSettlorRow, isComplete)
+    }
 
-    AddToRows(Nil, complete)
+    val inProgressRows: List[AddRow] = if (migratingFromNonTaxableToTaxable) {
+      rows(isComplete = false)
+    } else {
+      Nil
+    }
+
+    val completedRows: List[AddRow] = rows(isComplete = true)
+
+    AddToRows(inProgressRows, completedRows)
   }
 
 }

@@ -18,9 +18,8 @@ package controllers
 
 import controllers.actions._
 import forms.AddSettlorTypeFormProvider
-import javax.inject.Inject
-import models.SettlorType.IndividualSettlor
-import models.{NormalMode, SettlorType}
+import models.SettlorType
+import navigation.SettlorNavigator
 import pages.AddNowPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AddNowView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddNowController @Inject()(
@@ -37,10 +37,11 @@ class AddNowController @Inject()(
                                   val controllerComponents: MessagesControllerComponents,
                                   view: AddNowView,
                                   formProvider: AddSettlorTypeFormProvider,
-                                  repository: PlaybackRepository
-                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                  repository: PlaybackRepository,
+                                  navigator: SettlorNavigator
+                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[SettlorType] = formProvider()
+  private val form: Form[SettlorType] = formProvider()
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>
@@ -64,12 +65,7 @@ class AddNowController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddNowPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield {
-            value match {
-              case IndividualSettlor => Redirect(controllers.individual.living.routes.NameController.onPageLoad(NormalMode))
-              case _ => Redirect(controllers.business.routes.NameController.onPageLoad(NormalMode))
-            }
-          }
+          } yield Redirect(navigator.addSettlorNowRoute(value))
       )
   }
 }

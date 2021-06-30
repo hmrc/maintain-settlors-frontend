@@ -16,19 +16,23 @@
 
 package models.settlors
 
+import models.Constant.MAX
+import models.{SettlorType, TypeOfTrust}
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, JsSuccess, Reads, __}
+import viewmodels.RadioOption
 
 import java.time.LocalDate
 
 trait Settlor {
   val startDate: Option[LocalDate]
+  def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean
 }
 
-case class Settlors(settlor: List[IndividualSettlor],
-                    settlorCompany: List[BusinessSettlor],
-                    deceased: Option[DeceasedSettlor]) {
+case class Settlors(settlor: List[IndividualSettlor] = Nil,
+                    settlorCompany: List[BusinessSettlor] = Nil,
+                    deceased: Option[DeceasedSettlor] = None) {
 
   val size: Int = (settlor ++ settlorCompany ++ deceased).size
 
@@ -37,24 +41,37 @@ case class Settlors(settlor: List[IndividualSettlor],
   def addToHeading()(implicit mp: MessagesProvider): String = {
 
     size match {
-      case 0 => Messages("addASettlor.heading")
-      case 1 => Messages("addASettlor.singular.heading")
-      case l => Messages("addASettlor.count.heading", l)
+      case c if c > 1 => Messages("addASettlor.count.heading", c)
+      case _ => Messages("addASettlor.heading")
     }
   }
 
-  val isMaxedOut: Boolean = {
-    (settlor ++ settlorCompany).size >= 25
+  private val options: List[(Int, SettlorType)] = {
+    (settlor.size, SettlorType.IndividualSettlor) ::
+      (settlorCompany.size, SettlorType.BusinessSettlor) ::
+      Nil
+  }
+
+  val nonMaxedOutOptions: List[RadioOption] = {
+    options.filter(x => x._1 < MAX).map {
+      x => RadioOption(SettlorType.prefix, x._2.toString)
+    }
+  }
+
+  val maxedOutOptions: List[RadioOption] = {
+    options.filter(x => x._1 >= MAX).map {
+      x => RadioOption(SettlorType.prefix, x._2.toString)
+    }
   }
 
 }
 
 object Settlors {
-  implicit val reads: Reads[Settlors] =
-    ((__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
+  implicit val reads: Reads[Settlors] = (
+    (__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
       and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
       and (__ \ "settlors" \ "deceased").readNullable[DeceasedSettlor]
-      ).apply(Settlors.apply _)
+    ).apply(Settlors.apply _)
 }
 
 trait SettlorReads {

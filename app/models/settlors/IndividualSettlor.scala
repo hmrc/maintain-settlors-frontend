@@ -16,11 +16,11 @@
 
 package models.settlors
 
-import java.time.LocalDate
-
-import models.{Address, IndividualIdentification, Name}
+import models.{Address, IndividualIdentification, Name, TypeOfTrust}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+
+import java.time.LocalDate
 
 final case class IndividualSettlor(name: Name,
                                    dateOfBirth: Option[LocalDate],
@@ -33,6 +33,7 @@ final case class IndividualSettlor(name: Name,
                                    provisional: Boolean) extends Settlor {
 
   override val startDate: Option[LocalDate] = Some(entityStart)
+  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean = true
 }
 
 object IndividualSettlor extends SettlorReads {

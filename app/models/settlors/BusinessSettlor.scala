@@ -16,11 +16,12 @@
 
 package models.settlors
 
-import java.time.LocalDate
-
-import models.{Address, CompanyType}
+import models.TypeOfTrust.EmployeeRelated
+import models.{Address, CompanyType, TypeOfTrust}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+
+import java.time.LocalDate
 
 final case class BusinessSettlor(name: String,
                                  companyType: Option[CompanyType],
@@ -32,6 +33,16 @@ final case class BusinessSettlor(name: String,
                                  provisional: Boolean) extends Settlor {
 
   override val startDate: Option[LocalDate] = Some(entityStart)
+  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean = {
+    if (migratingFromNonTaxableToTaxable) {
+      trustType match {
+        case Some(EmployeeRelated) => companyType.isDefined && companyTime.isDefined
+        case _ => true
+      }
+    } else {
+      true
+    }
+  }
 }
 
 object BusinessSettlor extends SettlorReads {

@@ -19,5 +19,6 @@ package models
 object Constant {
 
   final val GB = "GB"
+  final val MAX = 25
 
 }

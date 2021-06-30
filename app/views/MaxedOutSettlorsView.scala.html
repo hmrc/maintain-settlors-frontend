@@ -26,14 +26,16 @@
     config: FrontendAppConfig
 )
 
-@(trustDescription: Option[String],
+@(
+    trustDescription: Option[String],
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
-    size: Int)(implicit request: Request[_], messages: Messages)
+    size: Int
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${messages("addASettlor.count.heading", size)}"
-    ) {
+) {
 
     @formHelper(action = AddASettlorController.submitComplete(), 'autoComplete -> "off") {
 
