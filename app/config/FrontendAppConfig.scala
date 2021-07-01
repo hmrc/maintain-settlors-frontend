@@ -93,4 +93,14 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
     configuration.get[String](path)
   }
+
+  /**
+   * The schema allows up to 50 individuals AND 50 businesses when submitting a variation.
+   * This then equates to 25 of each as an amended settlor counts as 2.
+   * However, it is very unlikely that a trust will have this many settlors.
+   * Therefore, it has been decided to only allow a maximum of 25 COMBINED settlors (i.e. individuals + businesses <= 25).
+   * Toggle count-max-as-combined in application.conf to change this as required.
+   * @return either true or false
+   */
+  def countMaxAsCombined: Boolean = configuration.get[Boolean]("microservice.services.features.count-max-as-combined")
 }

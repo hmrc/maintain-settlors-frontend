@@ -16,6 +16,7 @@
 
 package models.settlors
 
+import config.FrontendAppConfig
 import models.Constant.MAX
 import models.{SettlorType, TypeOfTrust}
 import play.api.i18n.{Messages, MessagesProvider}
@@ -38,7 +39,7 @@ case class Settlors(settlor: List[IndividualSettlor] = Nil,
 
   val hasLivingSettlors: Boolean = settlor.nonEmpty || settlorCompany.nonEmpty
 
-  def addToHeading()(implicit mp: MessagesProvider): String = {
+  def addToHeading(implicit mp: MessagesProvider): String = {
 
     size match {
       case c if c > 1 => Messages("addASettlor.count.heading", c)
@@ -52,14 +53,22 @@ case class Settlors(settlor: List[IndividualSettlor] = Nil,
       Nil
   }
 
-  val nonMaxedOutOptions: List[RadioOption] = {
-    options.filter(x => x._1 < MAX).map {
-      x => RadioOption(SettlorType.prefix, x._2.toString)
-    }
+  def nonMaxedOutOptions(implicit config: FrontendAppConfig): List[RadioOption] = {
+    options.toRadioList.filterNot(maxedOutOptions.toSet)
   }
 
-  val maxedOutOptions: List[RadioOption] = {
-    options.filter(x => x._1 >= MAX).map {
+  def maxedOutOptions(implicit config: FrontendAppConfig): List[RadioOption] = {
+    val filteredOptions = if (config.countMaxAsCombined) {
+      if (settlor.size + settlorCompany.size >= MAX) options else Nil
+    } else {
+      options.filter(_._1 >= MAX)
+    }
+
+    filteredOptions.toRadioList
+  }
+
+  implicit class RadioList(list: List[(Int, SettlorType)]) {
+    def toRadioList: List[RadioOption] = list.map {
       x => RadioOption(SettlorType.prefix, x._2.toString)
     }
   }

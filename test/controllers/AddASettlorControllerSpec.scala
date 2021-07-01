@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import connectors.TrustStoreConnector
 import forms.AddASettlorFormProvider
+import models.Constant.MAX
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{AddASettlor, Name, RemoveSettlor}
 import org.mockito.Matchers.any
@@ -257,171 +258,427 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
       }
     }
 
-    "maxed out settlors" must {
+    "maxed out settlors" when {
 
-      "return OK and the correct view for a GET" in {
+      "counting max as combined" must {
 
-        val settlors = Settlors(
-          List.fill(25)(individualSettlor),
-          List.fill(25)(businessSettlor),
-          None
-        )
+        val completedRows = List.fill(MAX)(fakeAddRow)
 
-        val fakeService = new FakeService(settlors)
+        "return OK and the correct view for a GET" in {
 
-        val completedRows = List.fill(50)(fakeAddRow)
+          val settlors = Settlors(
+            List.fill((MAX / 2F).ceil.toInt)(individualSettlor),
+            List.fill((MAX / 2F).floor.toInt)(businessSettlor),
+            None
+          )
 
-        when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+          val fakeService = new FakeService(settlors)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-          .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
-          .build()
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-        val request = FakeRequest(GET, getRoute)
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> true)
+            .build()
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, getRoute)
 
-        val view = application.injector.instanceOf[MaxedOutSettlorsView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
 
-        val content = contentAsString(result)
+          status(result) mustEqual OK
 
-        content mustEqual
-          view(
-            Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              MAX
+            )(request, messages).toString
+
+          content must include("You cannot enter another settlor as you have entered a maximum of 25.")
+          content must include("If you have further settlors to add, write to HMRC with their details.")
+
+          application.stop()
+
+        }
+
+        "return correct view when individuals are maxed out" in {
+
+          val settlors = Settlors(
+            List.fill(MAX)(individualSettlor),
             Nil,
-            completedRows,
-            50
-          )(request, messages).toString
-        content must include("You cannot enter another settlor as you have entered a maximum of 50.")
-        content must include("If you have further settlors to add, write to HMRC with their details.")
+            None
+          )
 
-        application.stop()
+          val fakeService = new FakeService(settlors)
 
-      }
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-      "return correct view when individuals are maxed out" in {
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> true)
+            .build()
 
-        val settlors = Settlors(
-          List.fill(25)(individualSettlor),
-          Nil,
-          None
-        )
+          val request = FakeRequest(GET, getRoute)
 
-        val fakeService = new FakeService(settlors)
+          val result = route(application, request).value
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-          .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
-          .build()
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
 
-        val request = FakeRequest(GET, getRoute)
+          status(result) mustEqual OK
 
-        val result = route(application, request).value
+          val content = contentAsString(result)
 
-        contentAsString(result) must include("You cannot add another individual as you have entered a maximum of 25.")
-        contentAsString(result) must include("If you have further settlors to add within this type, write to HMRC with their details.")
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              MAX
+            )(request, messages).toString
 
-        application.stop()
+          content must include("You cannot enter another settlor as you have entered a maximum of 25.")
+          content must include("If you have further settlors to add, write to HMRC with their details.")
 
-      }
+          application.stop()
 
-      "return correct view when businesses are maxed out" in {
+        }
 
-        val settlors = Settlors(
-          Nil,
-          List.fill(25)(businessSettlor),
-          None
-        )
+        "return correct view when businesses are maxed out" in {
 
-        val fakeService = new FakeService(settlors)
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-          .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
-          .build()
-
-        val request = FakeRequest(GET, getRoute)
-
-        val result = route(application, request).value
-
-        contentAsString(result) must include("You cannot add another business as you have entered a maximum of 25.")
-        contentAsString(result) must include("If you have further settlors to add within this type, write to HMRC with their details.")
-
-        application.stop()
-
-      }
-
-      "return OK and the correct view for a GET when there is also a will settlor" in {
-
-        val settlors = Settlors(
-          List.fill(25)(individualSettlor),
-          List.fill(25)(businessSettlor),
-          Some(deceasedSettlor)
-        )
-
-        val fakeService = new FakeService(settlors)
-
-        val completedRows = List.fill(51)(fakeAddRow)
-
-        when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-          .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
-          .build()
-
-        val request = FakeRequest(GET, getRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[MaxedOutSettlorsView]
-
-        status(result) mustEqual OK
-
-        val content = contentAsString(result)
-
-        content mustEqual
-          view(
-            Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+          val settlors = Settlors(
             Nil,
-            completedRows,
-            51
-          )(request, messages).toString
-        content must include("You cannot enter another settlor as you have entered a maximum of 51.")
-        content must include("If you have further settlors to add, write to HMRC with their details.")
+            List.fill(MAX)(businessSettlor),
+            None
+          )
 
-        application.stop()
+          val fakeService = new FakeService(settlors)
 
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> true)
+            .build()
+
+          val request = FakeRequest(GET, getRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              MAX
+            )(request, messages).toString
+
+          content must include("You cannot enter another settlor as you have entered a maximum of 25.")
+          content must include("If you have further settlors to add, write to HMRC with their details.")
+
+          application.stop()
+
+        }
+
+        "return OK and the correct view for a GET when there is also a will settlor" in {
+
+          val settlors = Settlors(
+            List.fill((MAX / 2F).ceil.toInt)(individualSettlor),
+            List.fill((MAX / 2F).floor.toInt)(businessSettlor),
+            Some(deceasedSettlor)
+          )
+
+          val fakeService = new FakeService(settlors)
+
+          val completedRows = List.fill(MAX + 1)(fakeAddRow)
+
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> true)
+            .build()
+
+          val request = FakeRequest(GET, getRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              MAX + 1
+            )(request, messages).toString
+
+          content must include("You cannot enter another settlor as you have entered a maximum of 26.")
+          content must include("If you have further settlors to add, write to HMRC with their details.")
+
+          application.stop()
+
+        }
+
+        "redirect to add to page and set settlors to complete when user clicks continue" in {
+
+          val fakeService = new FakeService(settlors)
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind(classOf[TrustService]).toInstance(fakeService),
+              bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector),
+              bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper)
+            )
+            .configure("microservice.services.features.count-max-as-combined" -> true)
+            .build()
+
+          val request = FakeRequest(POST, submitCompleteRoute)
+
+          when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+          application.stop()
+
+        }
       }
 
-      "redirect to add to page and set settlors to complete when user clicks continue" in {
+      "not counting max as combined" must {
 
-        val fakeService = new FakeService(settlors)
+        "return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind(classOf[TrustService]).toInstance(fakeService),
-            bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector),
-            bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper)
-          ).build()
+          val settlors = Settlors(
+            List.fill(MAX)(individualSettlor),
+            List.fill(MAX)(businessSettlor),
+            None
+          )
 
-        val request = FakeRequest(POST, submitCompleteRoute)
+          val fakeService = new FakeService(settlors)
 
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
+          val completedRows = List.fill(MAX * 2)(fakeAddRow)
 
-        val result = route(application, request).value
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-        status(result) mustEqual SEE_OTHER
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> false)
+            .build()
 
-        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+          val request = FakeRequest(GET, getRoute)
 
-        application.stop()
+          val result = route(application, request).value
 
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              MAX * 2
+            )(request, messages).toString
+
+          content must include("You cannot enter another settlor as you have entered a maximum of 50.")
+          content must include("If you have further settlors to add, write to HMRC with their details.")
+
+          application.stop()
+
+        }
+
+        "return correct view when individuals are maxed out" in {
+
+          val settlors = Settlors(
+            List.fill(MAX)(individualSettlor),
+            Nil,
+            None
+          )
+
+          val fakeService = new FakeService(settlors)
+
+          val completedRows = List.fill(MAX * 2)(fakeAddRow)
+
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> false)
+            .build()
+
+          val request = FakeRequest(GET, getRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddASettlorView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              addTrusteeForm,
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              "The trust has 25 settlors",
+              List("Individual")
+            )(request, messages).toString
+
+          content must include("You cannot add another individual as you have entered a maximum of 25.")
+          content must include("If you have further settlors to add within this type, write to HMRC with their details.")
+
+          application.stop()
+
+        }
+
+        "return correct view when businesses are maxed out" in {
+
+          val settlors = Settlors(
+            Nil,
+            List.fill(MAX)(businessSettlor),
+            None
+          )
+
+          val fakeService = new FakeService(settlors)
+
+          val completedRows = List.fill(MAX * 2)(fakeAddRow)
+
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> false)
+            .build()
+
+          val request = FakeRequest(GET, getRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddASettlorView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              addTrusteeForm,
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              "The trust has 25 settlors",
+              List("Business")
+            )(request, messages).toString
+
+          content must include("You cannot add another business as you have entered a maximum of 25.")
+          content must include("If you have further settlors to add within this type, write to HMRC with their details.")
+
+          application.stop()
+
+        }
+
+        "return OK and the correct view for a GET when there is also a will settlor" in {
+
+          val settlors = Settlors(
+            List.fill(MAX)(individualSettlor),
+            List.fill(MAX)(businessSettlor),
+            Some(deceasedSettlor)
+          )
+
+          val fakeService = new FakeService(settlors)
+
+          val completedRows = List.fill((MAX * 2) + 1)(fakeAddRow)
+
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .configure("microservice.services.features.count-max-as-combined" -> false)
+            .build()
+
+          val request = FakeRequest(GET, getRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              (MAX * 2) + 1
+            )(request, messages).toString
+
+          content must include("You cannot enter another settlor as you have entered a maximum of 51.")
+          content must include("If you have further settlors to add, write to HMRC with their details.")
+
+          application.stop()
+
+        }
+
+        "redirect to add to page and set settlors to complete when user clicks continue" in {
+
+          val fakeService = new FakeService(settlors)
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(
+              bind(classOf[TrustService]).toInstance(fakeService),
+              bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector),
+              bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper)
+            )
+            .configure("microservice.services.features.count-max-as-combined" -> false)
+            .build()
+
+          val request = FakeRequest(POST, submitCompleteRoute)
+
+          when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+          application.stop()
+
+        }
       }
-
     }
   }
 }
