@@ -262,6 +262,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
       "counting max as combined" must {
 
+        val completedRows = List.fill(MAX)(fakeAddRow)
+
         "return OK and the correct view for a GET" in {
 
           val settlors = Settlors(
@@ -271,8 +273,6 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
           )
 
           val fakeService = new FakeService(settlors)
-
-          val completedRows = List.fill(MAX)(fakeAddRow)
 
           when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
@@ -317,6 +317,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val fakeService = new FakeService(settlors)
 
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(bind(classOf[TrustService]).toInstance(fakeService))
             .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
@@ -327,7 +329,19 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val result = route(application, request).value
 
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
+
+          status(result) mustEqual OK
+
           val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              MAX
+            )(request, messages).toString
 
           content must include("You cannot enter another settlor as you have entered a maximum of 25.")
           content must include("If you have further settlors to add, write to HMRC with their details.")
@@ -346,6 +360,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val fakeService = new FakeService(settlors)
 
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(bind(classOf[TrustService]).toInstance(fakeService))
             .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
@@ -356,7 +372,19 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val result = route(application, request).value
 
+          val view = application.injector.instanceOf[MaxedOutSettlorsView]
+
+          status(result) mustEqual OK
+
           val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              MAX
+            )(request, messages).toString
 
           content must include("You cannot enter another settlor as you have entered a maximum of 25.")
           content must include("If you have further settlors to add, write to HMRC with their details.")
@@ -402,6 +430,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
               completedRows,
               MAX + 1
             )(request, messages).toString
+
           content must include("You cannot enter another settlor as you have entered a maximum of 26.")
           content must include("If you have further settlors to add, write to HMRC with their details.")
 
@@ -476,6 +505,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
               completedRows,
               MAX * 2
             )(request, messages).toString
+
           content must include("You cannot enter another settlor as you have entered a maximum of 50.")
           content must include("If you have further settlors to add, write to HMRC with their details.")
 
@@ -493,6 +523,10 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val fakeService = new FakeService(settlors)
 
+          val completedRows = List.fill(MAX * 2)(fakeAddRow)
+
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(bind(classOf[TrustService]).toInstance(fakeService))
             .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
@@ -503,8 +537,24 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val result = route(application, request).value
 
-          contentAsString(result) must include("You cannot add another individual as you have entered a maximum of 25.")
-          contentAsString(result) must include("If you have further settlors to add within this type, write to HMRC with their details.")
+          val view = application.injector.instanceOf[AddASettlorView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              addTrusteeForm,
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              "The trust has 25 settlors",
+              List("Individual")
+            )(request, messages).toString
+
+          content must include("You cannot add another individual as you have entered a maximum of 25.")
+          content must include("If you have further settlors to add within this type, write to HMRC with their details.")
 
           application.stop()
 
@@ -520,6 +570,10 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val fakeService = new FakeService(settlors)
 
+          val completedRows = List.fill(MAX * 2)(fakeAddRow)
+
+          when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
+
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
             .overrides(bind(classOf[TrustService]).toInstance(fakeService))
             .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
@@ -530,8 +584,24 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val result = route(application, request).value
 
-          contentAsString(result) must include("You cannot add another business as you have entered a maximum of 25.")
-          contentAsString(result) must include("If you have further settlors to add within this type, write to HMRC with their details.")
+          val view = application.injector.instanceOf[AddASettlorView]
+
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(
+              addTrusteeForm,
+              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Nil,
+              completedRows,
+              "The trust has 25 settlors",
+              List("Business")
+            )(request, messages).toString
+
+          content must include("You cannot add another business as you have entered a maximum of 25.")
+          content must include("If you have further settlors to add within this type, write to HMRC with their details.")
 
           application.stop()
 
@@ -574,6 +644,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
               completedRows,
               (MAX * 2) + 1
             )(request, messages).toString
+          
           content must include("You cannot enter another settlor as you have entered a maximum of 51.")
           content must include("If you have further settlors to add, write to HMRC with their details.")
 
