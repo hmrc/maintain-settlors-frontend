@@ -20,8 +20,6 @@ import config.FrontendAppConfig
 import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.AddASettlorFormProvider
-
-import javax.inject.Inject
 import models.DeedOfVariation.AdditionToWillTrust
 import models.requests.DataRequest
 import models.{AddASettlor, TypeOfTrust}
@@ -35,6 +33,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddASettlorViewHelper
 import views.html.{AddASettlorView, MaxedOutSettlorsView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddASettlorController @Inject()(
@@ -50,7 +49,7 @@ class AddASettlorController @Inject()(
                                        completeView: MaxedOutSettlorsView,
                                        viewHelper: AddASettlorViewHelper,
                                        navigator: SettlorNavigator
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext, config: FrontendAppConfig) extends FrontendBaseController with I18nSupport {
 
   private val addAnotherForm: Form[AddASettlor] = addAnotherFormProvider()
 

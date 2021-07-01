@@ -93,4 +93,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
     configuration.get[String](path)
   }
+
+  def countMaxAsCombined: Boolean = configuration.get[Boolean]("microservice.services.features.count-max-as-combined")
 }
