@@ -644,7 +644,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
               completedRows,
               (MAX * 2) + 1
             )(request, messages).toString
-          
+
           content must include("You cannot enter another settlor as you have entered a maximum of 51.")
           content must include("If you have further settlors to add, write to HMRC with their details.")
 
