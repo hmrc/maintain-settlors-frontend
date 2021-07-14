@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  val messagesPrefix = "removeBusinessSettlor"
+  val messagesPrefix = "removeBusinessSettlorYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form = formProvider(messagesPrefix)

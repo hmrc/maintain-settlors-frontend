@@ -31,7 +31,7 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.input_text(
             field = form("value"),
@@ -42,6 +42,6 @@
             autocomplete = Some("name")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

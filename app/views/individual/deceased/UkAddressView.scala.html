@@ -31,12 +31,12 @@
 
     @components.back_link()
 
-    @components.error_summary(form.errors)
+    @errorSummary(form.errors)
 
     @components.heading("deceasedSettlor.ukAddress.heading", Some(name))
 
     @components.uk_address(form)
 
-    @components.submit_button()
+    @submitButton()
   }
 }

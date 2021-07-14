@@ -41,7 +41,7 @@
 
     @formHelper(action = AddASettlorController.submit(), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.heading(heading)
 
@@ -69,6 +69,6 @@
             inputs = AddASettlor.options
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

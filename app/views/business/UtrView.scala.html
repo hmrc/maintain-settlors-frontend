@@ -31,7 +31,7 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.input_text(
             field = form("value"),
@@ -44,6 +44,6 @@
 
         <p>@messages("businessSettlor.utr.p1") <a target="_blank" href="https://www.gov.uk/find-lost-utr-number">@messages("businessSettlor.utr.link")</a>.</p>
 
-        @components.submit_button()
+        @submitButton()
     }
 }

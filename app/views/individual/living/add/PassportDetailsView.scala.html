@@ -32,7 +32,7 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.heading("livingSettlor.passportDetails.heading", Some(name))
 
@@ -59,6 +59,6 @@
             headingIsLegend = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

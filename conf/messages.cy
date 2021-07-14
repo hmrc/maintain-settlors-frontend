@@ -317,9 +317,9 @@ livingSettlor.startDate.error.future=Mae’n rhaid i’r dyddiad yr ychwanegwyd 
 livingSettlor.startDate.error.past=Ni all y dyddiad yr ychwanegwyd y setlwr at yr ymddiriedolaeth fod cyn dyddiad dechrau’r ymddiriedolaeth
 livingSettlor.checkDetails.title=Gwiriwch fanylion setlwr yr unigolyn
 livingSettlor.checkDetails.heading=Gwiriwch fanylion setlwr yr unigolyn
-removeIndividualSettlor.title=A ydych yn siŵr eich bod am dynnu setlwr yr unigolyn?
-removeIndividualSettlor.heading=A ydych yn siŵr eich bod am dynnu {0}?
-removeIndividualSettlor.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r setlwr dan sylw
+removeIndividualSettlorYesNo.title=A ydych yn siŵr eich bod am dynnu setlwr yr unigolyn?
+removeIndividualSettlorYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+removeIndividualSettlorYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r setlwr dan sylw
 businessSettlor.name.default=setlwr y busnes
 businessSettlor.name.checkYourAnswersLabel=Beth yw enw’r busnes?
 businessSettlor.name.title=Beth yw enw’r busnes?
@@ -392,9 +392,9 @@ businessSettlor.countryOfResidence.checkYourAnswersLabel=Beth yw gwlad breswyl {
 businessSettlor.countryOfResidence.error.required=Nodwch wlad
 businessSettlor.countryOfResidence.error.length=Mae’n rhaid i’r wlad breswyl fod yn 100 o gymeriadau neu lai
 
-removeBusinessSettlor.title=A ydych yn siŵr eich bod am dynnu setlwr y busnes?
-removeBusinessSettlor.heading=A ydych yn siŵr eich bod am dynnu {0}?
-removeBusinessSettlor.error.required=Dewiswch ‘Iawn’ os ydych am dynnu setlwr y busnes
+removeBusinessSettlorYesNo.title=A ydych yn siŵr eich bod am dynnu setlwr y busnes?
+removeBusinessSettlorYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+removeBusinessSettlorYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu setlwr y busnes
 
 deceasedSettlor.name.default=setlwr yr ewyllys
 deceasedSettlor.name.checkYourAnswersLabel=Beth oedd enw’r setlwr?

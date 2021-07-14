@@ -31,7 +31,7 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.input_date(
             field = form("value"),
@@ -40,6 +40,6 @@
             hint = Some(messages("livingSettlor.startDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

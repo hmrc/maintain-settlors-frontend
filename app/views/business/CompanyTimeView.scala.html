@@ -31,14 +31,14 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             legend = messages("businessSettlor.companyTime.heading"),
             headingIsLegend = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

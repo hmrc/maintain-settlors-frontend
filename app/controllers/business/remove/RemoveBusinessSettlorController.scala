@@ -41,7 +41,7 @@ class RemoveBusinessSettlorController @Inject()(
                                                     errorHandler: ErrorHandler
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val messagesPrefix: String = "removeBusinessSettlor"
+  private val messagesPrefix: String = "removeBusinessSettlorYesNo"
 
   private val form = formProvider.apply(messagesPrefix)
 

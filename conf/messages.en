@@ -356,9 +356,9 @@ livingSettlor.startDate.error.past = The date the settlor was added to the trust
 livingSettlor.checkDetails.title = Check individual settlor details
 livingSettlor.checkDetails.heading = Check individual settlor details
 
-removeIndividualSettlor.title = Are you sure you want to remove the individual settlor?
-removeIndividualSettlor.heading = Are you sure you want to remove {0}?
-removeIndividualSettlor.error.required = Select yes if you want to remove the individual settlor
+removeIndividualSettlorYesNo.title = Are you sure you want to remove the individual settlor?
+removeIndividualSettlorYesNo.heading = Are you sure you want to remove {0}?
+removeIndividualSettlorYesNo.error.required = Select yes if you want to remove the individual settlor
 
 businessSettlor.name.default = the business settlor
 
@@ -447,9 +447,9 @@ businessSettlor.countryOfResidence.error.required = Enter a country
 businessSettlor.countryOfResidence.error.length = The country of residence must be 100 characters or less
 businessSettlor.countryOfResidence.error.invalidCharacters = The country of residence must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
 
-removeBusinessSettlor.title = Are you sure you want to remove the business settlor?
-removeBusinessSettlor.heading = Are you sure you want to remove {0}?
-removeBusinessSettlor.error.required = Select yes if you want to remove the business settlor
+removeBusinessSettlorYesNo.title = Are you sure you want to remove the business settlor?
+removeBusinessSettlorYesNo.heading = Are you sure you want to remove {0}?
+removeBusinessSettlorYesNo.error.required = Select yes if you want to remove the business settlor
 
 deceasedSettlor.name.default = the will settlor
 

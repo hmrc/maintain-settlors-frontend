@@ -15,30 +15,32 @@
  *@
 
 @import controllers.business.remove.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("removeBusinessSettlor.title")}"
+    title = s"${errorPrefix(form)}${messages("removeBusinessSettlorYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = RemoveBusinessSettlorController.onSubmit(index), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
-            legend = messages("removeBusinessSettlor.heading", name),
-            headingIsLegend = true
+            legend = messages("removeBusinessSettlorYesNo.heading", name)
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

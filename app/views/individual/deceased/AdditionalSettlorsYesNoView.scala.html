@@ -15,30 +15,32 @@
  *@
 
 @import controllers.individual.deceased.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("deceasedSettlor.additionalSettlorsYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("deceasedSettlor.additionalSettlorsYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = AdditionalSettlorsYesNoController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
-            legend = messages("deceasedSettlor.additionalSettlorsYesNo.heading"),
-            headingIsLegend = true
+            legend = messages("deceasedSettlor.additionalSettlorsYesNo.heading")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

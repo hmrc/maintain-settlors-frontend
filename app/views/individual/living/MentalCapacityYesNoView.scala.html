@@ -15,11 +15,16 @@
  *@
 
 @import controllers.individual.living.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
+
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
@@ -35,23 +40,21 @@
 }
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("livingSettlor.mentalCapacityYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("livingSettlor.mentalCapacityYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = MentalCapacityYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
-            legend = messages("livingSettlor.mentalCapacityYesNo.heading", name),
-            headingIsLegend = true,
+            legend = messages("livingSettlor.mentalCapacityYesNo.heading", name)
             additionalContent = Some(content)
 
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

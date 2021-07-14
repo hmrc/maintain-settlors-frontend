@@ -41,7 +41,7 @@ class RemoveIndividualSettlorController @Inject()(
                                                     errorHandler: ErrorHandler
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val messagesPrefix: String = "removeIndividualSettlor"
+  private val messagesPrefix: String = "removeIndividualSettlorYesNo"
 
   private val form = formProvider.apply(messagesPrefix)
 

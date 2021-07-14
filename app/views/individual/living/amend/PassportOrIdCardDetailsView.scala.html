@@ -32,7 +32,7 @@
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         @components.heading("livingSettlor.passportOrIdCardDetails.heading", Some(name))
 
@@ -59,6 +59,6 @@
             hint = Some(messages(s"livingSettlor.passportOrIdCardDetails.expiryDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
