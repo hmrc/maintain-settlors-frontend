@@ -16,10 +16,14 @@
 
 @import controllers.individual.deceased.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InternationalAddress, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    internationalAddress: InternationalAddress,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
@@ -33,9 +37,12 @@
 
         @errorSummary(form.errors)
 
-        @components.heading("deceasedSettlor.nonUkAddress.heading", Some(name))
-
-        @components.non_uk_address(form, countryOptions)
+        @internationalAddress(
+            form = form,
+            legend = messages("deceasedSettlor.nonUkAddress.heading", name),
+            legendAsHeading = true,
+            countryOptions = countryOptions
+        )
 
         @submitButton()
     }

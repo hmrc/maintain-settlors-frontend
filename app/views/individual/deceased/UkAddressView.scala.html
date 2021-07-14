@@ -15,10 +15,14 @@
  *@
 
 @import controllers.individual.deceased.routes._
+@import views.html.components.{ErrorSummary, UkAddress, SubmitButton}
 
 @this(
-  main_template: MainTemplate,
-  formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    ukAddress: UkAddress,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
@@ -32,9 +36,11 @@
 
         @errorSummary(form.errors)
 
-        @components.heading("deceasedSettlor.ukAddress.heading", Some(name))
-
-        @components.uk_address(form)
+        @ukAddress(
+            form = form,
+            legend = messages("deceasedSettlor.ukAddress.heading", name),
+            legendAsHeading = true
+        )
 
         @submitButton()
     }
