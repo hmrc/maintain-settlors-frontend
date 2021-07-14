@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.AnswerSection
-@import views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@(answerSection: AnswerSection)(implicit messages: Messages)
+@this(govukWarningText : GovukWarningText)
 
-@if(answerSection.headingKey.isDefined){
-    <h2 class="heading-large">@messages(answerSection.headingKey.get)</h2>
-}
+@(messageKeyPrefix: String)(implicit messages: Messages)
 
-<ul role="list" class="govuk-check-your-answers cya-questions-long section">
-    @for(row <- answerSection.rows){
-        @components.answer_row_no_change(row)
-    }
-</ul>
+@govukWarningText(WarningText(
+    iconFallbackText = messages("site.warning"),
+    content = Text(messages(s"$messageKeyPrefix.warning"))
+))

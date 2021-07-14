@@ -14,17 +14,16 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Link
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(govukButton : GovukButton)
 
 @(
-    hint: Option[String] = None,
-    link: Option[Link] = None
+messageKey: String = "site.continue",
+isStartButton:Boolean = false,
 )(implicit messages: Messages)
 
-@if(hint.nonEmpty) {
-  <span id="form-hint" class="form-hint">@hint
-  @link.map { l =>
-    <a id="link" href="@l.url" target="_blank">@l.text</a>
-  }
-  </span>
-}
+@govukButton(Button(
+ isStartButton = isStartButton,
+ content = Text(messages(messageKey))
+))

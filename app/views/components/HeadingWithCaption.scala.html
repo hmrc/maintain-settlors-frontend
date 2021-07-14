@@ -14,9 +14,13 @@
  * limitations under the License.
  *@
 
-@(messageKey: String, id: String)(implicit messages: Messages)
+@this(
+ subHeading: SubHeading
+)
 
-<div id="inset-text--@id" class="indent">
-    @messages(messageKey)
-</div>
+@(messagePrefix: String, optionalParam: Option[String] = None, captionParam: Option[String] = None, hiddenText: Boolean = false)(implicit messages: Messages)
 
+<h1 class="govuk-heading-l">
+ @subHeading(s"$messagePrefix.caption", captionParam.getOrElse(""), hiddenText)
+ @messages(s"$messagePrefix.heading", optionalParam.getOrElse(""))
+</h1>

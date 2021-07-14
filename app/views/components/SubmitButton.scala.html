@@ -14,8 +14,18 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@this(
+    button: GovukButton,
+)
 
-<div class="js-visible">
-  <p><a id="back-link" class="link-back" href="#">@messages("site.back")</a></p>
-</div>
+@(overrideMessage: Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
+
+@button(Button(
+    attributes = Map("id"->"submit"),
+    classes = s"button ${submitClass.getOrElse("")}",
+    content = if(overrideMessage.isEmpty) {
+        Text(messages("site.continue"))
+    } else {
+        Text(messages(overrideMessage.get))
+    }
+))

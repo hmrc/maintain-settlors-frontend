@@ -14,17 +14,15 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@this()
 
-@(prefix: String, config: FrontendAppConfig)(implicit messages: Messages)
+@(
+ prefix : String,
+ keys : Seq[String]
+)(implicit messages: Messages)
 
-<details class="govuk-details" data-module="govuk-details">
-    <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      @messages(prefix)
-    </span>
-    </summary>
-    <div class="govuk-details__text panel-indent">
-        <p>@messages(s"${prefix}.text") <a href="@config.helplineUrl" target="_blank">@messages(s"${prefix}.text.link")</a>.</p>
-    </div>
-</details>
+<ul class="govuk-list govuk-list--bullet">
+ @keys.map { key =>
+ <li>@messages(s"$prefix.$key")</li>
+ }
+</ul>

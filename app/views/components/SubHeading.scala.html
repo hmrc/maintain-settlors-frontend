@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
-@(
-messageKey: String = "",
-inputType: String = "button"
-)(implicit messages: Messages)
+@this()
 
-<div class="section">
-    <input type="@inputType" class="button" value="@messages(messageKey)" />
-</div>
+@(key: String, param: String, hiddenText: Boolean = true)(implicit messages: Messages)
+
+<span class="govuk-caption-l">
+ @if(hiddenText){
+  <span class="govuk-visually-hidden">@messages(s"$key.hidden")</span>
+ }
+ @messages(key, param)
+</span>

@@ -14,11 +14,8 @@
  * limitations under the License.
  *@
 
-@import viewmodels.AnswerRow
+@this()
 
-@(row: AnswerRow)(implicit messages: Messages)
+@(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
-<li>
-    <div class="cya-question">@row.label</div>
-    <div class="cya-answer">@row.answer</div>
-</li>
+<a class="govuk-link" id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>
