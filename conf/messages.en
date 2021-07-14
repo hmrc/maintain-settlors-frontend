@@ -39,7 +39,7 @@ site.address.uk.line4 = Address line 4 (optional)
 site.address.uk.postcode = Postcode
 site.address.uk.postcode.hint = For example, AB1 1AB.
 
-address.country.select = Select a country
+site.address.country.select = Select a country
 site.address.nonUk.title = What is the address?
 site.address.nonUk.heading = What is {0}’s address?
 site.address.nonUk.line1 = Address line 1

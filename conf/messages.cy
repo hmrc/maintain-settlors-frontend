@@ -76,7 +76,7 @@ site.address.nonUk.line3=Cyfeiriad - llinell 3 (dewisol)
 site.address.nonUk.country=Gwlad
 site.sign_in=Mewngofnodi
 
-address.country.select=Dewiswch wlad
+site.address.country.select=Dewiswch wlad
 
 entities.settlor=Setlwyr
 entities.settlor.individual=Setlwr yr unigolyn
