@@ -24,19 +24,18 @@
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = s"${errorPrefix(form)}${messages("deceasedSettlor.ukAddress.title")}"
+    title = s"${errorPrefix(form)}${messages("deceasedSettlor.ukAddress.title")}",
+    showBackLink = true
 ) {
 
-  @formHelper(action = UkAddressController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = UkAddressController.onSubmit(), 'autoComplete -> "off") {
 
-    @components.back_link()
+        @errorSummary(form.errors)
 
-    @errorSummary(form.errors)
+        @components.heading("deceasedSettlor.ukAddress.heading", Some(name))
 
-    @components.heading("deceasedSettlor.ukAddress.heading", Some(name))
+        @components.uk_address(form)
 
-    @components.uk_address(form)
-
-    @submitButton()
-  }
+        @submitButton()
+    }
 }

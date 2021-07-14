@@ -25,12 +25,11 @@
 @(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("livingSettlor.checkDetails.title")
-    ) {
+    title = messages("livingSettlor.checkDetails.title"),
+    showBackLink = true
+) {
 
     @formHelper(action = CheckDetailsController.onSubmit(index), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.heading("livingSettlor.checkDetails.heading")
 

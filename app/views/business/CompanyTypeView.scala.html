@@ -26,12 +26,11 @@
 @(form: Form[_], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("businessSettlor.companyType.title")}"
-    ) {
+    title = s"${errorPrefix(form)}${messages("businessSettlor.companyType.title")}",
+    showBackLink = true
+) {
 
     @formHelper(action = CompanyTypeController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @errorSummary(form.errors)
 

@@ -25,12 +25,11 @@
 @(form: Form[_], mode: Mode, countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("businessSettlor.countryOfResidence.title")}"
+    title = s"${errorPrefix(form)}${messages("businessSettlor.countryOfResidence.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = CountryOfResidenceController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @errorSummary(form.errors)
 

@@ -34,12 +34,11 @@
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${messages("addASettlor.count.heading", size)}"
+    title = s"${messages("addASettlor.count.heading", size)}",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddASettlorController.submitComplete(), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.heading(messages("addASettlor.count.heading", size))
 

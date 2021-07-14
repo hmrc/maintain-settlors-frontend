@@ -26,15 +26,14 @@
     name: String,
     is01MatchStatus: Boolean,
     isDateOfDeathRecorded: Boolean
-    )(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("deceasedSettlor.checkDetails.title")
-    ) {
+    title = messages("deceasedSettlor.checkDetails.title"),
+    showBackLink = true
+) {
 
     @formHelper(action = CheckDetailsController.onSubmit(), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.heading("deceasedSettlor.checkDetails.heading")
 
