@@ -1,3 +1,5 @@
+service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+
 livingSettlor.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd y setlwr?
 livingSettlor.countryOfNationalityYesNo.heading=A ydych yn gwybod gwlad cenedligrwydd {0}?
 livingSettlor.countryOfNationalityYesNo.checkYourAnswersLabel=A ydych yn gwybod gwlad cenedligrwydd {0}?
@@ -46,7 +48,6 @@ site.change.details=Newid manylion
 site.no=Na
 site.yes=Iawn
 site.continue=Yn eich blaen
-site.service_name=Cofrestru Ymddiriedolaeth a’i Chynnal
 site.service_section=Setlwyr
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.sign_out=Allgofnodi
