@@ -16,10 +16,14 @@
 
 @import controllers.individual.living.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InputSelect, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputSelect: InputSelect,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String, countryOptions: Seq[InputOption])(implicit request: Request[_], messages: Messages)
@@ -33,14 +37,14 @@
 
         @errorSummary(form.errors)
 
-        @components.select(field = form("value"),
+        @inputSelect(field = form("value"),
             label = messages("livingSettlor.countryOfNationality.heading", name),
-            labelClasses = Set("heading-large"),
+            labelClasses = Set("govuk-heading-l"),
             labelAsHeading = true,
             options = countryOptions,
             placeholder = Some(messages("site.address.country.select")),
-            formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
-            selectAttribute = Set("data-non-uk-countries")
+            formGroupClasses = Set("autocomplete-wrapper govuk-!-width-two-thirds"),
+            selectAttribute = Map("data-non-uk-countries" -> "")
         )
 
         @submitButton()
