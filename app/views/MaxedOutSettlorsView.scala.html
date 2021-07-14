@@ -19,11 +19,15 @@
 @import viewmodels.addAnother.AddRow
 @import viewmodels.RadioOption
 @import config.FrontendAppConfig
+@import views.html.components.{Heading, AddToList, Details, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    config: FrontendAppConfig
+    headingComp: Heading,
+    addToList: AddToList,
+    details: Details,
+    submitButton: SubmitButton
 )
 
 @(
@@ -40,22 +44,24 @@
 
     @formHelper(action = AddASettlorController.submitComplete(), 'autoComplete -> "off") {
 
-        @components.heading(messages("addASettlor.count.heading", size))
+        @heading(messages("addASettlor.count.heading", size))
 
         @if(trustDescription.nonEmpty){
             <p>@trustDescription</p>
         }
 
-        @components.data_list(inProgressSettlors, "inprogress")
+        @addToList(inProgressSettlors, "inprogress")
 
-        @components.data_list(completeSettlors, "complete")
+        @addToList(completeSettlors, "complete")
 
-        @components.details("addASettlor.details", config)
+        @details("addASettlor.details", config)
 
-        <ul>
-            <li class="panel-indent"><p>@messages("addASettlor.maxedOut", size)</p></li>
-            <li class="panel-indent"><p>@messages("addASettlor.maxedOut.paragraph")</p></li>
-        </ul>
+        <div class="govuk-inset-text">
+            <ul class="govuk-list">
+                <li><p>@messages("addASettlor.maxedOut", size)</p></li>
+                <li><p>@messages("addASettlor.maxedOut.paragraph")</p></li>
+            </ul>
+        </div>
 
         @submitButton()
     }

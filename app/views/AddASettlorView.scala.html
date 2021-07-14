@@ -19,11 +19,18 @@
 @import viewmodels.addAnother.AddRow
 @import viewmodels.RadioOption
 @import config.FrontendAppConfig
+@import views.html.components.{Heading, ErrorSummary, InputText, AddToList, Details, InputRadio, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    config: FrontendAppConfig
+    headingComp: Heading,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    addToList: AddToList,
+    details: Details,
+    inputRadio: InputRadio,
+    submitButton: SubmitButton
 )
 
 @(
@@ -41,32 +48,34 @@
 
     @formHelper(action = AddASettlorController.submit(), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, AddASettlor.options)
 
-        @components.heading(heading)
+        @headingComp(heading)
 
         @if(trustDescription.nonEmpty){
             <p>@trustDescription</p>
         }
 
-        @components.data_list(inProgressSettlors, "inprogress")
+        @addToList(inProgressSettlors, "inprogress")
 
-        @components.data_list(completeSettlors, "complete")
+        @addToList(completeSettlors, "complete")
 
-        @components.details("addASettlor.details", config)
+        @details("addASettlor.details", config)
 
         @if(maxedOut.nonEmpty) {
-            <ul>
-                <li class="panel-indent"><p>@messages("addASettlor.maxedOut.just1", messages(maxedOut.head).toLowerCase)</p></li>
-                <li class="panel-indent"><p>@messages("addASettlor.maxedOut.just1.paragraph")</p></li>
-            </ul>
+            <div class="govuk-inset-text">
+                <ul class="govuk-list">
+                    <li><p>@messages("addASettlor.maxedOut.just1", messages(maxedOut.head).toLowerCase)</p></li>
+                    <li><p>@messages("addASettlor.maxedOut.just1.paragraph")</p></li>
+                </ul>
+            </div>
         }
 
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("addASettlor.additional-content"),
-            legendClass = Some("heading-medium"),
-            inputs = AddASettlor.options
+            legendClass = Some("govuk-heading-m"),
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, AddASettlor.options)
         )
 
         @submitButton()
