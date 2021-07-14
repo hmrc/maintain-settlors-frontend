@@ -15,10 +15,14 @@
  *@
 
 @import controllers.business.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -32,16 +36,17 @@
 
         @errorSummary(form.errors)
 
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("businessSettlor.utr.heading", name),
-            headingIsLabel = true,
+            labelAsHeading = true,
+            labelClass = Some("govuk-heading-l"),
+            inputClass = Some("govuk-!-width-one-half"),
+            inputMode = Some("numeric"),
             hint = Some(messages("businessSettlor.utr.hint")),
-            labelClass=Some("heading-large"),
-            inputMode = Some("numeric")
         )
 
-        <p>@messages("businessSettlor.utr.p1") <a target="_blank" href="https://www.gov.uk/find-lost-utr-number">@messages("businessSettlor.utr.link")</a>.</p>
+        <p>@messages("businessSettlor.utr.p1") <a class="govuk-link" target="_blank" href="https://www.gov.uk/find-lost-utr-number">@messages("businessSettlor.utr.link")</a>.</p>
 
         @submitButton()
     }
