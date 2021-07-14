@@ -28,16 +28,6 @@
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
-@content = {
-<p>@messages("livingSettlor.mentalCapacityYesNo.p1")</p>
-
-<ul class="govuk-list trust-list--bullet">
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint1")</li>
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint2")</li>
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint3")</li>
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint4")</li>
-</ul>
-}
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("livingSettlor.mentalCapacityYesNo.title")}",
@@ -48,11 +38,17 @@
 
         @errorSummary(form.errors)
 
+        @heading("otherIndividual.mentalCapacityYesNo.heading", Some(name))
+
+        <p>@messages("livingSettlor.mentalCapacityYesNo.p1")</p>
+
+        @bulletList("livingSettlor.mentalCapacityYesNo", Seq("bulletpoint1", "bulletpoint2", "bulletpoint3", "bulletpoint4"))
+
         @inputYesNo(
             field = form("value"),
-            legend = messages("livingSettlor.mentalCapacityYesNo.heading", name)
-            additionalContent = Some(content)
-
+            label = messages("livingSettlor.mentalCapacityYesNo.heading", name),
+            legendClass = Some("govuk-visually-hidden"),
+            legendAsHeading = false
         )
 
         @submitButton()
