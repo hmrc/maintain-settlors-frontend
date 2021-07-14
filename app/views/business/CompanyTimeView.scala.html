@@ -15,16 +15,20 @@
  *@
 
 @import controllers.business.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("businessSettlor.companyTime.title")}",
+    title = s"${errorPrefix(form)}${messages("businessSettlor.companyTimeYesNo.title")}",
     showBackLink = true
 ) {
 
@@ -34,8 +38,7 @@
 
         @inputYesNo(
             field = form("value"),
-            legend = messages("businessSettlor.companyTime.heading"),
-            headingIsLegend = true
+            label = messages("businessSettlor.companyTimeYesNo.heading")
         )
 
         @submitButton()

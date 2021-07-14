@@ -18,7 +18,6 @@
 @import controllers.business.add.routes._
 @import utils.SectionFormatter.formatSections
 @import viewmodels.AnswerSection
-@import viewmodels.Section
 @import views.html.components.{Heading, SubmitButton}
 
 @this(
@@ -29,7 +28,7 @@
     submitButton: SubmitButton
 )
 
-@(answerSection: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("businessSettlor.checkDetails.title"),

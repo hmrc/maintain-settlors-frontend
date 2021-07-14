@@ -39,7 +39,7 @@ class CompanyTimeControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("businessSettlor.companyTime")
+  val form = formProvider.withPrefix("businessSettlor.companyTimeYesNo")
   val name = "Name"
 
   override val emptyUserAnswers = super.emptyUserAnswers

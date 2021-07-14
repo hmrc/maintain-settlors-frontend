@@ -20,11 +20,13 @@
 @import viewmodels.RadioOption
 @import config.FrontendAppConfig
 @import views.html.components.{Heading, AddToList, Details, SubmitButton}
+@import config.FrontendAppConfig
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
-    headingComp: Heading,
+    config: FrontendAppConfig,
+    heading: Heading,
     addToList: AddToList,
     details: Details,
     submitButton: SubmitButton

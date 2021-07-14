@@ -410,10 +410,10 @@ businessSettlor.companyType.error.required = Select what kind of business the se
 companyType.Trading = Trading
 companyType.Investment = Investment
 
-businessSettlor.companyTime.checkYourAnswersLabel = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
-businessSettlor.companyTime.title = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
-businessSettlor.companyTime.heading = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
-businessSettlor.companyTime.error.required = Select yes if, at the date of each contribution to the trust, the business had been in existence for at least 2 years
+businessSettlor.companyTimeYesNo.checkYourAnswersLabel = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
+businessSettlor.companyTimeYesNo.title = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
+businessSettlor.companyTimeYesNo.heading = At the date of each contribution to the trust, had the business been in existence for at least 2 years?
+businessSettlor.companyTimeYesNo.error.required = Select yes if, at the date of each contribution to the trust, the business had been in existence for at least 2 years
 
 businessSettlor.startDate.checkYourAnswersLabel = When was {0} added as a settlor?
 businessSettlor.startDate.title = When was the settlor added to the trust?
