@@ -16,10 +16,16 @@
 
 @import viewmodels.AnswerSection
 @import controllers.business.amend.routes._
+@import utils.SectionFormatter.formatSections
+@import viewmodels.AnswerSection
+@import views.html.components.{Heading, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    govukSummaryList: GovukSummaryList,
+    submitButton: SubmitButton
 )
 
 @(answerSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
@@ -33,7 +39,7 @@
 
         @heading("businessSettlor.checkDetails.heading")
 
-        @components.answer_section(answerSection)
+        @govukSummaryList(SummaryList(rows = formatSections(Seq(answerSection))))
 
         @submitButton()
     }
