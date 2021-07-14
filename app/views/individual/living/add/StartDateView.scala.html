@@ -15,10 +15,14 @@
  *@
 
 @import controllers.individual.living.add.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate: InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
@@ -32,11 +36,11 @@
 
         @errorSummary(form.errors)
 
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("livingSettlor.startDate.heading", name),
-            headingIsLegend = true,
-            hint = Some(messages("livingSettlor.startDate.hint"))
+            legendAsHeading = true,
+            hint = Some(messages(s"livingSettlor.startDate.hint"))
         )
 
         @submitButton()
