@@ -43,7 +43,7 @@ class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
         bound.addressQuestion(UkAddressPage, "businessSettlor.ukAddress", Some(controllers.business.routes.UkAddressController.onPageLoad(mode).url)),
         bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", Some(controllers.business.routes.NonUkAddressController.onPageLoad(mode).url)),
         bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", Some(controllers.business.routes.CompanyTypeController.onPageLoad(mode).url)),
-        bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTime", Some(controllers.business.routes.CompanyTimeController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTimeYesNo", Some(controllers.business.routes.CompanyTimeController.onPageLoad(mode).url)),
         if (mode == NormalMode) bound.dateQuestion(StartDatePage, "businessSettlor.startDate", Some(controllers.business.routes.StartDateController.onPageLoad().url)) else None
       ).flatten
     }

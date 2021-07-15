@@ -41,7 +41,7 @@ class CompanyTimeController @Inject()(
                                         view: CompanyTimeView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider.withPrefix("businessSettlor.companyTime")
+  val form = formProvider.withPrefix("businessSettlor.companyTimeYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
     implicit request =>

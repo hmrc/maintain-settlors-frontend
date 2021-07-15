@@ -1,3 +1,5 @@
+service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+
 livingSettlor.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd y setlwr?
 livingSettlor.countryOfNationalityYesNo.heading=A ydych yn gwybod gwlad cenedligrwydd {0}?
 livingSettlor.countryOfNationalityYesNo.checkYourAnswersLabel=A ydych yn gwybod gwlad cenedligrwydd {0}?
@@ -46,7 +48,6 @@ site.change.details=Newid manylion
 site.no=Na
 site.yes=Iawn
 site.continue=Yn eich blaen
-site.service_name=Cofrestru Ymddiriedolaeth a’i Chynnal
 site.service_section=Setlwyr
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.sign_out=Allgofnodi
@@ -75,7 +76,7 @@ site.address.nonUk.line3=Cyfeiriad - llinell 3 (dewisol)
 site.address.nonUk.country=Gwlad
 site.sign_in=Mewngofnodi
 
-address.country.select=Dewiswch wlad
+site.address.country.select=Dewiswch wlad
 
 entities.settlor=Setlwyr
 entities.settlor.individual=Setlwr yr unigolyn
@@ -316,9 +317,9 @@ livingSettlor.startDate.error.future=Mae’n rhaid i’r dyddiad yr ychwanegwyd 
 livingSettlor.startDate.error.past=Ni all y dyddiad yr ychwanegwyd y setlwr at yr ymddiriedolaeth fod cyn dyddiad dechrau’r ymddiriedolaeth
 livingSettlor.checkDetails.title=Gwiriwch fanylion setlwr yr unigolyn
 livingSettlor.checkDetails.heading=Gwiriwch fanylion setlwr yr unigolyn
-removeIndividualSettlor.title=A ydych yn siŵr eich bod am dynnu setlwr yr unigolyn?
-removeIndividualSettlor.heading=A ydych yn siŵr eich bod am dynnu {0}?
-removeIndividualSettlor.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r setlwr dan sylw
+removeIndividualSettlorYesNo.title=A ydych yn siŵr eich bod am dynnu setlwr yr unigolyn?
+removeIndividualSettlorYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+removeIndividualSettlorYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r setlwr dan sylw
 businessSettlor.name.default=setlwr y busnes
 businessSettlor.name.checkYourAnswersLabel=Beth yw enw’r busnes?
 businessSettlor.name.title=Beth yw enw’r busnes?
@@ -359,10 +360,10 @@ businessSettlor.companyType.heading=Pa fath o fusnes yw {0}?
 businessSettlor.companyType.error.required=Dewiswch pa fath o fusnes yw’r setlwr
 companyType.Trading=Masnachu
 companyType.Investment=Buddsoddiad
-businessSettlor.companyTime.checkYourAnswersLabel=Ar ddyddiad pob cyfraniad at yr ymddiriedolaeth, a oedd y busnes wedi bodoli am o leiaf 2 flynedd?
-businessSettlor.companyTime.title=Ar ddyddiad pob cyfraniad at yr ymddiriedolaeth, a oedd y busnes wedi bodoli am o leiaf 2 flynedd?
-businessSettlor.companyTime.heading=Ar ddyddiad pob cyfraniad at yr ymddiriedolaeth, a oedd y busnes wedi bodoli am o leiaf 2 flynedd?
-businessSettlor.companyTime.error.required=Dewiswch ‘Iawn’ os oedd y busnes wedi bodoli am o leiaf 2 flynedd, ar ddyddiad pob cyfraniad at yr ymddiriedolaeth
+businessSettlor.companyTimeYesNo.checkYourAnswersLabel=Ar ddyddiad pob cyfraniad at yr ymddiriedolaeth, a oedd y busnes wedi bodoli am o leiaf 2 flynedd?
+businessSettlor.companyTimeYesNo.title=Ar ddyddiad pob cyfraniad at yr ymddiriedolaeth, a oedd y busnes wedi bodoli am o leiaf 2 flynedd?
+businessSettlor.companyTimeYesNo.heading=Ar ddyddiad pob cyfraniad at yr ymddiriedolaeth, a oedd y busnes wedi bodoli am o leiaf 2 flynedd?
+businessSettlor.companyTimeYesNo.error.required=Dewiswch ‘Iawn’ os oedd y busnes wedi bodoli am o leiaf 2 flynedd, ar ddyddiad pob cyfraniad at yr ymddiriedolaeth
 businessSettlor.startDate.checkYourAnswersLabel=Pryd ychwanegwyd {0} fel setlwr?
 businessSettlor.startDate.title=Pryd ychwanegwyd y setlwr at yr ymddiriedolaeth?
 businessSettlor.startDate.heading=Pryd ychwanegwyd {0} fel setlwr?
@@ -391,9 +392,9 @@ businessSettlor.countryOfResidence.checkYourAnswersLabel=Beth yw gwlad breswyl {
 businessSettlor.countryOfResidence.error.required=Nodwch wlad
 businessSettlor.countryOfResidence.error.length=Mae’n rhaid i’r wlad breswyl fod yn 100 o gymeriadau neu lai
 
-removeBusinessSettlor.title=A ydych yn siŵr eich bod am dynnu setlwr y busnes?
-removeBusinessSettlor.heading=A ydych yn siŵr eich bod am dynnu {0}?
-removeBusinessSettlor.error.required=Dewiswch ‘Iawn’ os ydych am dynnu setlwr y busnes
+removeBusinessSettlorYesNo.title=A ydych yn siŵr eich bod am dynnu setlwr y busnes?
+removeBusinessSettlorYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+removeBusinessSettlorYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu setlwr y busnes
 
 deceasedSettlor.name.default=setlwr yr ewyllys
 deceasedSettlor.name.checkYourAnswersLabel=Beth oedd enw’r setlwr?

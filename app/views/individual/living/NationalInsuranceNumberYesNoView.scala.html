@@ -15,30 +15,32 @@
  *@
 
 @import controllers.individual.living.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("livingSettlor.nationalInsuranceNumberYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("livingSettlor.nationalInsuranceNumberYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = NationalInsuranceNumberYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
-            legend = messages("livingSettlor.nationalInsuranceNumberYesNo.heading", name),
-            headingIsLegend = true
+            label = messages("livingSettlor.nationalInsuranceNumberYesNo.heading", name)
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

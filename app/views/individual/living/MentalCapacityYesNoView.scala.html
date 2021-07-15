@@ -15,43 +15,42 @@
  *@
 
 @import controllers.individual.living.routes._
+@import views.html.components.{ErrorSummary, Heading, InputYesNo, BulletList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    heading: Heading,
+    inputYesNo: InputYesNo,
+    bulletList: BulletList,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
-@content = {
-<p>@messages("livingSettlor.mentalCapacityYesNo.p1")</p>
-
-<ul class="govuk-list trust-list--bullet">
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint1")</li>
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint2")</li>
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint3")</li>
-    <li class="inside">@messages("livingSettlor.mentalCapacityYesNo.bulletpoint4")</li>
-</ul>
-}
-
 @main_template(
-    title = s"${errorPrefix(form)}${messages("livingSettlor.mentalCapacityYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("livingSettlor.mentalCapacityYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = MentalCapacityYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading("livingSettlor.mentalCapacityYesNo.heading", Some(name))
 
-        @components.input_yes_no(
+        <p>@messages("livingSettlor.mentalCapacityYesNo.p1")</p>
+
+        @bulletList("livingSettlor.mentalCapacityYesNo", Seq("bulletpoint1", "bulletpoint2", "bulletpoint3", "bulletpoint4"))
+
+        @inputYesNo(
             field = form("value"),
-            legend = messages("livingSettlor.mentalCapacityYesNo.heading", name),
-            headingIsLegend = true,
-            additionalContent = Some(content)
-
+            label = messages("livingSettlor.mentalCapacityYesNo.heading", name),
+            legendClass = Some("govuk-visually-hidden"),
+            legendAsHeading = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

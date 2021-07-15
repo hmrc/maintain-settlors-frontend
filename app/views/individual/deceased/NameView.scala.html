@@ -15,44 +15,51 @@
  *@
 
 @import controllers.individual.deceased.routes._
+@import views.html.components.{Heading, ErrorSummary, InputText, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    heading: Heading,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("deceasedSettlor.name.title")}"
+    title = s"${errorPrefix(form)}${messages("deceasedSettlor.name.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = NameController.onSubmit(), 'autoComplete -> "on") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading("deceasedSettlor.name.heading")
 
-        @components.heading("deceasedSettlor.name.heading")
-
-        @components.input_text(
+        @inputText(
             field = form("firstName"),
             label = messages("deceasedSettlor.name.firstName"),
+            inputClass = Some("govuk-!-width-one-half"),
             autocomplete = Some("given-name")
         )
 
-        @components.input_text(
+        @inputText(
             field = form("middleName"),
             label = messages("deceasedSettlor.name.middleName"),
+            inputClass = Some("govuk-!-width-one-half"),
             autocomplete = Some("additional-name")
         )
 
-        @components.input_text(
+        @inputText(
             field = form("lastName"),
             label = messages("deceasedSettlor.name.lastName"),
+            inputClass = Some("govuk-!-width-one-half"),
             autocomplete = Some("family-name")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

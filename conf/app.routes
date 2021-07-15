@@ -1,3 +1,6 @@
+->         /govuk-frontend                     govuk.Routes
+->         /hmrc-frontend                      hmrcfrontend.Routes
+
 # microservice specific routes
 
 ->         /individual/living                                               individualLivingSettlor.Routes
@@ -15,8 +18,7 @@ GET        /assets/*file                                                    cont
 GET        /language/:lang                                                  controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
 GET        /this-service-has-been-reset                                     controllers.SessionExpiredController.onPageLoad
-
-GET        /feature-not-available                                           controllers.FeatureNotAvailableController.onPageLoad()
+POST       /this-service-has-been-reset                                     controllers.SessionExpiredController.onSubmit
 
 GET        /what-kind                                                       controllers.AddNowController.onPageLoad()
 POST       /what-kind                                                       controllers.AddNowController.onSubmit()
@@ -25,8 +27,8 @@ GET        /logout                                                          cont
 
 GET        /unauthorised                                                    controllers.UnauthorisedController.onPageLoad
 
-GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
+GET        /keep-alive                                                      controllers.SessionTimeoutController.keepAlive
 
-GET        /timeout                                     controllers.SessionTimeoutController.timeout
+GET        /timeout                                                         controllers.SessionTimeoutController.timeout
 
 GET        /:utr                                                            controllers.IndexController.onPageLoad(utr: String)
