@@ -26,7 +26,7 @@ import views.html.business.CompanyTimeView
 
 class CompanyTimeViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "businessSettlor.companyTime"
+  val messageKeyPrefix = "businessSettlor.companyTimeYesNo"
   val name = "Name"
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)

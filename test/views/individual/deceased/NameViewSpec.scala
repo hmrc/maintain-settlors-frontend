@@ -30,7 +30,7 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
 
   override val form: Form[Name] = new NameFormProvider().withPrefix(messageKeyPrefix)
 
-  "Name view" must {
+  "individual.deceased.Name view" must {
 
     val view = viewFor[NameView](Some(emptyUserAnswers))
 

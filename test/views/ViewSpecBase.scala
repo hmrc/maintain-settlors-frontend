@@ -18,7 +18,7 @@ package views
 
 import models.UserAnswers
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import play.twirl.api.Html
 import base.SpecBase
 import org.scalatest.Assertion
@@ -39,6 +39,9 @@ trait ViewSpecBase extends SpecBase {
   def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String, args: Any*): Assertion =
     assertEqualsValue(doc, cssSelector, ViewUtils.breadcrumbTitle(messages(expectedMessageKey, args: _*)))
 
+  def assertDoesNotContainText(doc: Document, text: String): Assertion =
+    assert(!doc.toString.contains(text), "\n\ntext " + text + " was rendered on the page.\n")
+
   def assertEqualsValue(doc : Document, cssSelector : String, expectedValue: String) = {
     val elements = doc.select(cssSelector)
 
@@ -48,10 +51,72 @@ trait ViewSpecBase extends SpecBase {
     assert(elements.first().html().replace("\n", "") == expectedValue)
   }
 
-  def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*) = {
+  def assertPageTitleWithCaptionEqualsMessages(doc: Document,
+                                               expectedCaptionMessageKey: String,
+                                               captionParam: String,
+                                               expectedMessageKey: String,
+                                               messageKeyParam: String = "") = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
-    headers.first.text.replaceAll("\u00a0", " ") mustBe messages(expectedMessageKey, args:_*).replaceAll("&nbsp;", " ")
+    val actual = headers.first.text.replaceAll("\u00a0", " ")
+
+    val expectedCaption = messages(expectedCaptionMessageKey, captionParam).replaceAll("&nbsp;", " ")
+    val expectedHeading = messages(expectedMessageKey, messageKeyParam).replaceAll("&nbsp;", " ")
+
+    actual mustBe s"$expectedCaption $expectedHeading"
+  }
+
+  def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*): Assertion = {
+    val headers = doc.getElementsByTag("h1")
+
+    val expected = messages(expectedMessageKey, args: _*).replaceAll("&nbsp;", " ")
+
+    headers.size mustBe 1
+    headers.first.text.replaceAll("\u00a0", " ") mustBe expected
+  }
+
+  def assertPageTitleWithCaptionEqualsMessage(doc: Document,
+                                              expectedMessageKey: String,
+                                              captionParam: String,
+                                              args: Any*): Assertion = {
+    val headers = doc.getElementsByTag("h1")
+    headers.size mustBe 1
+
+    val expectedCaption = messages(s"$expectedMessageKey.caption", captionParam)
+
+    val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
+
+    val expected = s"$expectedCaption $expectedHeading"
+      .replaceAll("&nbsp;", " ")
+
+    val actual = headers
+      .first
+      .text
+      .replaceAll("\u00a0", " ")
+
+    actual mustBe expected
+  }
+
+  def assertPageTitleWithSectionSubheading(doc: Document,
+                                           expectedMessageKey: String,
+                                           captionParam: String,
+                                           args: Any*): Assertion = {
+    val headers = doc.getElementsByTag("h1")
+    headers.size mustBe 1
+
+    val expectedCaption = s"${messages(s"$expectedMessageKey.caption.hidden")} ${messages(s"$expectedMessageKey.caption", captionParam)}"
+
+    val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
+
+    val expected = s"$expectedCaption $expectedHeading"
+      .replaceAll("&nbsp;", " ")
+
+    val actual = headers
+      .first
+      .text
+      .replaceAll("\u00a0", " ")
+
+    actual mustBe expected
   }
 
   def assertContainsText(doc:Document, text: String) = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
@@ -60,12 +125,28 @@ trait ViewSpecBase extends SpecBase {
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
   }
 
-  def assertRenderedById(doc: Document, id: String) = {
+  def assertAttributeValueForElement(element: Element, attribute: String, attributeValue: String): Assertion = {
+    assert(element.attr(attribute) == attributeValue)
+  }
+
+  def assertElementHasAttribute(element: Element, attribute: String): Assertion = {
+    assert(element.hasAttr(attribute))
+  }
+
+  def assertElementDoesNotHaveAttribute(element: Element, attribute: String): Assertion = {
+    assert(!element.hasAttr(attribute))
+  }
+
+  def assertRenderedById(doc: Document, id: String): Assertion = {
     assert(doc.getElementById(id) != null, "\n\nElement " + id + " was not rendered on the page.\n")
   }
 
-  def assertNotRenderedById(doc: Document, id: String) = {
+  def assertNotRenderedById(doc: Document, id: String): Assertion = {
     assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
+  }
+
+  def assertContainsTextForId(doc: Document, id: String, expectedText: String): Assertion = {
+    assert(doc.getElementById(id).text() == expectedText, s"\n\nElement $id does not have text $expectedText")
   }
 
   def assertRenderedByCssSelector(doc: Document, cssSelector: String) = {
@@ -85,25 +166,36 @@ trait ViewSpecBase extends SpecBase {
     assertContainsHint(doc, forElement, expectedHintText)
   }
 
-  def assertContainsHint(doc: Document, forElement: String, expectedHintText: Option[String]) = {
+  def assertContainsHint(doc: Document, forElement: String, expectedHintText: Option[String]): Any = {
     if (expectedHintText.isDefined) {
-      assert(doc.getElementsByClass("form-hint").first.text == expectedHintText.get,
+      assert(doc.getElementsByClass("govuk-hint").first.text == expectedHintText.get,
         s"\n\nLabel for $forElement did not contain hint text $expectedHintText")
     }
   }
 
-  def assertElementHasClass(doc: Document, id: String, expectedClass: String) = {
+  def assertContainsClass(doc: Document, className: String): Any = {
+    assert(doc.getElementsByClass(className).size() > 0, s"\n\nPage did not contain element with class $className")
+  }
+
+  def assertElementHasClass(doc: Document, id: String, expectedClass: String): Assertion = {
     assert(doc.getElementById(id).hasClass(expectedClass), s"\n\nElement $id does not have class $expectedClass")
   }
 
-  def assertContainsRadioButton(doc: Document, id: String, name: String, value: String, isChecked: Boolean) = {
+  def assertRenderedByClass(doc: Document, cssClass: String) =
+    assert(doc.getElementsByClass(cssClass) != null, "\n\nElement " + cssClass + " was not rendered on the page.\n")
+
+  def assertNotRenderedByClass(doc: Document, className: String): Assertion = {
+    assert(doc.getElementsByClass(className).isEmpty, "\n\nElement " + className + " was rendered on the page.\n")
+  }
+
+  def assertContainsRadioButton(doc: Document, id: String, name: String, value: String, isChecked: Boolean): Assertion = {
     assertRenderedById(doc, id)
     val radio = doc.getElementById(id)
     assert(radio.attr("name") == name, s"\n\nElement $id does not have name $name")
     assert(radio.attr("value") == value, s"\n\nElement $id does not have value $value")
     isChecked match {
-      case true => assert(radio.attr("checked") == "checked", s"\n\nElement $id is not checked")
-      case _ => assert(!radio.hasAttr("checked") && radio.attr("checked") != "checked", s"\n\nElement $id is checked")
+      case true => assert(radio.hasAttr("checked"), s"\n\nElement $id is not checked")
+      case _ => assert(!radio.hasAttr("checked"), s"\n\nElement $id is checked")
     }
   }
 }
