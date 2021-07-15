@@ -66,10 +66,57 @@ trait ViewSpecBase extends SpecBase {
     actual mustBe s"$expectedCaption $expectedHeading"
   }
 
-  def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*) = {
+  def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*): Assertion = {
+    val headers = doc.getElementsByTag("h1")
+
+    val expected = messages(expectedMessageKey, args: _*).replaceAll("&nbsp;", " ")
+
+    headers.size mustBe 1
+    headers.first.text.replaceAll("\u00a0", " ") mustBe expected
+  }
+
+  def assertPageTitleWithCaptionEqualsMessage(doc: Document,
+                                              expectedMessageKey: String,
+                                              captionParam: String,
+                                              args: Any*): Assertion = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
-    headers.first.text.replaceAll("\u00a0", " ") mustBe messages(expectedMessageKey, args:_*).replaceAll("&nbsp;", " ")
+
+    val expectedCaption = messages(s"$expectedMessageKey.caption", captionParam)
+
+    val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
+
+    val expected = s"$expectedCaption $expectedHeading"
+      .replaceAll("&nbsp;", " ")
+
+    val actual = headers
+      .first
+      .text
+      .replaceAll("\u00a0", " ")
+
+    actual mustBe expected
+  }
+
+  def assertPageTitleWithSectionSubheading(doc: Document,
+                                           expectedMessageKey: String,
+                                           captionParam: String,
+                                           args: Any*): Assertion = {
+    val headers = doc.getElementsByTag("h1")
+    headers.size mustBe 1
+
+    val expectedCaption = s"${messages(s"$expectedMessageKey.caption.hidden")} ${messages(s"$expectedMessageKey.caption", captionParam)}"
+
+    val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
+
+    val expected = s"$expectedCaption $expectedHeading"
+      .replaceAll("&nbsp;", " ")
+
+    val actual = headers
+      .first
+      .text
+      .replaceAll("\u00a0", " ")
+
+    actual mustBe expected
   }
 
   def assertContainsText(doc:Document, text: String) = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
@@ -126,7 +173,11 @@ trait ViewSpecBase extends SpecBase {
     }
   }
 
-  def assertElementHasClass(doc: Document, id: String, expectedClass: String) = {
+  def assertContainsClass(doc: Document, className: String): Any = {
+    assert(doc.getElementsByClass(className).size() > 0, s"\n\nPage did not contain element with class $className")
+  }
+
+  def assertElementHasClass(doc: Document, id: String, expectedClass: String): Assertion = {
     assert(doc.getElementById(id).hasClass(expectedClass), s"\n\nElement $id does not have class $expectedClass")
   }
 
