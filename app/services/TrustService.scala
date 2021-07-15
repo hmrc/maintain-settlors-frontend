@@ -18,11 +18,11 @@ package services
 
 import com.google.inject.ImplementedBy
 import connectors.TrustConnector
-import javax.inject.Inject
 import models.RemoveSettlor
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService {
@@ -42,6 +42,13 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
   override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     connector.removeSettlor(utr, settlor)
 
+  override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    getSettlors(identifier).map(_.settlorCompany
+      .zipWithIndex
+      .filterNot(x => index.contains(x._2))
+      .flatMap(_._1.utr)
+    )
+
 }
 
 @ImplementedBy(classOf[TrustServiceImpl])
@@ -56,4 +63,6 @@ trait TrustService {
   def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor]
 
   def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+
+  def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 }

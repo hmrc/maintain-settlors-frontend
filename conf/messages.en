@@ -383,6 +383,8 @@ businessSettlor.utr.link = find a lost UTR number (opens in a new window or tab)
 businessSettlor.utr.error.required = Enter the settlor’s Unique Taxpayer Reference
 businessSettlor.utr.error.length = Unique Taxpayer Reference must be a 10 digit number
 businessSettlor.utr.error.invalid = Enter the settlor’s Unique Taxpayer Reference in the correct format
+businessSettlor.utr.error.notUnique = Enter a UTR that has not already been used to add a business settlor
+businessSettlor.utr.error.sameAsTrustUtr = Enter a UTR that is not the UTR used to identify this trust
 
 businessSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
 businessSettlor.addressYesNo.title = Do you know the settlor’s address?

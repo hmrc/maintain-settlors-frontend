@@ -16,10 +16,10 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
-import uk.gov.hmrc.domain.Nino
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.domain.Nino
+
+import java.time.LocalDate
 
 trait Constraints {
 
@@ -133,6 +133,16 @@ trait Constraints {
         Valid
       case _ =>
         Invalid(errorKey, value)
+    }
+
+  protected def uniqueUtr(trustIdentifier: String, utrs: List[String], notUniqueKey: String, sameAsTrustUtrKey: String): Constraint[String] =
+    Constraint {
+      utr =>
+        if (utr == trustIdentifier) {
+          Invalid(sameAsTrustUtrKey)
+        } else {
+          if (utrs.contains(utr)) Invalid(notUniqueKey) else Valid
+        }
     }
 
 }

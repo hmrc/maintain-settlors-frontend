@@ -40,7 +40,7 @@ trait PassportOrIdCardFieldBehaviours extends StringFieldBehaviours {
           val result = form.bind(data)
 
           result.errors.foreach(error =>
-            error.key shouldNot equal(key)
+            error.key mustNot equal(key)
           )
       }
     }
@@ -63,7 +63,7 @@ trait PassportOrIdCardFieldBehaviours extends StringFieldBehaviours {
 
           val result = form.bind(data)
 
-          result.errors.last shouldEqual error
+          result.errors.last mustEqual error
       }
     }
   }
@@ -85,7 +85,7 @@ trait PassportOrIdCardFieldBehaviours extends StringFieldBehaviours {
 
           val result = form.bind(data)
 
-          result.errors.last shouldEqual error
+          result.errors.last mustEqual error
       }
     }
   }
@@ -96,7 +96,7 @@ trait PassportOrIdCardFieldBehaviours extends StringFieldBehaviours {
 
       val result = form.bind(Map.empty[String, String])
 
-      result.errors.last shouldEqual FormError(key, requiredAllKey, errorArgs)
+      result.errors.last mustEqual FormError(key, requiredAllKey, errorArgs)
     }
   }
 }

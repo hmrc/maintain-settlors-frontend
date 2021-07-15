@@ -16,11 +16,9 @@
 
 package services
 
-import java.time.LocalDate
-
 import connectors.TrustConnector
-import models.{Name, RemoveSettlor, SettlorType}
 import models.settlors._
+import models.{Name, RemoveSettlor, SettlorType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -29,14 +27,20 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
-class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures {
+class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures {
 
   val mockConnector: TrustConnector = mock[TrustConnector]
 
-  val individualSettlor = IndividualSettlor(
+  val service = new TrustServiceImpl(mockConnector)
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  val individualSettlor: IndividualSettlor = IndividualSettlor(
     name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     countryOfNationality = None,
@@ -48,7 +52,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     provisional = false
   )
 
-  val deceasedSettlor = DeceasedSettlor(
+  val deceasedSettlor: DeceasedSettlor = DeceasedSettlor(
     bpMatchStatus = None,
     name = Name(firstName = "first", middleName = None, lastName = "last"),
     dateOfDeath = Some(LocalDate.parse("1993-09-24")),
@@ -57,7 +61,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     address = None
   )
 
-  val businessSettlor = BusinessSettlor(
+  val businessSettlor: BusinessSettlor = BusinessSettlor(
     name = "Company Settlor Name",
     companyType = None,
     companyTime = None,
@@ -66,6 +70,8 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
     entityStart = LocalDate.of(2017, 2, 28),
     provisional = false
   )
+  
+  val identifier: String = "1234567890"
 
   "Trust service" - {
 
@@ -76,11 +82,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
           Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))
         ))
 
-      val service = new TrustServiceImpl(mockConnector)
-
-      implicit val hc : HeaderCarrier = HeaderCarrier()
-
-      val result = service.getSettlors("1234567890")
+      val result = service.getSettlors(identifier)
 
       whenReady(result) {
         _ mustBe Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))
@@ -94,19 +96,15 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       when(mockConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))))
 
-      val service = new TrustServiceImpl(mockConnector)
-
-      implicit val hc : HeaderCarrier = HeaderCarrier()
-
-      whenReady(service.getIndividualSettlor("1234567890", index)) {
+      whenReady(service.getIndividualSettlor(identifier, index)) {
         _ mustBe individualSettlor
       }
 
-      whenReady(service.getBusinessSettlor("1234567890", index)) {
+      whenReady(service.getBusinessSettlor(identifier, index)) {
         _ mustBe businessSettlor
       }
 
-      whenReady(service.getDeceasedSettlor("1234567890")) {
+      whenReady(service.getDeceasedSettlor(identifier)) {
         _ mustBe Some(deceasedSettlor)
       }
     }
@@ -116,28 +114,101 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       when(mockConnector.removeSettlor(any(),any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val service = new TrustServiceImpl(mockConnector)
-
-      val individualSettlor : RemoveSettlor =  RemoveSettlor(SettlorType.IndividualSettlor,
+      val individualSettlor: RemoveSettlor = RemoveSettlor(SettlorType.IndividualSettlor,
         index = 0,
         endDate = LocalDate.now()
       )
 
-      val businessSettlor : RemoveSettlor =  RemoveSettlor(SettlorType.BusinessSettlor,
+      val businessSettlor: RemoveSettlor = RemoveSettlor(SettlorType.BusinessSettlor,
         index = 0,
         endDate = LocalDate.now()
       )
 
-      implicit val hc : HeaderCarrier = HeaderCarrier()
-
-      whenReady(service.removeSettlor("1234567890", individualSettlor)) { r =>
+      whenReady(service.removeSettlor(identifier, individualSettlor)) { r =>
         r.status mustBe 200
       }
 
-      whenReady(service.removeSettlor("1234567890", businessSettlor)) { r =>
+      whenReady(service.removeSettlor(identifier, businessSettlor)) { r =>
         r.status mustBe 200
       }
 
+    }
+
+    ".getBusinessUtrs" - {
+
+      "must return empty list" - {
+
+        "when no businesses" in {
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, Nil, None)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, None), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there are businesses but they don't have a UTR" in {
+
+          val businesses = List(
+            businessSettlor.copy(utr = None)
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, businesses, None)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, None), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there is a business with a UTR but it's the same index as the one we're amending" in {
+
+          val businesses = List(
+            businessSettlor.copy(utr = Some("utr"))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, businesses, None)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0)), Duration.Inf)
+
+          result mustBe Nil
+        }
+      }
+
+      "must return UTRs" - {
+
+        "when businesses have UTRs and we're adding (i.e. no index)" in {
+
+          val businesses = List(
+            businessSettlor.copy(utr = Some("utr1")),
+            businessSettlor.copy(utr = Some("utr2"))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, businesses, None)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, None), Duration.Inf)
+
+          result mustBe List("utr1", "utr2")
+        }
+
+        "when businesses have UTRs and we're amending" in {
+
+          val businesses = List(
+            businessSettlor.copy(utr = Some("utr1")),
+            businessSettlor.copy(utr = Some("utr2"))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, businesses, None)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0)), Duration.Inf)
+
+          result mustBe List("utr2")
+        }
+      }
     }
 
   }

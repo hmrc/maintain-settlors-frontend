@@ -17,20 +17,21 @@
 package controllers.business
 
 import config.annotations.BusinessSettlor
-import controllers.actions.StandardActionSets
 import controllers.actions.business.NameRequiredAction
+import controllers.actions.{SettlorNameRequest, StandardActionSets}
 import forms.UtrFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.business.UtrPage
+import pages.business.{IndexPage, UtrPage}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.business.UtrView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UtrController @Inject()(
@@ -40,33 +41,40 @@ class UtrController @Inject()(
                                formProvider: UtrFormProvider,
                                playbackRepository: PlaybackRepository,
                                view: UtrView,
-                               @BusinessSettlor navigator: Navigator
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                               @BusinessSettlor navigator: Navigator,
+                               trustsService: TrustService
+                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withPrefix("businessSettlor.utr")
+  def form(utrs: List[String])(implicit request: SettlorNameRequest[AnyContent]): Form[String] =
+    formProvider.apply("businessSettlor.utr", request.userAnswers.identifier, utrs)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(UtrPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage)) map { utrs =>
+        val preparedForm = request.userAnswers.get(UtrPage) match {
+          case None => form(utrs)
+          case Some(value) => form(utrs).fill(value)
+        }
 
-      Ok(view(preparedForm, request.settlorName, mode))
+        Ok(view(preparedForm, request.settlorName, mode))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName, mode))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
-            _ <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers, updatedAnswers.trustType))
-        }
-      )
+
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage)) flatMap { utrs =>
+        form(utrs).bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, request.settlorName, mode))),
+          value => {
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
+              _ <- playbackRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers, updatedAnswers.trustType))
+          }
+        )
+      }
   }
 }
