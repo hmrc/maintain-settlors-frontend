@@ -94,16 +94,23 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
   class FakeService(data: Settlors) extends TrustService {
 
-    override def getSettlors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] = Future.successful(data)
+    override def getSettlors(utr: String)
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] = Future.successful(data)
 
     override def getIndividualSettlor(utr: String, index: Int)
                                          (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualSettlor] = ???
 
-    override def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor] = ???
+    override def getBusinessSettlor(utr: String, index: Int)
+                                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor] = ???
 
-    override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = ???
+    override def removeSettlor(utr: String, settlor: RemoveSettlor)
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = ???
 
-    override def getDeceasedSettlor(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] = ???
+    override def getDeceasedSettlor(utr: String)
+                                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] = ???
+
+    override def getBusinessUtrs(identifier: String, index: Option[Int])
+                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = ???
   }
 
   "AddASettlor Controller" when {

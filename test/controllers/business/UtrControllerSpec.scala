@@ -19,41 +19,46 @@ package controllers.business
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.UtrFormProvider
-import models.NormalMode
-import navigation.{FakeNavigator, Navigator}
+import models.{NormalMode, UserAnswers}
+import navigation.Navigator
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{NamePage, UtrPage}
+import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import services.TrustServiceImpl
 import views.html.business.UtrView
 
 import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new UtrFormProvider()
-  val form = formProvider.withPrefix("businessSettlor.utr")
+  val form: Form[String] = formProvider.apply("businessSettlor.utr", "utr", Nil)
   val name = "Name"
 
   val validAnswer = "1234567890"
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  lazy val utrRoute = routes.UtrController.onPageLoad(NormalMode).url
+  lazy val utrRoute: String = routes.UtrController.onPageLoad(NormalMode).url
+
+  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  when(mockTrustsService.getBusinessUtrs(any(), any())(any(), any()))
+    .thenReturn(Future.successful(Nil))
 
   "Utr Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, utrRoute)
 
@@ -72,7 +77,10 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val ua = emptyUserAnswers.set(UtrPage, validAnswer)
-      val application = applicationBuilder(userAnswers = Some(ua.success.value)).build()
+
+      val application = applicationBuilder(userAnswers = Some(ua.success.value))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, utrRoute)
 
@@ -94,33 +102,32 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers.set(UtrPage, validAnswer).success.value))
-          .overrides(
-            bind[Navigator].qualifiedWith(classOf[BusinessSettlor]).toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(UtrPage, validAnswer).success.value))
+        .overrides(
+          bind[Navigator].qualifiedWith(classOf[BusinessSettlor]).toInstance(fakeNavigator),
+          bind[TrustServiceImpl].toInstance(mockTrustsService)
+        ).build()
 
-      val request =
-        FakeRequest(POST, utrRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+      val request = FakeRequest(POST, utrRoute)
+        .withFormUrlEncodedBody(("value", validAnswer))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
-      val request =
-        FakeRequest(POST, utrRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, utrRoute)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -154,9 +161,8 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, utrRoute)
-          .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
+      val request = FakeRequest(POST, utrRoute)
+        .withFormUrlEncodedBody(("firstName", "value 1"), ("lastName", "value 2"))
 
       val result = route(application, request).value
 
