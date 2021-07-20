@@ -21,8 +21,9 @@ import config.annotations.DeceasedSettlor
 import forms.NationalInsuranceNumberFormProvider
 import models.Name
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.deceased.{NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
@@ -35,7 +36,7 @@ import views.html.individual.deceased.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
-class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
+class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
   val formProvider = new NationalInsuranceNumberFormProvider()
   val form: Form[String] = formProvider.apply("deceasedSettlor.nationalInsuranceNumber", Nil)
@@ -45,8 +46,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
   lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad().url
 
   val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
-  when(mockTrustsService.getIndividualNinos(any(), any(), any())(any(), any()))
-    .thenReturn(Future.successful(Nil))
+
+  override protected def beforeEach(): Unit = {
+    reset(mockTrustsService)
+    when(mockTrustsService.getIndividualNinos(any(), any(), any())(any(), any()))
+      .thenReturn(Future.successful(Nil))
+  }
 
   "NationalInsuranceNumber Controller" must {
 
@@ -68,6 +73,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       contentAsString(result) mustEqual
         view(form, name.displayName)(request, messages).toString
+
+      verify(mockTrustsService).getIndividualNinos(any(), eqTo(None), eqTo(false))(any(), any())
 
       application.stop()
     }
@@ -93,6 +100,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
       contentAsString(result) mustEqual
         view(form.fill("answer"), name.displayName)(request, messages).toString
 
+      verify(mockTrustsService).getIndividualNinos(any(), eqTo(None), eqTo(false))(any(), any())
+
       application.stop()
     }
 
@@ -115,6 +124,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+      verify(mockTrustsService).getIndividualNinos(any(), eqTo(None), eqTo(false))(any(), any())
 
       application.stop()
     }
@@ -140,6 +151,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       contentAsString(result) mustEqual
         view(boundForm, name.displayName)(request, messages).toString
+
+      verify(mockTrustsService).getIndividualNinos(any(), eqTo(None), eqTo(false))(any(), any())
 
       application.stop()
     }
