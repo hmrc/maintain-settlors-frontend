@@ -17,42 +17,47 @@
 package forms
 
 import forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
 class NationalInsuranceNumberFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "livingSettlor.nationalInsuranceNumber.error.required"
-  val invalidFormatKey = "livingSettlor.nationalInsuranceNumber.error.invalidFormat"
+  val prefix = "livingSettlor.nationalInsuranceNumber"
 
-  val form = new NationalInsuranceNumberFormProvider().withPrefix("livingSettlor.nationalInsuranceNumber")
+  val requiredKey = s"$prefix.error.required"
+  val invalidFormatKey = s"$prefix.error.invalidFormat"
+  val notUniqueKey = s"$prefix.error.notUnique"
+
+  val form: Form[String] = new NationalInsuranceNumberFormProvider().apply(prefix, Nil)
 
   ".value" must {
 
     val fieldName = "value"
 
     behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      RegexpGen.from(Validation.ninoRegex)
+      form = form,
+      fieldName = fieldName,
+      validDataGenerator = RegexpGen.from(Validation.ninoRegex)
     )
 
     behave like mandatoryField(
-      form,
-      fieldName,
+      form = form,
+      fieldName = fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )
 
     behave like nonEmptyField(
-      form,
-      fieldName,
+      form = form,
+      fieldName = fieldName,
       requiredError = FormError(fieldName, requiredKey, Seq(fieldName))
     )
 
     behave like ninoField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, invalidFormatKey, Seq(fieldName))
+      form = new NationalInsuranceNumberFormProvider(),
+      prefix = prefix,
+      fieldName = fieldName,
+      requiredError = FormError(fieldName, invalidFormatKey, Seq(fieldName)),
+      notUniqueError = FormError(fieldName, notUniqueKey)
     )
   }
 }

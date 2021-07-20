@@ -220,7 +220,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getSettlors(any())(any(), any()))
             .thenReturn(Future.successful(Settlors(Nil, Nil, None)))
 
-          val result = Await.result(service.getIndividualNinos(identifier, None), Duration.Inf)
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
 
           result mustBe Nil
         }
@@ -234,7 +234,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getSettlors(any())(any(), any()))
             .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
 
-          val result = Await.result(service.getIndividualNinos(identifier, None), Duration.Inf)
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
 
           result mustBe Nil
         }
@@ -248,7 +248,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getSettlors(any())(any(), any()))
             .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
 
-          val result = Await.result(service.getIndividualNinos(identifier, None), Duration.Inf)
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
 
           result mustBe Nil
         }
@@ -262,15 +262,15 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getSettlors(any())(any(), any()))
             .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
 
-          val result = Await.result(service.getIndividualNinos(identifier, Some(0)), Duration.Inf)
+          val result = Await.result(service.getIndividualNinos(identifier, Some(0), adding = false), Duration.Inf)
 
           result mustBe Nil
         }
       }
 
-      "must return UTRs" - {
+      "must return NINos" - {
 
-        "when individuals have NINos and we're adding (i.e. no index)" in {
+        "when individuals have NINos and we're adding a new settlor (i.e. no index)" in {
 
           val individuals = List(
             individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino1"))),
@@ -280,12 +280,27 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getSettlors(any())(any(), any()))
             .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
 
-          val result = Await.result(service.getIndividualNinos(identifier, None), Duration.Inf)
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
 
           result mustBe List("nino1", "nino2")
         }
 
-        "when individuals have NINos and we're amending" in {
+        "when individuals have NINos and we're amending a deceased settlor (i.e. no index)" in {
+
+          val inidividuals = List(
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino2"))),
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino3")))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(inidividuals, Nil, Some(deceasedSettlor.copy(identification = Some(NationalInsuranceNumber("nino1")))))))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = false), Duration.Inf)
+
+          result mustBe List("nino2", "nino3")
+        }
+
+        "when individuals have NINos and we're amending a living settlor" in {
 
           val individuals = List(
             individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino1"))),
@@ -295,7 +310,7 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           when(mockConnector.getSettlors(any())(any(), any()))
             .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
 
-          val result = Await.result(service.getIndividualNinos(identifier, Some(0)), Duration.Inf)
+          val result = Await.result(service.getIndividualNinos(identifier, Some(0), adding = false), Duration.Inf)
 
           result mustBe List("nino2")
         }

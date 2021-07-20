@@ -20,30 +20,33 @@ import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.NationalInsuranceNumberFormProvider
 import models.Name
-import navigation.{FakeNavigator, Navigator}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.deceased.{NamePage, NationalInsuranceNumberPage}
+import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import services.TrustServiceImpl
 import views.html.individual.deceased.NationalInsuranceNumberView
 
 import scala.concurrent.Future
 
 class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val formProvider = new NationalInsuranceNumberFormProvider()
-  val form = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumber")
+  val form: Form[String] = formProvider.apply("deceasedSettlor.nationalInsuranceNumber", Nil)
 
-  val name = Name("FirstName", None, "LastName")
+  val name: Name = Name("FirstName", None, "LastName")
 
-  lazy val nationalInsuranceNumberRoute = routes.NationalInsuranceNumberController.onPageLoad().url
+  lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad().url
+
+  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  when(mockTrustsService.getIndividualNinos(any(), any(), any())(any(), any()))
+    .thenReturn(Future.successful(Nil))
 
   "NationalInsuranceNumber Controller" must {
 
@@ -51,7 +54,9 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
@@ -73,7 +78,9 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
         .set(NamePage, name).success.value
         .set(NationalInsuranceNumberPage, "answer").success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
       val request = FakeRequest(GET, nationalInsuranceNumberRoute)
 
@@ -95,21 +102,19 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].qualifiedWith(classOf[DeceasedSettlor]).toInstance(new FakeNavigator(onwardRoute))
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[Navigator].qualifiedWith(classOf[DeceasedSettlor]).toInstance(fakeNavigator),
+          bind[TrustServiceImpl].toInstance(mockTrustsService)
+        ).build()
 
-      val request =
-        FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", "AA000000A"))
+      val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+        .withFormUrlEncodedBody(("value", "AA000000A"))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }
@@ -118,11 +123,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
+        .build()
 
-      val request =
-        FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -157,9 +163,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, nationalInsuranceNumberRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+      val request = FakeRequest(POST, nationalInsuranceNumberRoute)
+        .withFormUrlEncodedBody(("value", "answer"))
 
       val result = route(application, request).value
 

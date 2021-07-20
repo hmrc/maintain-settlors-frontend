@@ -129,7 +129,7 @@ trait Constraints {
 
   protected def isNinoValid(value: String, errorKey: String): Constraint[String] =
     Constraint {
-      case str if Nino.isValid(str)=>
+      case str if Nino.isValid(str) =>
         Valid
       case _ =>
         Invalid(errorKey, value)
@@ -143,6 +143,12 @@ trait Constraints {
         } else {
           if (utrs.contains(utr)) Invalid(notUniqueKey) else Valid
         }
+    }
+
+  protected def uniqueNino(ninos: List[String], notUniqueKey: String): Constraint[String] =
+    Constraint {
+      nino =>
+        if (ninos.contains(nino)) Invalid(notUniqueKey) else Valid
     }
 
 }

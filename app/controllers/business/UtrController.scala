@@ -45,7 +45,7 @@ class UtrController @Inject()(
                                trustsService: TrustService
                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def form(utrs: List[String])(implicit request: SettlorNameRequest[AnyContent]): Form[String] =
+  private def form(utrs: List[String])(implicit request: SettlorNameRequest[AnyContent]): Form[String] =
     formProvider.apply("businessSettlor.utr", request.userAnswers.identifier, utrs)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {

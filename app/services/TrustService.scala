@@ -49,14 +49,29 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
       .flatMap(_._1.utr)
     )
 
-  override def getIndividualNinos(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-    getSettlors(identifier).map(_.settlor
-      .zipWithIndex
-      .filterNot(x => index.contains(x._2))
-      .flatMap(_._1.identification)
-      .collect { case x: NationalInsuranceNumber => x }
-      .map(_.nino)
-    )
+  override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
+                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+    getSettlors(identifier) map { all =>
+
+      val deceasedSettlorNino = if (index.isDefined || adding) {
+        all.deceased
+          .flatMap(_.identification)
+          .collect { case x: NationalInsuranceNumber => x }
+          .map(_.nino)
+      } else {
+        None
+      }
+
+      val livingSettlorNinos = all.settlor
+        .zipWithIndex
+        .filterNot(x => index.contains(x._2))
+        .flatMap(_._1.identification)
+        .collect { case x: NationalInsuranceNumber => x }
+        .map(_.nino)
+
+      deceasedSettlorNino.toList ++ livingSettlorNinos
+    }
+  }
 
 }
 
@@ -75,5 +90,6 @@ trait TrustService {
 
   def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
-  def getIndividualNinos(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 }
