@@ -126,6 +126,30 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
       result.errors mustEqual Nil
       result.value.value mustBe nino
     }
+
+    "not bind NINo that has been used for another individual but is case-sensitively different" when {
+
+      "bound value is in lower case" in {
+        val otherNino: String = "AA111111A"
+        val boundNino: String = "aa111111a"
+        val result = form.apply(prefix, List(otherNino)).bind(Map(fieldName -> boundNino)).apply(fieldName)
+        result.errors mustEqual Seq(notUniqueError)
+      }
+
+      "bound value is in upper case" in {
+        val otherNino: String = "aa111111a"
+        val boundNino: String = "AA111111A"
+        val result = form.apply(prefix, List(otherNino)).bind(Map(fieldName -> boundNino)).apply(fieldName)
+        result.errors mustEqual Seq(notUniqueError)
+      }
+
+      "bound value is in mixed case" in {
+        val otherNino: String = "aA111111a"
+        val boundNino: String = "Aa111111A"
+        val result = form.apply(prefix, List(otherNino)).bind(Map(fieldName -> boundNino)).apply(fieldName)
+        result.errors mustEqual Seq(notUniqueError)
+      }
+    }
   }
 
   def utrField(form: UtrFormProvider,
