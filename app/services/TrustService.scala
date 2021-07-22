@@ -56,8 +56,9 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
       val deceasedSettlorNino = if (index.isDefined || adding) {
         all.deceased
           .flatMap(_.identification)
-          .collect { case x: NationalInsuranceNumber => x }
-          .map(_.nino)
+          .collect {
+            case NationalInsuranceNumber(nino) => nino
+          }
       } else {
         None
       }
@@ -66,8 +67,9 @@ class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService
         .zipWithIndex
         .filterNot(x => index.contains(x._2))
         .flatMap(_._1.identification)
-        .collect { case x: NationalInsuranceNumber => x }
-        .map(_.nino)
+        .collect {
+          case NationalInsuranceNumber(nino) => nino
+        }
 
       deceasedSettlorNino.toList ++ livingSettlorNinos
     }
