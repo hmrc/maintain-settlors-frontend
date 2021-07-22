@@ -16,12 +16,12 @@
 
 package forms.behaviours
 
-import org.scalacheck.Gen
-import forms.{UtrFormProvider, Validation}
+import forms.{NationalInsuranceNumberFormProvider, UtrFormProvider, Validation}
 import models.Constant.MAX
+import org.scalacheck.Gen
 import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 import uk.gov.hmrc.domain.Nino
+import wolfendale.scalacheck.regexp.RegexpGen
 
 trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours {
 
@@ -85,18 +85,69 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
     }
   }
 
-  def ninoField(form: Form[_],
+  def ninoField(form: NationalInsuranceNumberFormProvider,
+                prefix: String,
                 fieldName: String,
-                requiredError: FormError): Unit = {
+                requiredError: FormError,
+                notUniqueError: FormError): Unit = {
 
-    s"not bind strings which do not match valid nino format " in {
+    val nino = "AA000000A"
+
+    s"not bind strings which do not match valid nino format" in {
       val generator = RegexpGen.from(Validation.validNinoFormat)
       forAll(generator) {
         string =>
           whenever(!Nino.isValid(string)) {
-            val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+            val result = form.apply(prefix, Nil).bind(Map(fieldName -> string)).apply(fieldName)
             result.errors mustEqual Seq(requiredError)
           }
+      }
+    }
+
+    "not bind NINos that have been used for other individuals" in {
+      val intGenerator = Gen.choose(1, MAX)
+      forAll(intGenerator) {
+        size =>
+          val ninos = List.fill(size)(nino)
+          val result = form.apply(prefix, ninos).bind(Map(fieldName -> nino)).apply(fieldName)
+          result.errors mustEqual Seq(notUniqueError)
+      }
+    }
+
+    "bind valid NINos when no individuals" in {
+      val result = form.apply(prefix, Nil).bind(Map(fieldName -> nino)).apply(fieldName)
+      result.errors mustEqual Nil
+      result.value.value mustBe nino
+    }
+
+    "bind valid NINos when no other individuals have that NINo" in {
+      val value: String = "AA111111A"
+      val result = form.apply(prefix, List(value)).bind(Map(fieldName -> nino)).apply(fieldName)
+      result.errors mustEqual Nil
+      result.value.value mustBe nino
+    }
+
+    "not bind NINo that has been used for another individual but is case-sensitively different" when {
+
+      "bound value is in lower case" in {
+        val otherNino: String = "AA111111A"
+        val boundNino: String = "aa111111a"
+        val result = form.apply(prefix, List(otherNino)).bind(Map(fieldName -> boundNino)).apply(fieldName)
+        result.errors mustEqual Seq(notUniqueError)
+      }
+
+      "bound value is in upper case" in {
+        val otherNino: String = "aa111111a"
+        val boundNino: String = "AA111111A"
+        val result = form.apply(prefix, List(otherNino)).bind(Map(fieldName -> boundNino)).apply(fieldName)
+        result.errors mustEqual Seq(notUniqueError)
+      }
+
+      "bound value is in mixed case" in {
+        val otherNino: String = "aA111111a"
+        val boundNino: String = "Aa111111A"
+        val result = form.apply(prefix, List(otherNino)).bind(Map(fieldName -> boundNino)).apply(fieldName)
+        result.errors mustEqual Seq(notUniqueError)
       }
     }
   }

@@ -111,6 +111,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
     override def getBusinessUtrs(identifier: String, index: Option[Int])
                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = ???
+
+    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
+                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = ???
   }
 
   "AddASettlor Controller" when {

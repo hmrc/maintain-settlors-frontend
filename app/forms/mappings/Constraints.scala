@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import forms.mappings.Formatters.formatNino
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
 
@@ -129,7 +130,7 @@ trait Constraints {
 
   protected def isNinoValid(value: String, errorKey: String): Constraint[String] =
     Constraint {
-      case str if Nino.isValid(str)=>
+      case str if Nino.isValid(str) =>
         Valid
       case _ =>
         Invalid(errorKey, value)
@@ -143,6 +144,12 @@ trait Constraints {
         } else {
           if (utrs.contains(utr)) Invalid(notUniqueKey) else Valid
         }
+    }
+
+  protected def uniqueNino(ninos: List[String], notUniqueKey: String): Constraint[String] =
+    Constraint {
+      nino =>
+        if (ninos.map(formatNino).contains(formatNino(nino))) Invalid(notUniqueKey) else Valid
     }
 
 }

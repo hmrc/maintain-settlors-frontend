@@ -18,7 +18,7 @@ package services
 
 import connectors.TrustConnector
 import models.settlors._
-import models.{Name, RemoveSettlor, SettlorType}
+import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, RemoveSettlor, SettlorType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -207,6 +207,112 @@ class TrustServiceSpec extends FreeSpec with MockitoSugar with MustMatchers with
           val result = Await.result(service.getBusinessUtrs(identifier, Some(0)), Duration.Inf)
 
           result mustBe List("utr2")
+        }
+      }
+    }
+
+    ".getIndividualNinos" - {
+
+      "must return empty list" - {
+
+        "when no individuals" in {
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(Nil, Nil, None)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there are individuals but they don't have a NINo" in {
+
+          val individuals = List(
+            individualSettlor.copy(identification = None)
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there are individuals but they have another form of identification" in {
+
+          val individuals = List(
+            individualSettlor.copy(identification = Some(CombinedPassportOrIdCard("FR", "num", LocalDate.parse("2000-01-01"))))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "when there is a individual with a NINo but it's the same index as the one we're amending" in {
+
+          val individuals = List(
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino")))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, Some(0), adding = false), Duration.Inf)
+
+          result mustBe Nil
+        }
+      }
+
+      "must return NINos" - {
+
+        "when individuals have NINos and we're adding a new settlor (i.e. no index)" in {
+
+          val individuals = List(
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino1"))),
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino2")))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = true), Duration.Inf)
+
+          result mustBe List("nino1", "nino2")
+        }
+
+        "when individuals have NINos and we're amending a deceased settlor (i.e. no index)" in {
+
+          val inidividuals = List(
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino2"))),
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino3")))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(inidividuals, Nil, Some(deceasedSettlor.copy(identification = Some(NationalInsuranceNumber("nino1")))))))
+
+          val result = Await.result(service.getIndividualNinos(identifier, None, adding = false), Duration.Inf)
+
+          result mustBe List("nino2", "nino3")
+        }
+
+        "when individuals have NINos and we're amending a living settlor" in {
+
+          val individuals = List(
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino1"))),
+            individualSettlor.copy(identification = Some(NationalInsuranceNumber("nino2")))
+          )
+
+          when(mockConnector.getSettlors(any())(any(), any()))
+            .thenReturn(Future.successful(Settlors(individuals, Nil, None)))
+
+          val result = Await.result(service.getIndividualNinos(identifier, Some(0), adding = false), Duration.Inf)
+
+          result mustBe List("nino2")
         }
       }
     }
