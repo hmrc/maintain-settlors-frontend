@@ -187,4 +187,31 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     result.get(AdditionalSettlorsYesNoPage).get mustBe false
   }
 
+  "should populate user answers when non-taxable" in {
+
+    val individual = DeceasedSettlor(
+      bpMatchStatus = None,
+      name = name,
+      dateOfDeath = None,
+      dateOfBirth = None,
+      identification = None,
+      address = None
+    )
+
+    val result = extractor(emptyUserAnswers.copy(isTaxable = false), individual, None, hasAdditionalSettlors = Some(false)).get
+
+    result.get(BpMatchStatusPage) mustNot be(defined)
+    result.get(NamePage).get mustBe name
+    result.get(DateOfDeathYesNoPage).get mustBe false
+    result.get(DateOfDeathPage) mustNot be(defined)
+    result.get(DateOfBirthYesNoPage).get mustBe false
+    result.get(DateOfBirthPage) mustNot be(defined)
+    result.get(NationalInsuranceNumberYesNoPage) mustNot be(defined)
+    result.get(NationalInsuranceNumberPage) mustNot be(defined)
+    result.get(AddressYesNoPage) mustNot be(defined)
+    result.get(LivedInTheUkYesNoPage) mustNot be(defined)
+    result.get(UkAddressPage) mustNot be(defined)
+    result.get(NonUkAddressPage) mustNot be(defined)
+  }
+
 }

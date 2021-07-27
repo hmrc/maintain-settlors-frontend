@@ -52,12 +52,16 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   }
 
   private def extractIdentification(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    individual.identification match {
-      case Some(NationalInsuranceNumber(nino)) =>
-        answers.set(NationalInsuranceNumberYesNoPage, true)
-          .flatMap(_.set(NationalInsuranceNumberPage, nino))
-      case _ =>
-        answers.set(NationalInsuranceNumberYesNoPage, false)
+    if (answers.isTaxable) {
+      individual.identification match {
+        case Some(NationalInsuranceNumber(nino)) =>
+          answers.set(NationalInsuranceNumberYesNoPage, true)
+            .flatMap(_.set(NationalInsuranceNumberPage, nino))
+        case _ =>
+          answers.set(NationalInsuranceNumberYesNoPage, false)
+      }
+    } else {
+      Success(answers)
     }
   }
 
