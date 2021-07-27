@@ -37,9 +37,9 @@ class DeceasedSettlorMapper extends SettlorMapper[DeceasedSettlor] {
     )(DeceasedSettlor.apply _)
 
   private def readIdentification: Reads[Option[IndividualIdentification]] = {
-    NationalInsuranceNumberYesNoPage.path.read[Boolean].flatMap[Option[IndividualIdentification]] {
-      case true => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
-      case false => Reads(_ => JsSuccess(None))
+    NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap[Option[IndividualIdentification]] {
+      case Some(true) => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
+      case _ => Reads(_ => JsSuccess(None))
     }
   }
 

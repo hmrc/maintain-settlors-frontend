@@ -16,12 +16,12 @@
 
 package utils.mappers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.{Name, NationalInsuranceNumber, NonUkAddress, UkAddress}
 import pages.individual.deceased._
+
+import java.time.LocalDate
 
 class DeceasedSettlorMapperSpec extends SpecBase {
 
@@ -43,7 +43,9 @@ class DeceasedSettlorMapperSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(BpMatchStatusPage, bpMatchStatus).success.value
         .set(NamePage, name).success.value
+        .set(DateOfDeathYesNoPage, true).success.value
         .set(DateOfDeathPage, dateOfDeath).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, true).success.value
         .set(NationalInsuranceNumberPage, nino).success.value
@@ -57,6 +59,7 @@ class DeceasedSettlorMapperSpec extends SpecBase {
       result.identification mustBe Some(NationalInsuranceNumber(nino))
       result.address mustBe None
     }
+
     "generate deceased settlor model with UK address" in {
 
       val mapper = injector.instanceOf[DeceasedSettlorMapper]
@@ -64,7 +67,9 @@ class DeceasedSettlorMapperSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(BpMatchStatusPage, bpMatchStatus).success.value
         .set(NamePage, name).success.value
+        .set(DateOfDeathYesNoPage, true).success.value
         .set(DateOfDeathPage, dateOfDeath).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, false).success.value
         .set(AddressYesNoPage, true).success.value
@@ -80,6 +85,7 @@ class DeceasedSettlorMapperSpec extends SpecBase {
       result.identification mustBe None
       result.address mustBe Some(ukAddress)
     }
+
     "generate deceased settlor model with non-UK address" in {
 
       val mapper = injector.instanceOf[DeceasedSettlorMapper]
@@ -87,7 +93,9 @@ class DeceasedSettlorMapperSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(BpMatchStatusPage, bpMatchStatus).success.value
         .set(NamePage, name).success.value
+        .set(DateOfDeathYesNoPage, true).success.value
         .set(DateOfDeathPage, dateOfDeath).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, false).success.value
         .set(AddressYesNoPage, true).success.value
@@ -111,7 +119,9 @@ class DeceasedSettlorMapperSpec extends SpecBase {
       val userAnswers = emptyUserAnswers
         .set(BpMatchStatusPage, bpMatchStatus).success.value
         .set(NamePage, name).success.value
+        .set(DateOfDeathYesNoPage, true).success.value
         .set(DateOfDeathPage, dateOfDeath).success.value
+        .set(DateOfBirthYesNoPage, true).success.value
         .set(DateOfBirthPage, dateOfBirth).success.value
         .set(NationalInsuranceNumberYesNoPage, false).success.value
         .set(AddressYesNoPage, false).success.value
@@ -122,6 +132,26 @@ class DeceasedSettlorMapperSpec extends SpecBase {
       result.name mustBe name
       result.dateOfDeath mustBe Some(dateOfDeath)
       result.dateOfBirth mustBe Some(dateOfBirth)
+      result.identification mustBe None
+      result.address mustBe None
+    }
+
+    "generate deceased settlor model when non-taxable" in {
+
+      val mapper = injector.instanceOf[DeceasedSettlorMapper]
+
+      val userAnswers = emptyUserAnswers.copy(isTaxable = false)
+        .set(BpMatchStatusPage, bpMatchStatus).success.value
+        .set(NamePage, name).success.value
+        .set(DateOfDeathYesNoPage, false).success.value
+        .set(DateOfBirthYesNoPage, false).success.value
+
+      val result = mapper(userAnswers).get
+
+      result.bpMatchStatus.get mustBe bpMatchStatus
+      result.name mustBe name
+      result.dateOfDeath mustBe None
+      result.dateOfBirth mustBe None
       result.identification mustBe None
       result.address mustBe None
     }
