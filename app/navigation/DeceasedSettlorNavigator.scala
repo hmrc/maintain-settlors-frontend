@@ -39,7 +39,7 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
   private val simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.DateOfDeathYesNoController.onPageLoad()
     case DateOfDeathPage => ua => matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad())
-    case DateOfBirthPage => _ => rts.NationalInsuranceNumberYesNoController.onPageLoad()
+    case DateOfBirthPage => ua => redirectToNinoQuestionsIfTaxable(ua)
     case NationalInsuranceNumberPage | UkAddressPage | NonUkAddressPage => ua => additionalSettlorsNav(ua)
     case AdditionalSettlorsYesNoPage => _ => rts.CheckDetailsController.renderFromUserAnswers()
   }
@@ -48,13 +48,21 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
     case DateOfDeathYesNoPage => ua =>
       yesNoNav(ua, DateOfDeathYesNoPage, rts.DateOfDeathController.onPageLoad(), matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad()))
     case DateOfBirthYesNoPage => ua =>
-      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), rts.NationalInsuranceNumberYesNoController.onPageLoad())
+      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), redirectToNinoQuestionsIfTaxable(ua))
     case NationalInsuranceNumberYesNoPage => ua =>
       yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
     case AddressYesNoPage => ua =>
       yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), additionalSettlorsNav(ua))
     case LivedInTheUkYesNoPage => ua =>
       yesNoNav(ua, LivedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+  }
+
+  private def redirectToNinoQuestionsIfTaxable(ua: UserAnswers): Call = {
+    if (ua.isTaxable) {
+      rts.NationalInsuranceNumberYesNoController.onPageLoad()
+    } else {
+      additionalSettlorsNav(ua)
+    }
   }
 
   private def matchStatusNav(ua: UserAnswers, nextCall: Call): Call = {
