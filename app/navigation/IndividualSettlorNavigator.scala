@@ -19,7 +19,7 @@ package navigation
 import controllers.individual.living.add.{routes => addRts}
 import controllers.individual.living.amend.{routes => amendRts}
 import controllers.individual.living.{routes => rts}
-import models.{Mode, NormalMode, TypeOfTrust, UserAnswers}
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.individual.living._
 import play.api.mvc.Call
@@ -31,9 +31,6 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: Option[TypeOfTrust]): Call =
-    nextPage(page, mode, userAnswers)
-
   override def nextPage(page: Page, userAnswers: UserAnswers): Call =
     nextPage(page, NormalMode, userAnswers)
 
@@ -43,7 +40,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case CountryOfNationalityPage => ua => navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable)
     case NationalInsuranceNumberPage => ua => navigateAwayFromNinoPages(mode, ua)
     case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidenceQuestions(mode, ua)
-    case UkAddressPage | NonUkAddressPage => ua => navigateToPassportDetails(mode, ua)
+    case UkAddressPage | NonUkAddressPage => _ => navigateToPassportDetails(mode)
     case PassportDetailsPage | IdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
     case PassportOrIdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
@@ -76,7 +73,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       yesNoNav(ua, MentalCapacityYesNoPage, navigateToStartDateOrCheckDetails(mode, ua), navigateToStartDateOrCheckDetails(mode, ua))
   }
 
-  private def navigateToPassportDetails(mode: Mode, answers: UserAnswers) = {
+  private def navigateToPassportDetails(mode: Mode): Call = {
     if (mode == NormalMode) {
       addRts.PassportDetailsYesNoController.onPageLoad()
     } else {
@@ -150,4 +147,3 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       yesNoNavigation(mode)
 
 }
-

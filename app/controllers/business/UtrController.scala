@@ -72,7 +72,7 @@ class UtrController @Inject()(
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrPage, value))
               _ <- playbackRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers, updatedAnswers.trustType))
+            } yield Redirect(navigator.nextPage(UtrPage, mode, updatedAnswers))
           }
         )
       }

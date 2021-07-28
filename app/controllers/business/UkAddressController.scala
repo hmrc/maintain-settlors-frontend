@@ -20,16 +20,17 @@ import config.annotations.BusinessSettlor
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import forms.UkAddressFormProvider
-import javax.inject.Inject
-import models.Mode
+import models.{Mode, UkAddress}
 import navigation.Navigator
 import pages.business.UkAddressPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.business.UkAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkAddressController @Inject()(
@@ -43,7 +44,7 @@ class UkAddressController @Inject()(
                                      view: UkAddressView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form: Form[UkAddress] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
@@ -67,7 +68,7 @@ class UkAddressController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UkAddressPage, mode, updatedAnswers, updatedAnswers.trustType))
+          } yield Redirect(navigator.nextPage(UkAddressPage, mode, updatedAnswers))
       )
   }
 }

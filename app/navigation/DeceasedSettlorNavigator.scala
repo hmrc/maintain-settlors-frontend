@@ -17,12 +17,13 @@
 package navigation
 
 import controllers.individual.deceased.{routes => rts}
-import javax.inject.Inject
 import models.BpMatchStatus.FullyMatched
-import models.{Mode, TypeOfTrust, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.individual.deceased._
 import pages.{AdditionalSettlorsYesNoPage, Page}
 import play.api.mvc.Call
+
+import javax.inject.Inject
 
 class DeceasedSettlorNavigator @Inject()() extends Navigator {
 
@@ -31,10 +32,6 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(page)(userAnswers)
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: Option[TypeOfTrust]): Call = {
-    routes(page)(userAnswers)
-  }
 
   private val simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.DateOfDeathYesNoController.onPageLoad()
@@ -90,4 +87,3 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
       yesNoNavigation
 
 }
-
