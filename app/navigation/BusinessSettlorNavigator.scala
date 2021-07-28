@@ -17,21 +17,18 @@
 package navigation
 
 import controllers.business.{routes => rts}
-import javax.inject.Inject
 import models.TypeOfTrust.EmployeeRelated
 import models.{Mode, NormalMode, TypeOfTrust, UserAnswers}
 import pages.Page
 import pages.business._
 import play.api.mvc.Call
 
+import javax.inject.Inject
 
 class BusinessSettlorNavigator @Inject()() extends Navigator {
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers, trustType: Option[TypeOfTrust]): Call =
-    routes(mode, trustType)(page)(userAnswers)
-
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    nextPage(page, mode, userAnswers, None)
+    routes(mode, userAnswers.trustType)(page)(userAnswers)
 
   override def nextPage(page: Page, userAnswers: UserAnswers): Call =
     nextPage(page, NormalMode, userAnswers)
@@ -93,7 +90,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
 
   private def navigateToEndPages(mode:Mode, trustType: Option[TypeOfTrust], answers: UserAnswers): Call = {
     val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
-    val isNotEmployeeRelated = trustType.getOrElse(EmployeeRelated) != EmployeeRelated
+    val isNotEmployeeRelated = !trustType.contains(EmployeeRelated)
 
     if (isNonTaxable5mld || isNotEmployeeRelated) {
       navigateToStartDateOrCheckDetails(mode, answers)
@@ -102,7 +99,7 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def navigateToStartDateOrCheckDetails(mode: Mode, answers: UserAnswers) = {
+  private def navigateToStartDateOrCheckDetails(mode: Mode, answers: UserAnswers): Call = {
     if (mode == NormalMode) {
       rts.StartDateController.onPageLoad()
     } else {
@@ -124,4 +121,3 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
 
   private def isUtrDefined(answers: UserAnswers): Boolean = answers.get(UtrYesNoPage).getOrElse(false)
 }
-
