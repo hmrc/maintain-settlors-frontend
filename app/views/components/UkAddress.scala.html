@@ -59,14 +59,14 @@
     @input_text(
         field = form("line4"),
         label = messages("site.address.uk.line4"),
-        autocomplete = Some("address-level2")
+        autocomplete = Some("address-level2"),
         inputClass = Some("govuk-!-width-two-thirds")
     )
 
     @input_text(
         field = form("postcode"),
         label = messages("site.address.uk.postcode"),
-        autocomplete = Some("postal-code")
+        autocomplete = Some("postal-code"),
         hint = Some(messages(s"site.address.uk.postcode.hint")),
         inputClass = Some("govuk-input--width-10")
     )
