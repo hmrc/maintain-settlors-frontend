@@ -38,7 +38,7 @@ class AddASettlorViewHelper {
       AddRow(
         name = settlor.name.displayName,
         typeLabel = messages("entities.settlor.deceased"),
-        changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url),
+        changeUrl = controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url,
         removeUrl = None
       )
     }
@@ -47,7 +47,7 @@ class AddASettlorViewHelper {
       AddRow(
         name = settlor.name.displayName,
         typeLabel = messages("entities.settlor.individual"),
-        changeUrl = Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url),
+        changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
         removeUrl = if (settlor.provisional) {
           Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url)
         } else {
@@ -61,9 +61,9 @@ class AddASettlorViewHelper {
         name = settlor.name,
         typeLabel = messages("entities.settlor.business"),
         changeUrl = if (settlor.hasRequiredData(migratingFromNonTaxableToTaxable, trustType)) {
-          Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url)
+          controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url
         } else {
-          Some(controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url)
+          controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url
         },
         removeUrl = if (settlor.provisional) {
           Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)

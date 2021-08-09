@@ -18,7 +18,7 @@
 
 @this()
 
-@(data: AddRow)(implicit messages: Messages)
+@(data: AddRow, migratingAndMoreInfoNeeded: Boolean)(implicit messages: Messages)
 
 <div class="hmrc-add-to-a-list__contents">
     <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier__first hmrc-add-to-a-list__identifier--light">
@@ -29,8 +29,8 @@
     </dd>
     <dd class="hmrc-add-to-a-list__change">
         <a class="govuk-link" href="@data.changeUrl">
-            <span aria-hidden="true">@messages("site.edit")</span>
-            <span class="govuk-visually-hidden">@messages("site.hidden-edit", data.name)</span>
+            <span aria-hidden="true">@messages(if (migratingAndMoreInfoNeeded) "site.update" else "site.edit")</span>
+            <span class="govuk-visually-hidden">@messages(if (migratingAndMoreInfoNeeded) "site.hidden-update" else "site.hidden-edit", data.name)</span>
         </a>
     </dd>
     @data.removeUrl match {
@@ -42,7 +42,7 @@
                 </a>
             </dd>
         }
-        case _ => {
+        case None => {
             <dd class="hmrc-add-to-a-list__remove">
                 <span aria-hidden="true">@messages("site.cannotRemove")</span>
                 <span class="govuk-visually-hidden">@messages("site.cannotRemove-hidden", data.name)</span>

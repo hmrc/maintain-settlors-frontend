@@ -44,7 +44,7 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
 
       val changeLink = element.getElementsByClass("hmrc-add-to-a-list__change").first()
 
-      item.changeUrl.map(url => changeLink.getElementsByTag("a").attr("href") must include(url))
+      changeLink.getElementsByTag("a").attr("href") must include(item.changeUrl)
       if (migratingAndMoreInfoNeeded) {
         changeLink.text must include(s"Update ${item.name}")
       } else {

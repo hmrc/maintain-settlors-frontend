@@ -19,7 +19,7 @@
 @import viewmodels.addAnother.AddRow
 @import viewmodels.RadioOption
 @import config.FrontendAppConfig
-@import views.html.components.{Heading, AddToList, Details, SubmitButton}
+@import views.html.components.{AddToList, Details, Heading, SubmitButton, Warning}
 @import config.FrontendAppConfig
 
 @this(
@@ -29,14 +29,16 @@
     heading: Heading,
     addToList: AddToList,
     details: Details,
-    submitButton: SubmitButton
+    submitButton: SubmitButton,
+    warning: Warning
 )
 
 @(
     trustDescription: Option[String],
     inProgressSettlors: Seq[AddRow],
     completeSettlors: Seq[AddRow],
-    size: Int
+    size: Int,
+    migrating: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
@@ -52,9 +54,15 @@
             <p>@trustDescription</p>
         }
 
-        @addToList(inProgressSettlors, "inprogress")
+        @if(migrating){
+            <h2>@messages("addASettlor.transition.subheading")</h2>
+            @warning("addASettlor.transition")
+            <p>@messages("addASettlor.transition.p1")</p>
+        }
 
-        @addToList(completeSettlors, "complete")
+        @addToList(inProgressSettlors, if (migrating) "moreinfoneeded" else "inprogress", migrating)
+
+        @addToList(completeSettlors, if (migrating) "nomoreinfoneeded" else "complete")
 
         @details("addASettlor.details", config)
 

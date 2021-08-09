@@ -28,18 +28,18 @@ class MaxedOutSettlorsViewSpec extends OptionsViewBehaviours with TabularDataVie
   val view: MaxedOutSettlorsView = viewFor[MaxedOutSettlorsView](Some(emptyUserAnswers))
 
   val rows = Seq(
-    AddRow("Joe Bloggs", "Individual", Some("#"), None),
-    AddRow("Amazon", "Business", Some("#"), None)
+    AddRow("Joe Bloggs", "Individual", "#", None),
+    AddRow("Amazon", "Business", "#", None)
   )
 
   val max: Int = 25
 
   def applyView(migrating: Boolean): HtmlFormat.Appendable =
-    view.apply(None, rows, rows, max)(fakeRequest, messages)
+    view.apply(None, rows, rows, max, migrating)(fakeRequest, messages)
 
   "MaxedOutSettlorsView" when {
 
-    "migrating from non-taxable to taxable" ignore {
+    "migrating from non-taxable to taxable" when {
 
       val migrating: Boolean = true
 

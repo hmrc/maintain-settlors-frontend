@@ -88,7 +88,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = name.displayName,
                   typeLabel = "Individual settlor",
-                  changeUrl = Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url),
+                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
                   removeUrl = Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url)
                 )
               )
@@ -108,7 +108,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = name.displayName,
                   typeLabel = "Individual settlor",
-                  changeUrl = Some(controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url),
+                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
                   removeUrl = None
                 )
               )
@@ -131,7 +131,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = companyName,
                   typeLabel = "Business settlor",
-                  changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
+                  changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url,
                   removeUrl = Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
                 )
               )
@@ -151,7 +151,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = companyName,
                   typeLabel = "Business settlor",
-                  changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
+                  changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url,
                   removeUrl = None
                 )
               )
@@ -172,7 +172,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
               AddRow(
                 name = name.displayName,
                 typeLabel = "Will settlor",
-                changeUrl = Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url),
+                changeUrl = controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url,
                 removeUrl = None
               )
             )
@@ -202,7 +202,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                   AddRow(
                     name = companyName,
                     typeLabel = "Business settlor",
-                    changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url),
+                    changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url,
                     removeUrl = Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
                   )
                 ),
@@ -223,7 +223,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                   AddRow(
                     name = companyName,
                     typeLabel = "Business settlor",
-                    changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url),
+                    changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url,
                     removeUrl = None
                   )
                 ),
@@ -253,7 +253,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                   AddRow(
                     name = companyName,
                     typeLabel = "Business settlor",
-                    changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
+                    changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url,
                     removeUrl = Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
                   )
                 )
@@ -274,7 +274,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
                   AddRow(
                     name = companyName,
                     typeLabel = "Business settlor",
-                    changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
+                    changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url,
                     removeUrl = None
                   )
                 )
