@@ -82,7 +82,7 @@ class AddASettlorController @Inject()(
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading,
-            maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+            maxedOut = settlors.maxedOutOptions.map(_.messageKey)
           ))
         }
       }
@@ -108,7 +108,7 @@ class AddASettlorController @Inject()(
                 rows.inProgress,
                 rows.complete,
                 settlors.addToHeading,
-                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+                maxedOut = settlors.maxedOutOptions.map(_.messageKey)
               )
             ))
           },
@@ -123,11 +123,7 @@ class AddASettlorController @Inject()(
               Future.successful(Redirect(appConfig.maintainATrustOverview))
 
             case AddASettlor.NoComplete =>
-              for {
-                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
-              } yield {
-                Redirect(appConfig.maintainATrustOverview)
-              }
+              submitComplete()(request)
           }
         )
       }

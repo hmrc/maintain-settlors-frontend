@@ -44,7 +44,8 @@
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}$heading"
+    title = s"${errorPrefix(form)}$heading",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddASettlorController.submit(), 'autoComplete -> "off") {
@@ -53,8 +54,8 @@
 
         @headingComp(heading)
 
-        @if(trustDescription.nonEmpty){
-            <p>@trustDescription</p>
+        @trustDescription.map{ td =>
+            <p>@td</p>
         }
 
         @addToList(inProgressSettlors, "inprogress")

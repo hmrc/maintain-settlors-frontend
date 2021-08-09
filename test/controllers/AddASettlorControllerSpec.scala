@@ -560,7 +560,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
               Nil,
               completedRows,
               "The trust has 25 settlors",
-              List("Individual")
+              List("whatTypeOfSettlor.individual")
             )(request, messages).toString
 
           content must include("You cannot add another individual as you have entered a maximum of 25.")
@@ -607,7 +607,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
               Nil,
               completedRows,
               "The trust has 25 settlors",
-              List("Business")
+              List("whatTypeOfSettlor.business")
             )(request, messages).toString
 
           content must include("You cannot add another business as you have entered a maximum of 25.")
