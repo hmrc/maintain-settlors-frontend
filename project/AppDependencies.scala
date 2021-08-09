@@ -6,19 +6,17 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.13-play27",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "0.66.0-play-27",
-    "uk.gov.hmrc"       %% "play-health"                    % "3.16.0-play-27",
-    "uk.gov.hmrc"       %% "domain"                         % "5.10.0-play-27",
+    "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.13-play28",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "0.90.0-play-28",
+    "uk.gov.hmrc"       %% "domain"                         % "6.2.0-play-28",
     "com.typesafe.play" %% "play-json-joda"                 % "2.7.4",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.6.0-play-27",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"     % "5.8.0",
-    "uk.gov.hmrc"       %% "play-language"                  % "5.0.0-play-27"
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.9.0-play-28",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.9.0"
   )
 
   val test: Seq[ModuleID] = Seq(
-    "org.scalatest"           %% "scalatest"              % "3.0.8",
-    "org.scalatestplus.play"  %% "scalatestplus-play"     % "4.0.3",
+    "org.scalatest"           %% "scalatest"              % "3.0.9",
+    "org.scalatestplus.play"  %% "scalatestplus-play"     % "5.0.0",
     "org.pegdown"             %  "pegdown"                % "1.6.0",
     "org.jsoup"               %  "jsoup"                  % "1.12.1",
     "wolfendale"              %% "scalacheck-gen-regexp"  % "0.1.2",
