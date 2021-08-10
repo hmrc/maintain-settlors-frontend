@@ -21,7 +21,7 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import handlers.ErrorHandler
-import javax.inject.Inject
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -30,7 +30,9 @@ import utils.print.IndividualSettlorPrintHelper
 import viewmodels.AnswerSection
 import views.html.individual.living.add.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
@@ -43,7 +45,7 @@ class CheckDetailsController @Inject()(
                                         mapper: IndividualSettlorMapper,
                                         nameAction: NameRequiredAction,
                                         errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
@@ -56,9 +58,10 @@ class CheckDetailsController @Inject()(
     implicit request =>
 
       mapper(request.userAnswers) match {
-        case None =>
+        case Failure(exception) =>
+          logger.error(exception.getMessage)
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-        case Some(settlor) =>
+        case Success(settlor) =>
           connector.addIndividualSettlor(request.userAnswers.identifier, settlor).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           )

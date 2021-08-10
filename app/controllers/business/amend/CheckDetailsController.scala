@@ -22,6 +22,7 @@ import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import extractors.BusinessSettlorExtractor
 import models.{CheckMode, UserAnswers}
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -49,7 +50,7 @@ class CheckDetailsController @Inject()(
                                         nameAction: NameRequiredAction,
                                         extractor: BusinessSettlorExtractor,
                                         errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private def render(userAnswers: UserAnswers,
                      index: Int,
@@ -89,11 +90,15 @@ class CheckDetailsController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      mapper(request.userAnswers).map {
-        business =>
-          connector.amendBusinessSettlor(request.userAnswers.identifier, index, business).map(_ =>
-            Redirect(controllers.routes.AddASettlorController.onPageLoad())
-          )
-      }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))
+      (for {
+        business <- Future.fromTry(mapper(request.userAnswers))
+        _ <- connector.amendBusinessSettlor(request.userAnswers.identifier, index, business)
+      } yield {
+        Redirect(controllers.routes.AddASettlorController.onPageLoad())
+      }).recover {
+        case e =>
+          logger.error(e.getMessage)
+          InternalServerError(errorHandler.internalServerErrorTemplate)
+      }
   }
 }

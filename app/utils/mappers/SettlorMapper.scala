@@ -20,20 +20,19 @@ import models.Constant.GB
 import models.settlors.Settlor
 import models.{Address, NonUkAddress, UkAddress, UserAnswers}
 import pages.{EmptyPage, QuestionPage}
-import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.reflect.{ClassTag, classTag}
+import scala.util.{Failure, Success, Try}
 
-abstract class SettlorMapper[T <: Settlor : ClassTag] extends Logging {
+abstract class SettlorMapper[T <: Settlor : ClassTag] {
 
-  def apply(answers: UserAnswers): Option[T] = {
+  def apply(answers: UserAnswers): Try[T] = {
     answers.data.validate[T](reads) match {
       case JsSuccess(value, _) =>
-        Some(value)
+        Success(value)
       case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors")
-        None
+        Failure(new Throwable(s"[UTR: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors"))
     }
   }
 

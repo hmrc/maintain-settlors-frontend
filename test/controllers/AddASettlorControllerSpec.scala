@@ -21,9 +21,11 @@ import connectors.TrustStoreConnector
 import forms.AddASettlorFormProvider
 import models.Constant.MAX
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{AddASettlor, Name, RemoveSettlor}
+import models.{AddASettlor, Name, RemoveSettlor, UserAnswers}
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -37,7 +39,7 @@ import views.html.{AddASettlorView, MaxedOutSettlorsView}
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
+class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
 
   lazy val getRoute: String = controllers.routes.AddASettlorController.onPageLoad().url
   lazy val submitRoute: String = controllers.routes.AddASettlorController.submit().url
@@ -114,6 +116,14 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
     override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = ???
+  }
+
+  override def beforeEach(): Unit = {
+    reset(playbackRepository, mockStoreConnector)
+
+    when(playbackRepository.set(any())).thenReturn(Future.successful(true))
+
+    when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
   }
 
   "AddASettlor Controller" when {
@@ -199,6 +209,72 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
         }
       }
 
+      // need to persist deceased answers as user could click back from add-to page to deceased CYA updated-details page
+      // this doesn't affect them wanting to add a new business or living individual
+      "cleanup individual and business date in user answers but persist deceased data" when {
+
+        "GET" in {
+
+          val fakeService = new FakeService(settlors)
+
+          val userAnswers = emptyUserAnswers
+            .set(pages.individual.living.NamePage, Name("Joe", None, "Bloggs")).success.value
+            .set(pages.business.NamePage, "Amazon").success.value
+            .set(pages.individual.deceased.NamePage, Name("Joe", None, "Bloggs")).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+            .build()
+
+          val request = FakeRequest(GET, getRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(playbackRepository).set(uaCaptor.capture)
+          uaCaptor.getValue.get(pages.individual.living.NamePage) mustNot be(defined)
+          uaCaptor.getValue.get(pages.business.NamePage) mustNot be(defined)
+          uaCaptor.getValue.get(pages.individual.deceased.NamePage) must be(defined)
+
+          application.stop()
+        }
+
+        "POST" in {
+
+          val fakeService = new FakeService(settlors)
+
+          val userAnswers = emptyUserAnswers
+            .set(pages.individual.living.NamePage, Name("Joe", None, "Bloggs")).success.value
+            .set(pages.business.NamePage, "Amazon").success.value
+            .set(pages.individual.deceased.NamePage, Name("Joe", None, "Bloggs")).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(
+              bind(classOf[TrustService]).toInstance(fakeService),
+              bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector),
+              bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper)
+            ).build()
+
+          val request = FakeRequest(POST, submitRoute)
+            .withFormUrlEncodedBody(("value", AddASettlor.YesNow.toString))
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(playbackRepository).set(uaCaptor.capture)
+          uaCaptor.getValue.get(pages.individual.living.NamePage) mustNot be(defined)
+          uaCaptor.getValue.get(pages.business.NamePage) mustNot be(defined)
+          uaCaptor.getValue.get(pages.individual.deceased.NamePage) must be(defined)
+
+          application.stop()
+        }
+      }
+
       "redirect to the maintain task list when the user says they are done" in {
 
         val fakeService = new FakeService(settlors)
@@ -212,8 +288,6 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
         val request = FakeRequest(POST, submitRoute)
           .withFormUrlEncodedBody(("value", AddASettlor.NoComplete.toString))
-
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
         val result = route(application, request).value
 
@@ -525,8 +599,6 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
 
           val request = FakeRequest(POST, submitCompleteRoute)
 
-          when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
-
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
@@ -777,8 +849,6 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures {
             .build()
 
           val request = FakeRequest(POST, submitCompleteRoute)
-
-          when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
 
           val result = route(application, request).value
 

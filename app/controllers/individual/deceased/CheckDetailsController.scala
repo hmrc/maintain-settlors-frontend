@@ -26,6 +26,7 @@ import models.UserAnswers
 import models.settlors.Settlors
 import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased.BpMatchStatusPage
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -54,7 +55,7 @@ class CheckDetailsController @Inject()(
                                         nameAction: NameRequiredAction,
                                         extractor: DeceasedSettlorExtractor,
                                         errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private def render(userAnswers: UserAnswers,
                      name: String,
@@ -73,15 +74,14 @@ class CheckDetailsController @Inject()(
 
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-
       service.getSettlors(request.userAnswers.identifier) flatMap {
         case Settlors(individuals, businesses, Some(deceased)) =>
+          val hasAdditionalSettlors = individuals.nonEmpty || businesses.nonEmpty
           for {
-            hasAdditionalSettlors <- Future.successful(individuals.nonEmpty || businesses.nonEmpty)
-            extractedF <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(hasAdditionalSettlors)))
-            _ <- playbackRepository.set(extractedF)
+            extractedAnswers <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(hasAdditionalSettlors)))
+            _ <- playbackRepository.set(extractedAnswers)
           } yield {
-            render(extractedF, deceased.name.displayName, hasAdditionalSettlors)
+            render(extractedAnswers, deceased.name.displayName, hasAdditionalSettlors)
           }
         case Settlors(_, _, None) =>
           throw new Exception("Deceased Settlor Information not found")
@@ -103,20 +103,26 @@ class CheckDetailsController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      mapper(request.userAnswers).map {
-        deceasedSettlor =>
-          connector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor).flatMap(_ =>
-            service.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
-              (settlors.hasLivingSettlors, request.userAnswers.get(AdditionalSettlorsYesNoPage)) match {
-                case (false, Some(false)) =>
-                  trustStoreConnector.setTaskComplete(request.userAnswers.identifier).map(_ =>
-                    Redirect(appConfig.maintainATrustOverview)
-                  )
-                case _ =>
-                  Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad()))
-              }
-            }
-          )
-      }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))
+      (for {
+        deceasedSettlor <- Future.fromTry(mapper(request.userAnswers))
+        _ <- connector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor)
+        settlors <- service.getSettlors(request.userAnswers.identifier)
+        isTaskComplete = !settlors.hasLivingSettlors && request.userAnswers.get(AdditionalSettlorsYesNoPage).contains(false)
+        _ <- if (isTaskComplete) {
+          trustStoreConnector.setTaskComplete(request.userAnswers.identifier).map(_ => ())
+        } else {
+          Future.successful(())
+        }
+      } yield {
+        if (isTaskComplete) {
+          Redirect(appConfig.maintainATrustOverview)
+        } else {
+          Redirect(controllers.routes.AddASettlorController.onPageLoad())
+        }
+      }).recover {
+        case e =>
+          logger.error(e.getMessage)
+          InternalServerError(errorHandler.internalServerErrorTemplate)
+      }
   }
 }

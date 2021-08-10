@@ -21,6 +21,8 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import handlers.ErrorHandler
+import play.api.Logging
+
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,6 +33,7 @@ import viewmodels.AnswerSection
 import views.html.business.add.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
@@ -43,7 +46,7 @@ class CheckDetailsController @Inject()(
                                         mapper: BusinessSettlorMapper,
                                         nameAction: NameRequiredAction,
                                         errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
@@ -56,9 +59,10 @@ class CheckDetailsController @Inject()(
     implicit request =>
 
       mapper(request.userAnswers) match {
-        case None =>
+        case Failure(exception) =>
+          logger.error(exception.getMessage)
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-        case Some(settlor) =>
+        case Success(settlor) =>
           connector.addBusinessSettlor(request.userAnswers.identifier, settlor).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())
           )

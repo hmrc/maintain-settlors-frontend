@@ -77,7 +77,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     when(mockPrintHelper.apply(any(), any(), any())(any())).thenReturn(fakeAnswerSection)
 
-    when(mockMapper.apply(any())).thenReturn(Some(businessSettlor))
+    when(mockMapper.apply(any())).thenReturn(Success(businessSettlor))
 
     when(mockService.getBusinessSettlor(any(), any())(any(), any()))
       .thenReturn(Future.successful(businessSettlor))
