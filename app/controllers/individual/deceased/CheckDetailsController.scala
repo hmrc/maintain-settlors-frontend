@@ -74,15 +74,14 @@ class CheckDetailsController @Inject()(
 
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-
       service.getSettlors(request.userAnswers.identifier) flatMap {
         case Settlors(individuals, businesses, Some(deceased)) =>
+          val hasAdditionalSettlors = individuals.nonEmpty || businesses.nonEmpty
           for {
-            hasAdditionalSettlors <- Future.successful(individuals.nonEmpty || businesses.nonEmpty)
-            extractedF <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(hasAdditionalSettlors)))
-            _ <- playbackRepository.set(extractedF)
+            extractedAnswers <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(hasAdditionalSettlors)))
+            _ <- playbackRepository.set(extractedAnswers)
           } yield {
-            render(extractedF, deceased.name.displayName, hasAdditionalSettlors)
+            render(extractedAnswers, deceased.name.displayName, hasAdditionalSettlors)
           }
         case Settlors(_, _, None) =>
           throw new Exception("Deceased Settlor Information not found")
