@@ -236,6 +236,49 @@ class AddASettlorViewHelperSpec extends SpecBase {
 
       "render complete row" when {
 
+        "individual" when {
+
+          "provisional" in {
+
+            val result = viewHelper.rows(
+              settlors = Settlors(settlor = List(individualSettlor(true))),
+              migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable
+            )
+
+            result mustBe AddToRows(
+              inProgress = Nil,
+              complete = List(
+                AddRow(
+                  name = name.displayName,
+                  typeLabel = "Individual settlor",
+                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
+                  removeUrl = Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url)
+                )
+              )
+            )
+          }
+
+          "not provisional" in {
+
+            val result = viewHelper.rows(
+              settlors = Settlors(settlor = List(individualSettlor(false))),
+              migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable
+            )
+
+            result mustBe AddToRows(
+              inProgress = Nil,
+              complete = List(
+                AddRow(
+                  name = name.displayName,
+                  typeLabel = "Individual settlor",
+                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
+                  removeUrl = None
+                )
+              )
+            )
+          }
+        }
+
         "business" when {
           "company type and company time answered for employee-related trust" when {
 
@@ -281,6 +324,26 @@ class AddASettlorViewHelperSpec extends SpecBase {
               )
             }
           }
+        }
+
+        "deceased" in {
+
+          val result = viewHelper.rows(
+            settlors = Settlors(deceased = Some(deceasedSettlor)),
+            migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable
+          )
+
+          result mustBe AddToRows(
+            inProgress = Nil,
+            complete = List(
+              AddRow(
+                name = name.displayName,
+                typeLabel = "Will settlor",
+                changeUrl = controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url,
+                removeUrl = None
+              )
+            )
+          )
         }
       }
     }

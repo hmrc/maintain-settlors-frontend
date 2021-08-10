@@ -73,19 +73,18 @@ class AddASettlorViewHelper {
       )
     }
 
-    def rows(isComplete: Boolean): List[AddRow] = {
-      settlors.deceased.map(deceasedSettlorRow).toList ++
-        settlors.settlor.zipThenGroupThenMap(individualSettlorRow, isComplete) ++
+    def livingSettlorRows(isComplete: Boolean): List[AddRow] = {
+      settlors.settlor.zipThenGroupThenMap(individualSettlorRow, isComplete) ++
         settlors.settlorCompany.zipThenGroupThenMap(businessSettlorRow, isComplete)
     }
 
     val inProgressRows: List[AddRow] = if (migratingFromNonTaxableToTaxable) {
-      rows(isComplete = false)
+      livingSettlorRows(isComplete = false)
     } else {
       Nil
     }
 
-    val completedRows: List[AddRow] = rows(isComplete = true)
+    val completedRows: List[AddRow] = settlors.deceased.map(deceasedSettlorRow).toList ++ livingSettlorRows(isComplete = true)
 
     AddToRows(inProgressRows, completedRows)
   }
