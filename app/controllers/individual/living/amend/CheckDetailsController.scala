@@ -21,8 +21,8 @@ import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import extractors.IndividualSettlorExtractor
-import javax.inject.Inject
 import models.UserAnswers
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.PlaybackRepository
@@ -33,6 +33,7 @@ import utils.print.IndividualSettlorPrintHelper
 import viewmodels.AnswerSection
 import views.html.individual.living.amend.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -49,7 +50,7 @@ class CheckDetailsController @Inject()(
                                         nameAction: NameRequiredAction,
                                         extractor: IndividualSettlorExtractor,
                                         errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private def render(userAnswers: UserAnswers,
                      index: Int,
@@ -68,7 +69,7 @@ class CheckDetailsController @Inject()(
             extractedF <- Future.fromTry(extractor(request.userAnswers, trust, Some(index)))
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, trust.name.displayName)
+            render(extractedF, index, trust.name.displayName)
           }
       }
   }
@@ -81,11 +82,15 @@ class CheckDetailsController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
 
-      mapper(request.userAnswers).map {
-        individual =>
-          connector.amendIndividualSettlor(request.userAnswers.identifier, index, individual).map(_ =>
-            Redirect(controllers.routes.AddASettlorController.onPageLoad())
-          )
-      }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))
+      (for {
+        individual <- Future.fromTry(mapper(request.userAnswers))
+        _ <- connector.amendIndividualSettlor(request.userAnswers.identifier, index, individual)
+      } yield {
+        Redirect(controllers.routes.AddASettlorController.onPageLoad())
+      }).recover {
+        case e =>
+          logger.error(e.getMessage)
+          InternalServerError(errorHandler.internalServerErrorTemplate)
+      }
   }
 }
