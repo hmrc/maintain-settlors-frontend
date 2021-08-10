@@ -64,7 +64,7 @@ class AddASettlorController @Inject()(
 
         val settlorRows = viewHelper.rows(
           settlors = settlors,
-          migratingFromNonTaxableToTaxable = updatedAnswers.migratingFromNonTaxableToTaxable,
+          migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable,
           trustType = updatedAnswers.trustType
         )
 
@@ -73,7 +73,8 @@ class AddASettlorController @Inject()(
             trustDescription,
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
-            size = settlors.size
+            size = settlors.size,
+            migrating = migratingFromNonTaxableToTaxable
           ))
         } else {
           Ok(addAnotherView(
@@ -82,7 +83,8 @@ class AddASettlorController @Inject()(
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             heading = settlors.addToHeading,
-            maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+            maxedOut = settlors.maxedOutOptions.map(_.messageKey),
+            migrating = migratingFromNonTaxableToTaxable
           ))
         }
       }
@@ -108,7 +110,8 @@ class AddASettlorController @Inject()(
                 rows.inProgress,
                 rows.complete,
                 settlors.addToHeading,
-                maxedOut = settlors.maxedOutOptions.map(x => x.messageKey)
+                maxedOut = settlors.maxedOutOptions.map(_.messageKey),
+                migrating = migratingFromNonTaxableToTaxable
               )
             ))
           },
@@ -123,11 +126,7 @@ class AddASettlorController @Inject()(
               Future.successful(Redirect(appConfig.maintainATrustOverview))
 
             case AddASettlor.NoComplete =>
-              for {
-                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
-              } yield {
-                Redirect(appConfig.maintainATrustOverview)
-              }
+              submitComplete()(request)
           }
         )
       }
@@ -158,6 +157,10 @@ class AddASettlorController @Inject()(
     }
 
     request.userAnswers.trustType.map(getDescription)
+  }
+
+  private def migratingFromNonTaxableToTaxable(implicit request: DataRequest[AnyContent]): Boolean = {
+    request.userAnswers.migratingFromNonTaxableToTaxable
   }
 
 }

@@ -3,9 +3,10 @@ service.name = Register and Maintain a Trust
 site.back = Back
 site.delete = Remove
 site.edit = Change
+site.update = Update
 site.hidden-delete = Delete {0}
 site.hidden-edit = Change {0}
-site.hidden-cannot-edit = You cannot change {0}
+site.hidden-update = Update {0}
 site.change.details = Change details
 site.no = No
 site.yes = Yes
@@ -17,10 +18,13 @@ site.sign_in = Sign in
 site.save.continue = Save and continue
 site.date.hint = For example, 31 3 1980.
 site.inprogress = In Progress
+site.moreinfoneeded = More information needed
+site.nomoreinfoneeded = No more information needed
 site.complete = Completed
 site.error = Error:
 site.cannotRemove = Cannot remove
 site.cannotRemove-hidden = Cannot remove {0}
+site.warning = Warning
 
 #timeout dialog
 timeout.title=Your application will time out soon
@@ -124,7 +128,9 @@ featureNotAvailable.link = contact our trusts helpline (opens in a new window or
 featureNotAvailable.p2 = You will be able to update these details online in the future.
 
 addASettlor.heading = Add a settlor
+addASettlor.title = Add a settlor
 addASettlor.count.heading = The trust has {0} settlors
+addASettlor.count.title = The trust has {0} settlors
 addASettlor.details = Why you cannot remove some settlors
 addASettlor.details.text = You will be unable to remove a settlor after you make a declaration. If you have declared a settlor by mistake you can
 addASettlor.details.text.link = contact the trusts helpline (opens in a new window or tab)
@@ -137,6 +143,10 @@ addASettlor.maxedOut.just1 = You cannot add another {0} as you have entered a ma
 addASettlor.maxedOut.just1.paragraph = Check the settlors you have added. If you have further settlors to add within this type, write to HMRC with their details.
 addASettlor.maxedOut = You cannot enter another settlor as you have entered a maximum of {0}.
 addASettlor.maxedOut.paragraph = Check the settlors you have added. If you have further settlors to add, write to HMRC with their details.
+
+addASettlor.transition.subheading = Updating the settlors
+addASettlor.transition.warning = You need to update the information HMRC holds about the trust’s settlors.
+addASettlor.transition.p1 = The questions asked will be populated with the most recent information HMRC holds about the settlors.
 
 addNow.heading = Is the settlor an individual or a business?
 addNow.title = Is the settlor an individual or a business?
