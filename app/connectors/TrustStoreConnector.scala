@@ -17,23 +17,27 @@
 package connectors
 
 import config.FrontendAppConfig
-import javax.inject.Inject
 import models.FeatureResponse
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import models.TaskStatus.TaskStatus
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
-  private def maintainTasksUrl(identifier: String) = s"${config.trustsStoreUrl}/trusts-store/maintain/tasks/settlors/$identifier"
+  private val baseUrl: String = s"${config.trustsStoreUrl}/trusts-store"
 
-  def setTaskComplete(identifier: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    http.POSTEmpty[HttpResponse](maintainTasksUrl(identifier))
+  def updateTaskStatus(identifier: String, taskStatus: TaskStatus)
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url: String = s"$baseUrl/maintain/tasks/update-settlors/$identifier"
+    http.POST[TaskStatus, HttpResponse](url, taskStatus)
   }
 
-  def getFeature(feature: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureResponse] = {
-    val url: String = s"${config.trustsStoreUrl}/trusts-store/features/$feature"
+  def getFeature(feature: String)
+                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureResponse] = {
+    val url: String = s"$baseUrl/features/$feature"
     http.GET[FeatureResponse](url)
   }
 }

@@ -20,10 +20,11 @@ import base.SpecBase
 import config.FrontendAppConfig
 import connectors.{TrustConnector, TrustStoreConnector}
 import models.BpMatchStatus.{FailedToMatch, FullyMatched}
+import models.TaskStatus.Completed
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{BpMatchStatus, Name, NationalInsuranceNumber, UserAnswers}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AdditionalSettlorsYesNoPage
@@ -389,7 +390,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor()))))
-      when(mockTrustStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustStoreConnector.updateTaskStatus(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -398,6 +399,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual finishedRoute
+
+      verify(mockTrustStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
       application.stop()
     }

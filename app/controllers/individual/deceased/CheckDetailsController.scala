@@ -22,6 +22,7 @@ import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
 import models.BpMatchStatus.FullyMatched
+import models.TaskStatus.Completed
 import models.UserAnswers
 import models.settlors.Settlors
 import pages.AdditionalSettlorsYesNoPage
@@ -45,8 +46,8 @@ class CheckDetailsController @Inject()(
                                         standardActionSets: StandardActionSets,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
-                                        service: TrustService,
-                                        connector: TrustConnector,
+                                        trustsService: TrustService,
+                                        trustsConnector: TrustConnector,
                                         trustStoreConnector: TrustStoreConnector,
                                         val appConfig: FrontendAppConfig,
                                         playbackRepository: PlaybackRepository,
@@ -74,7 +75,7 @@ class CheckDetailsController @Inject()(
 
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
-      service.getSettlors(request.userAnswers.identifier) flatMap {
+      trustsService.getSettlors(request.userAnswers.identifier) flatMap {
         case Settlors(individuals, businesses, Some(deceased)) =>
           val hasAdditionalSettlors = individuals.nonEmpty || businesses.nonEmpty
           for {
@@ -91,7 +92,7 @@ class CheckDetailsController @Inject()(
 
   def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      service.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
+      trustsService.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
         Future.successful(render(
           request.userAnswers,
           request.settlorName,
@@ -105,11 +106,11 @@ class CheckDetailsController @Inject()(
 
       (for {
         deceasedSettlor <- Future.fromTry(mapper(request.userAnswers))
-        _ <- connector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor)
-        settlors <- service.getSettlors(request.userAnswers.identifier)
+        _ <- trustsConnector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor)
+        settlors <- trustsService.getSettlors(request.userAnswers.identifier)
         isTaskComplete = !settlors.hasLivingSettlors && request.userAnswers.get(AdditionalSettlorsYesNoPage).contains(false)
         _ <- if (isTaskComplete) {
-          trustStoreConnector.setTaskComplete(request.userAnswers.identifier).map(_ => ())
+          trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
         } else {
           Future.successful(())
         }

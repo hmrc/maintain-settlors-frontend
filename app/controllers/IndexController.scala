@@ -18,13 +18,14 @@ package controllers
 
 import connectors.TrustConnector
 import controllers.actions.StandardActionSets
+import models.TaskStatus.InProgress
 import models.UserAnswers
 import pages.AdditionalSettlorsYesNoPage
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import services.FeatureFlagService
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
@@ -34,9 +35,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: StandardActionSets,
-                                 cacheRepository : PlaybackRepository,
-                                 connector: TrustConnector,
-                                 featureFlagService: FeatureFlagService
+                                 cacheRepository: PlaybackRepository,
+                                 trustsConnector: TrustConnector,
+                                 trustsStoreService: TrustsStoreService
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val logger: Logger = Logger(getClass)
@@ -46,12 +47,12 @@ class IndexController @Inject()(
       logger.info(s"[Session ID: ${Session.id(hc)}][Identifier: $identifier] user has started to maintain settlors")
 
       for {
-        details <- connector.getTrustDetails(identifier)
-        is5mldEnabled <- featureFlagService.is5mldEnabled()
-        isUnderlyingData5mld <- connector.isTrust5mld(identifier)
-        allSettlors <- connector.getSettlors(identifier)
-        isDateOfDeathRecorded <- connector.getIsDeceasedSettlorDateOfDeathRecorded(identifier)
-        taxableMigrationFlag <- connector.getTrustMigrationFlag(identifier)
+        details <- trustsConnector.getTrustDetails(identifier)
+        is5mldEnabled <- trustsStoreService.is5mldEnabled()
+        isUnderlyingData5mld <- trustsConnector.isTrust5mld(identifier)
+        allSettlors <- trustsConnector.getSettlors(identifier)
+        isDateOfDeathRecorded <- trustsConnector.getIsDeceasedSettlorDateOfDeathRecorded(identifier)
+        taxableMigrationFlag <- trustsConnector.getTrustMigrationFlag(identifier)
         ua <- Future.successful {
           request.userAnswers match {
             case Some(userAnswers) => userAnswers.copy(
@@ -78,6 +79,7 @@ class IndexController @Inject()(
           }
         }
         _ <- cacheRepository.set(ua)
+        _ <- trustsStoreService.updateTaskStatus(identifier, InProgress)
       } yield {
 
         val showAddToPage = allSettlors.hasLivingSettlors || ua.get(AdditionalSettlorsYesNoPage).contains(true)

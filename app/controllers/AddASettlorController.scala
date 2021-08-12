@@ -21,6 +21,7 @@ import connectors.TrustStoreConnector
 import controllers.actions.StandardActionSets
 import forms.AddASettlorFormProvider
 import models.DeedOfVariation.AdditionToWillTrust
+import models.TaskStatus.Completed
 import models.requests.DataRequest
 import models.{AddASettlor, TypeOfTrust}
 import navigation.SettlorNavigator
@@ -136,7 +137,7 @@ class AddASettlorController @Inject()(
     implicit request =>
 
       for {
-        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
+        _ <- trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }
