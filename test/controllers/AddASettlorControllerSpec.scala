@@ -20,11 +20,12 @@ import base.SpecBase
 import connectors.TrustStoreConnector
 import forms.AddASettlorFormProvider
 import models.Constant.MAX
+import models.TaskStatus.Completed
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{AddASettlor, Name, RemoveSettlor, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.inject.bind
@@ -123,7 +124,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
     when(playbackRepository.set(any())).thenReturn(Future.successful(true))
 
-    when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(200, "")))
+    when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
   }
 
   "AddASettlor Controller" when {
@@ -295,6 +297,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
 
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
+
         application.stop()
       }
 
@@ -315,6 +319,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+        verify(mockStoreConnector, never()).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -605,6 +611,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
           redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
 
+          verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
+
           application.stop()
         }
       }
@@ -855,6 +863,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+          verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
           application.stop()
         }

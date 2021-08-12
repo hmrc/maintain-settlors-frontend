@@ -18,36 +18,55 @@ package controllers
 
 import base.SpecBase
 import connectors.TrustConnector
+import models.TaskStatus.InProgress
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{Name, TaxableMigrationFlag, TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import pages.AdditionalSettlorsYesNoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.FeatureFlagService
+import services.TrustsStoreService
+import uk.gov.hmrc.http.HttpResponse
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase {
+class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
+
+  val mockTrustConnector: TrustConnector = mock[TrustConnector]
+  val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+
+  val identifier = "1234567890"
+  val startDate = "2019-06-01"
+  val typeOfTrust: Option[TypeOfTrust] = Some(TypeOfTrust.WillTrustOrIntestacyTrust)
+  val is5mldEnabled = false
+  val isTaxable = false
+  val isUnderlyingData5mld = false
+  val migratingFromNonTaxableToTaxable = false
+
+  override def beforeEach(): Unit = {
+    reset(mockTrustsStoreService)
+
+    when(mockTrustsStoreService.is5mldEnabled()(any(), any()))
+      .thenReturn(Future.successful(is5mldEnabled))
+
+    when(mockTrustConnector.isTrust5mld(any())(any(), any()))
+      .thenReturn(Future.successful(isUnderlyingData5mld))
+
+    when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
+      .thenReturn(Future.successful(true))
+
+    when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
+  }
 
   "Index Controller" must {
 
-    val identifier = "1234567890"
-    val startDate = "2019-06-01"
-    val typeOfTrust = Some(TypeOfTrust.WillTrustOrIntestacyTrust)
-    val is5mldEnabled = false
-    val isTaxable = false
-    val isUnderlyingData5mld = false
-    val migratingFromNonTaxableToTaxable = false
-
     "redirect to task list when there are living settlors" in {
-
-      val mockTrustConnector = mock[TrustConnector]
-      val mockFeatureFlagService = mock[FeatureFlagService]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(
@@ -58,12 +77,6 @@ class IndexControllerSpec extends SpecBase {
             trustTaxable = Some(isTaxable)
           )
         ))
-
-      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
-        .thenReturn(Future.successful(is5mldEnabled))
-
-      when(mockTrustConnector.isTrust5mld(any())(any(), any()))
-        .thenReturn(Future.successful(isUnderlyingData5mld))
 
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
@@ -78,16 +91,13 @@ class IndexControllerSpec extends SpecBase {
           )
         ))
 
-      when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
-        .thenReturn(Future.successful(true))
-
       when(mockTrustConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(Some(migratingFromNonTaxableToTaxable))))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(
           bind[TrustConnector].toInstance(mockTrustConnector),
-          bind[FeatureFlagService].toInstance(mockFeatureFlagService)
+          bind[TrustsStoreService].toInstance(mockTrustsStoreService)
         ).build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
@@ -109,13 +119,12 @@ class IndexControllerSpec extends SpecBase {
       uaCaptor.getValue.isUnderlyingData5mld mustBe isUnderlyingData5mld
       uaCaptor.getValue.migratingFromNonTaxableToTaxable mustBe migratingFromNonTaxableToTaxable
 
+      verify(mockTrustsStoreService).updateTaskStatus(eqTo(identifier), eqTo(InProgress))(any(), any())
+
       application.stop()
     }
 
     "redirect to task list when there are no living settlors but user has previously answered yes to are there additional settlors to add to the trust" in {
-
-      val mockTrustConnector = mock[TrustConnector]
-      val mockFeatureFlagService = mock[FeatureFlagService]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(
@@ -126,12 +135,6 @@ class IndexControllerSpec extends SpecBase {
             trustTaxable = Some(isTaxable)
           )
         ))
-
-      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
-        .thenReturn(Future.successful(is5mldEnabled))
-
-      when(mockTrustConnector.isTrust5mld(any())(any(), any()))
-        .thenReturn(Future.successful(isUnderlyingData5mld))
 
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
@@ -146,19 +149,16 @@ class IndexControllerSpec extends SpecBase {
           )
         ))
 
-      when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
-        .thenReturn(Future.successful(true))
-
       when(mockTrustConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(None)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(AdditionalSettlorsYesNoPage, true).success.value))
         .overrides(
           bind[TrustConnector].toInstance(mockTrustConnector),
-          bind[FeatureFlagService].toInstance(mockFeatureFlagService)
+          bind[TrustsStoreService].toInstance(mockTrustsStoreService)
         ).build()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
       val result = route(application, request).value
 
@@ -166,12 +166,12 @@ class IndexControllerSpec extends SpecBase {
 
       redirectLocation(result) mustBe Some(controllers.routes.AddASettlorController.onPageLoad().url)
 
+      verify(mockTrustsStoreService).updateTaskStatus(eqTo(identifier), eqTo(InProgress))(any(), any())
+
       application.stop()
     }
 
     "redirect to deceased settlor check answers when there are no living settlors" in {
-      val mockTrustConnector = mock[TrustConnector]
-      val mockFeatureFlagService = mock[FeatureFlagService]
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(
@@ -182,15 +182,6 @@ class IndexControllerSpec extends SpecBase {
             trustTaxable = Some(isTaxable)
           )
         ))
-
-      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
-        .thenReturn(Future.successful(is5mldEnabled))
-
-      when(mockTrustConnector.isTrust5mld(any())(any(), any()))
-        .thenReturn(Future.successful(isUnderlyingData5mld))
-
-      when(mockTrustConnector.getIsDeceasedSettlorDateOfDeathRecorded(any())(any(), any()))
-        .thenReturn(Future.successful(true))
 
       when(mockTrustConnector.getSettlors(any())(any(), any()))
         .thenReturn(Future.successful(
@@ -210,17 +201,18 @@ class IndexControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = None)
         .overrides(
           bind[TrustConnector].toInstance(mockTrustConnector),
-          bind[FeatureFlagService].toInstance(mockFeatureFlagService)
-        )
-        .build()
+          bind[TrustsStoreService].toInstance(mockTrustsStoreService)
+        ).build()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad("UTRUTRUTR").url)
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result) mustBe Some(controllers.individual.deceased.routes.CheckDetailsController.extractAndRender().url)
+
+      verify(mockTrustsStoreService).updateTaskStatus(eqTo(identifier), eqTo(InProgress))(any(), any())
 
       application.stop()
     }
