@@ -36,55 +36,60 @@ class TrustsStoreConnectorSpec extends SpecBase
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  "trusts store connector" must {
+  "trusts store connector" when {
 
-    "return OK with the current task status" in {
-      val application = applicationBuilder()
-        .configure(
-          Seq(
-            "microservice.services.trusts-store.port" -> server.port(),
-            "auditing.enabled" -> false
-          ): _*
-        ).build()
+    ".updateTaskStatus" must {
 
-      val connector = application.injector.instanceOf[TrustStoreConnector]
+      val url = "/trusts-store/maintain/tasks/update-settlors/123456789"
 
-      server.stubFor(
-        post(urlEqualTo("/trusts-store/maintain/tasks/update-settlors/123456789"))
-          .willReturn(ok())
-      )
+      "return OK with the current task status" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
 
-      val futureResult = connector.updateTaskStatus("123456789", Completed)
+        val connector = application.injector.instanceOf[TrustStoreConnector]
 
-      whenReady(futureResult) {
-        r =>
-          r.status mustBe 200
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(ok())
+        )
+
+        val futureResult = connector.updateTaskStatus("123456789", Completed)
+
+        whenReady(futureResult) {
+          r =>
+            r.status mustBe 200
+        }
+
+        application.stop()
       }
 
-      application.stop()
-    }
+      "return default tasks when a failure occurs" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
 
-    "return default tasks when a failure occurs" in {
-      val application = applicationBuilder()
-        .configure(
-          Seq(
-            "microservice.services.trusts-store.port" -> server.port(),
-            "auditing.enabled" -> false
-          ): _*
-        ).build()
+        val connector = application.injector.instanceOf[TrustStoreConnector]
 
-      val connector = application.injector.instanceOf[TrustStoreConnector]
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(serverError())
+        )
 
-      server.stubFor(
-        post(urlEqualTo("/trusts-store/maintain/tasks/update-settlors/123456789"))
-          .willReturn(serverError())
-      )
+        connector.updateTaskStatus("123456789", Completed) map { response =>
+          response.status mustBe 500
+        }
 
-      connector.updateTaskStatus("123456789", Completed) map { response =>
-        response.status mustBe 500
+        application.stop()
       }
-
-      application.stop()
     }
 
     ".getFeature" must {
