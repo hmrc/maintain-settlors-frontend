@@ -35,7 +35,6 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.mappers.DeceasedSettlorMapper
 import utils.print.DeceasedSettlorPrintHelper
-import viewmodels.AnswerSection
 import views.html.individual.deceased.CheckDetailsView
 
 import javax.inject.Inject
@@ -61,43 +60,36 @@ class CheckDetailsController @Inject()(
   private def render(userAnswers: UserAnswers,
                      name: String,
                      hasAdditionalSettlors: Boolean)(implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, name, hasAdditionalSettlors)
     Ok(view(
-      section,
-      name,
-      userAnswers.get(BpMatchStatusPage) match {
+      answerSection = printHelper(userAnswers, name, hasAdditionalSettlors),
+      name = name,
+      is01MatchStatus = userAnswers.get(BpMatchStatusPage) match {
         case Some(FullyMatched) => true
         case _ => false
       },
-      userAnswers.isDateOfDeathRecorded
+      isDateOfDeathRecorded = userAnswers.isDateOfDeathRecorded
     ))
   }
 
   def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
     implicit request =>
       trustsService.getSettlors(request.userAnswers.identifier) flatMap {
-        case Settlors(individuals, businesses, Some(deceased)) =>
-          val hasAdditionalSettlors = individuals.nonEmpty || businesses.nonEmpty
+        case settlors @ Settlors(_, _, Some(deceased)) =>
           for {
-            extractedAnswers <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(hasAdditionalSettlors)))
+            extractedAnswers <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(settlors.hasLivingSettlors)))
             _ <- playbackRepository.set(extractedAnswers)
           } yield {
-            render(extractedAnswers, deceased.name.displayName, hasAdditionalSettlors)
+            render(extractedAnswers, deceased.name.displayName, settlors.hasLivingSettlors)
           }
         case Settlors(_, _, None) =>
           throw new Exception("Deceased Settlor Information not found")
-
       }
   }
 
   def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
-      trustsService.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
-        Future.successful(render(
-          request.userAnswers,
-          request.settlorName,
-          settlors.hasLivingSettlors
-        ))
+      trustsService.getSettlors(request.userAnswers.identifier).map { settlors =>
+        render(request.userAnswers, request.settlorName, settlors.hasLivingSettlors)
       }
   }
 
@@ -109,10 +101,12 @@ class CheckDetailsController @Inject()(
         _ <- trustsConnector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor)
         settlors <- trustsService.getSettlors(request.userAnswers.identifier)
         isTaskComplete = !settlors.hasLivingSettlors && request.userAnswers.get(AdditionalSettlorsYesNoPage).contains(false)
-        _ <- if (isTaskComplete) {
-          trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
-        } else {
-          Future.successful(())
+        _ <- {
+          if (isTaskComplete) {
+            trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
+          } else {
+            Future.successful(())
+          }
         }
       } yield {
         if (isTaskComplete) {
