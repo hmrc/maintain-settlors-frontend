@@ -85,23 +85,26 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     }
 
     def passportDetailsQuestion(query: Gettable[Passport],
+                                provisional: Gettable[Boolean],
                                 labelKey: String,
                                 changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: Passport) => checkAnswersFormatters.formatPassportDetails(x)
+      val format = (x: Passport) => checkAnswersFormatters.formatPassportDetails(x, isProvisional(provisional))
       question(query, labelKey, format, changeUrl)
     }
 
     def idCardDetailsQuestion(query: Gettable[IdCard],
+                              provisional: Gettable[Boolean],
                               labelKey: String,
                               changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: IdCard) => checkAnswersFormatters.formatIdCardDetails(x)
+      val format = (x: IdCard) => checkAnswersFormatters.formatIdCardDetails(x, isProvisional(provisional))
       question(query, labelKey, format, changeUrl)
     }
 
     def passportOrIdCardDetailsQuestion(query: QuestionPage[CombinedPassportOrIdCard],
+                                        provisional: Gettable[Boolean],
                                         labelKey: String,
                                         changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
+      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x, isProvisional(provisional))
       question(query, labelKey, format, changeUrl)
     }
 
@@ -141,6 +144,10 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
           changeUrl = changeUrl
         )
       }
+    }
+
+    private def isProvisional(query: Gettable[Boolean]): Boolean = {
+      !userAnswers.get(query).contains(false)
     }
   }
 }

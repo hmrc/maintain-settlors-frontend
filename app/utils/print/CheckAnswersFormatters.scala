@@ -83,19 +83,26 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
   def country(code: String)(implicit messages: Messages): Html =
     escape(countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse(""))
 
-  def formatPassportDetails(passport: Passport)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(passport.asCombined)
+  def formatPassportDetails(passport: Passport, provisional: Boolean)(implicit messages: Messages): Html = {
+    formatPassportOrIdCardDetails(passport.asCombined, provisional)
   }
 
-  def formatIdCardDetails(idCard: IdCard)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(idCard.asCombined)
+  def formatIdCardDetails(idCard: IdCard, provisional: Boolean)(implicit messages: Messages): Html = {
+    formatPassportOrIdCardDetails(idCard.asCombined, provisional)
   }
 
-  def formatPassportOrIdCardDetails(passportOrIdCard: CombinedPassportOrIdCard)(implicit messages: Messages): Html = {
+  def formatPassportOrIdCardDetails(passportOrIdCard: CombinedPassportOrIdCard, provisional: Boolean)(implicit messages: Messages): Html = {
+
+    def formatNumber(number: String): String = if (provisional) {
+      number
+    } else {
+      messages("site.number-ending", number.takeRight(4))
+    }
+
     val lines =
       Seq(
         Some(country(passportOrIdCard.countryOfIssue)),
-        Some(escape(passportOrIdCard.number)),
+        Some(escape(formatNumber(passportOrIdCard.number))),
         Some(formatDate(passportOrIdCard.expirationDate))
       ).flatten
 
