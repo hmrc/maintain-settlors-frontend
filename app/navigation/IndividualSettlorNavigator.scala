@@ -40,7 +40,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case CountryOfNationalityPage => ua => navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable)
     case NationalInsuranceNumberPage => ua => navigateAwayFromNinoPages(mode, ua)
     case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidenceQuestions(mode, ua)
-    case UkAddressPage | NonUkAddressPage => _ => navigateToPassportDetails(mode)
+    case UkAddressPage | NonUkAddressPage => ua => navigateToPassportDetails(mode, ua)
     case PassportDetailsPage | IdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
     case PassportOrIdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
@@ -64,20 +64,20 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case AddressYesNoPage => ua =>
       yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), navigateToMentalCapacity(mode, ua))
     case PassportDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportDetailsYesNoPage, addRts.PassportDetailsController.onPageLoad(), addRts.IdCardDetailsYesNoController.onPageLoad())
+      yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(mode), rts.IdCardDetailsYesNoController.onPageLoad(mode))
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(), navigateToMentalCapacity(mode, ua))
+      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), navigateToMentalCapacity(mode, ua))
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(), navigateToMentalCapacity(mode, ua))
+      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), navigateToMentalCapacity(mode, ua))
     case MentalCapacityYesNoPage => ua =>
       yesNoNav(ua, MentalCapacityYesNoPage, navigateToStartDateOrCheckDetails(mode, ua), navigateToStartDateOrCheckDetails(mode, ua))
   }
 
-  private def navigateToPassportDetails(mode: Mode): Call = {
-    if (mode == NormalMode) {
-      addRts.PassportDetailsYesNoController.onPageLoad()
+  private def navigateToPassportDetails(mode: Mode, answers: UserAnswers): Call = {
+    if (answers.get(ProvisionalPage).contains(false)) {
+      rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
     } else {
-      amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+      rts.PassportDetailsYesNoController.onPageLoad(mode)
     }
   }
 

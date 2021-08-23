@@ -24,13 +24,13 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)
+  def apply(userAnswers: UserAnswers, adding: Boolean, settlorName: String)
            (implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, settlorName)
 
     def answerRows: Seq[AnswerRow] = {
-      val mode: Mode = if (provisional) NormalMode else CheckMode
+      val mode: Mode = if (adding) NormalMode else CheckMode
       Seq(
         bound.stringQuestion(NamePage, "businessSettlor.name", Some(controllers.business.routes.NameController.onPageLoad(mode).url)),
         bound.yesNoQuestion(UtrYesNoPage, "businessSettlor.utrYesNo", Some(controllers.business.routes.UtrYesNoController.onPageLoad(mode).url)),
@@ -44,7 +44,7 @@ class BusinessSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverte
         bound.addressQuestion(NonUkAddressPage, "businessSettlor.nonUkAddress", Some(controllers.business.routes.NonUkAddressController.onPageLoad(mode).url)),
         bound.companyTypeQuestion(CompanyTypePage, "businessSettlor.companyType", Some(controllers.business.routes.CompanyTypeController.onPageLoad(mode).url)),
         bound.yesNoQuestion(CompanyTimePage, "businessSettlor.companyTimeYesNo", Some(controllers.business.routes.CompanyTimeController.onPageLoad(mode).url)),
-        if (mode == NormalMode) bound.dateQuestion(StartDatePage, "businessSettlor.startDate", Some(controllers.business.routes.StartDateController.onPageLoad().url)) else None
+        if (adding) bound.dateQuestion(StartDatePage, "businessSettlor.startDate", Some(controllers.business.routes.StartDateController.onPageLoad().url)) else None
       ).flatten
     }
 

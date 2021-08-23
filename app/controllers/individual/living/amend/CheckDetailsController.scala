@@ -56,7 +56,7 @@ class CheckDetailsController @Inject()(
                      index: Int,
                      name: String)
                     (implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, provisional = false, name)
+    val section: AnswerSection = printHelper(userAnswers, adding = false, name)
     Ok(view(section, index))
   }
 

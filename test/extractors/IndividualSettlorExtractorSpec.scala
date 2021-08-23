@@ -73,9 +73,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
     result.get(LiveInTheUkYesNoPage) mustNot be(defined)
     result.get(UkAddressPage) mustNot be(defined)
     result.get(NonUkAddressPage) mustNot be(defined)
+    result.get(PassportDetailsYesNoPage) mustNot be(defined)
+    result.get(PassportDetailsPage) mustNot be(defined)
+    result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+    result.get(IdCardDetailsPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
+    result.get(ProvisionalPage).get mustBe true
   }
 
   "should populate user answers when individual has a passport" in {
@@ -119,6 +124,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
     result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
+    result.get(ProvisionalPage).get mustBe true
   }
 
   "should populate user answers when individual has an ID card" in {
@@ -162,6 +168,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
     result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
+    result.get(ProvisionalPage).get mustBe true
   }
 
   "should populate user answers when individual has a passport/ID card" in {
@@ -177,7 +184,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       address = Some(address),
       mentalCapacityYesNo = None,
       entityStart = date,
-      provisional = true
+      provisional = false
     )
 
     val result = extractor(answers, individual, Some(index)).get
@@ -198,9 +205,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
     result.get(LiveInTheUkYesNoPage).get mustBe true
     result.get(UkAddressPage).get mustBe address
     result.get(NonUkAddressPage) mustNot be(defined)
+    result.get(PassportDetailsYesNoPage) mustNot be(defined)
+    result.get(PassportDetailsPage) mustNot be(defined)
+    result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+    result.get(IdCardDetailsPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
     result.get(PassportOrIdCardDetailsPage).get mustBe combined
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
+    result.get(ProvisionalPage).get mustBe false
   }
 
   "should populate user answers when individual has no NINO or passport/ID card" in {
@@ -235,9 +247,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
     result.get(LiveInTheUkYesNoPage).get mustBe true
     result.get(UkAddressPage).get mustBe address
     result.get(NonUkAddressPage) mustNot be(defined)
+    result.get(PassportDetailsYesNoPage) mustNot be(defined)
+    result.get(PassportDetailsPage) mustNot be(defined)
+    result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+    result.get(IdCardDetailsPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsYesNoPage).get mustBe false
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
+    result.get(ProvisionalPage).get mustBe true
   }
 
   "should populate user answers when individual has no identification or address" in {
@@ -272,9 +289,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
     result.get(LiveInTheUkYesNoPage) mustNot be(defined)
     result.get(UkAddressPage) mustNot be(defined)
     result.get(NonUkAddressPage) mustNot be(defined)
+    result.get(PassportDetailsYesNoPage) mustNot be(defined)
+    result.get(PassportDetailsPage) mustNot be(defined)
+    result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+    result.get(IdCardDetailsPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
     result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     result.get(MentalCapacityYesNoPage) mustNot be(defined)
+    result.get(ProvisionalPage).get mustBe true
   }
 
   "should populate user answers when an individual has extra 5mld data" when {
@@ -315,9 +337,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(LiveInTheUkYesNoPage) mustNot be(defined)
       result.get(UkAddressPage) mustNot be(defined)
       result.get(NonUkAddressPage) mustNot be(defined)
+      result.get(PassportDetailsYesNoPage) mustNot be(defined)
+      result.get(PassportDetailsPage) mustNot be(defined)
+      result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
       result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(ProvisionalPage).get mustBe true
     }
 
     "with non UK country of Nationality and Residence" in {
@@ -356,9 +383,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(LiveInTheUkYesNoPage) mustNot be(defined)
       result.get(UkAddressPage) mustNot be(defined)
       result.get(NonUkAddressPage) mustNot be(defined)
+      result.get(PassportDetailsYesNoPage) mustNot be(defined)
+      result.get(PassportDetailsPage) mustNot be(defined)
+      result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
       result.get(MentalCapacityYesNoPage).get mustBe false
+      result.get(ProvisionalPage).get mustBe true
     }
 
     "with unknown country of Nationality and Residence" in {
@@ -397,9 +429,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(LiveInTheUkYesNoPage) mustNot be(defined)
       result.get(UkAddressPage) mustNot be(defined)
       result.get(NonUkAddressPage) mustNot be(defined)
+      result.get(PassportDetailsYesNoPage) mustNot be(defined)
+      result.get(PassportDetailsPage) mustNot be(defined)
+      result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
       result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(ProvisionalPage).get mustBe true
     }
   }
 
@@ -439,9 +476,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(LiveInTheUkYesNoPage) mustNot be(defined)
       result.get(UkAddressPage) mustNot be(defined)
       result.get(NonUkAddressPage) mustNot be(defined)
+      result.get(PassportDetailsYesNoPage) mustNot be(defined)
+      result.get(PassportDetailsPage) mustNot be(defined)
+      result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
       result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(ProvisionalPage).get mustBe true
     }
 
     "with non UK country of Nationality and Residence" in {
@@ -478,9 +520,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(LiveInTheUkYesNoPage) mustNot be(defined)
       result.get(UkAddressPage) mustNot be(defined)
       result.get(NonUkAddressPage) mustNot be(defined)
+      result.get(PassportDetailsYesNoPage) mustNot be(defined)
+      result.get(PassportDetailsPage) mustNot be(defined)
+      result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
       result.get(MentalCapacityYesNoPage).get mustBe false
+      result.get(ProvisionalPage).get mustBe true
     }
 
     "with unknown country of Nationality and Residence" in {
@@ -517,9 +564,14 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(LiveInTheUkYesNoPage) mustNot be(defined)
       result.get(UkAddressPage) mustNot be(defined)
       result.get(NonUkAddressPage) mustNot be(defined)
+      result.get(PassportDetailsYesNoPage) mustNot be(defined)
+      result.get(PassportDetailsPage) mustNot be(defined)
+      result.get(IdCardDetailsYesNoPage) mustNot be(defined)
+      result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
       result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(ProvisionalPage).get mustBe true
     }
   }
 }

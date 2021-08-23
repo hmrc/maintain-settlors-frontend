@@ -39,6 +39,7 @@ class IndividualSettlorExtractor extends SettlorExtractor[IndividualSettlor] {
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
       .flatMap(_.set(MentalCapacityYesNoPage, individual.mentalCapacityYesNo))
+      .flatMap(_.set(ProvisionalPage, individual.provisional))
 
   private def extractDateOfBirth(individual: IndividualSettlor, answers: UserAnswers): Try[UserAnswers] = {
     extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
