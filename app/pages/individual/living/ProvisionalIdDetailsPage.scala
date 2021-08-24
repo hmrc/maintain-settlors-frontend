@@ -19,9 +19,9 @@ package pages.individual.living
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object ProvisionalPage extends QuestionPage[Boolean] {
+case object ProvisionalIdDetailsPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "provisional"
+  override def toString: String = "provisionalIdDetails"
 }

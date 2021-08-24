@@ -74,7 +74,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
   }
 
   private def navigateToPassportDetails(mode: Mode, answers: UserAnswers): Call = {
-    if (answers.get(ProvisionalPage).contains(false)) {
+    if (answers.get(ProvisionalIdDetailsPage).contains(false)) {
       rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
     } else {
       rts.PassportDetailsYesNoController.onPageLoad(mode)

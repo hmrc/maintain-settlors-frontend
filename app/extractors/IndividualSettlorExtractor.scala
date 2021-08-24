@@ -17,7 +17,7 @@
 package extractors
 
 import models.settlors.IndividualSettlor
-import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.QuestionPage
 import pages.individual.living._
 import play.api.libs.json.JsPath
@@ -39,7 +39,7 @@ class IndividualSettlorExtractor extends SettlorExtractor[IndividualSettlor] {
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
       .flatMap(_.set(MentalCapacityYesNoPage, individual.mentalCapacityYesNo))
-      .flatMap(_.set(ProvisionalPage, individual.provisional))
+      .flatMap(answers => extractIfIdDetailsAreProvisional(individual.identification, answers))
 
   private def extractDateOfBirth(individual: IndividualSettlor, answers: UserAnswers): Try[UserAnswers] = {
     extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
@@ -79,6 +79,18 @@ class IndividualSettlorExtractor extends SettlorExtractor[IndividualSettlor] {
     } else {
       Success(answers)
     }
+  }
+
+  // `identification` is an instance of CombinedPassportOrIdCard => not added in session (i.e. not provisional)
+  // `identification` is an instance of Passport or IdCard => added in session (i.e. provisional)
+  // `identification` is empty or an instance of NationalInsuranceNumber => nothing to set
+  private def extractIfIdDetailsAreProvisional(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
+    val provisional: Option[Boolean] = identification match {
+      case Some(_: CombinedPassportOrIdCard) => Some(false)
+      case Some(_: Passport) | Some(_: IdCard) => Some(true)
+      case _ => None
+    }
+    answers.set(ProvisionalIdDetailsPage, provisional)
   }
 
   override def countryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityYesNoPage

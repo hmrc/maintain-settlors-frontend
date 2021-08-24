@@ -90,7 +90,7 @@ class IndividualSettlorPrintHelperSpec extends SpecBase {
         val userAnswers = baseAnswers
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
           .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
-          .set(ProvisionalPage, false).success.value
+          .set(ProvisionalIdDetailsPage, false).success.value
 
         val result = helper(userAnswers, adding = false, name.displayName)
         result mustBe AnswerSection(
