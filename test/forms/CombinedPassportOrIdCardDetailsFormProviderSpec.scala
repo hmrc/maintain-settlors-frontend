@@ -16,12 +16,12 @@
 
 package forms
 
-import java.time.LocalDate
-
 import base.FakeTrustsApp
 import forms.behaviours.PassportOrIdCardFieldBehaviours
 import models.CombinedPassportOrIdCard
 import play.api.data.{Form, FormError}
+
+import java.time.LocalDate
 
 class CombinedPassportOrIdCardDetailsFormProviderSpec extends PassportOrIdCardFieldBehaviours with FakeTrustsApp {
 
