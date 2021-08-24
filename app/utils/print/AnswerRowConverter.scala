@@ -85,26 +85,23 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     }
 
     def passportDetailsQuestion(query: Gettable[Passport],
-                                provisional: Gettable[Boolean],
                                 labelKey: String,
                                 changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: Passport) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined, isProvisional(provisional))
+      val format = (x: Passport) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined)
       question(query, labelKey, format, changeUrl)
     }
 
     def idCardDetailsQuestion(query: Gettable[IdCard],
-                              provisional: Gettable[Boolean],
                               labelKey: String,
                               changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: IdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined, isProvisional(provisional))
+      val format = (x: IdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined)
       question(query, labelKey, format, changeUrl)
     }
 
     def passportOrIdCardDetailsQuestion(query: QuestionPage[CombinedPassportOrIdCard],
-                                        provisional: Gettable[Boolean],
                                         labelKey: String,
                                         changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x, isProvisional(provisional))
+      val format = (x: CombinedPassportOrIdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x)
       question(query, labelKey, format, changeUrl)
     }
 
@@ -144,10 +141,6 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
           changeUrl = changeUrl
         )
       }
-    }
-
-    private def isProvisional(query: Gettable[Boolean]): Boolean = {
-      !userAnswers.get(query).contains(false)
     }
   }
 }

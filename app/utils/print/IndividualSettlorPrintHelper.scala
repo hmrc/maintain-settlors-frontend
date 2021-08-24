@@ -50,11 +50,11 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(mode).url)),
         bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(mode).url)),
         bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(rts.PassportDetailsYesNoController.onPageLoad(mode).url)),
-        bound.passportDetailsQuestion(PassportDetailsPage, ProvisionalIdDetailsPage, "livingSettlor.passportDetails", Some(rts.PassportDetailsController.onPageLoad(mode).url)),
+        bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(rts.PassportDetailsController.onPageLoad(mode).url)),
         bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(rts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, ProvisionalIdDetailsPage, "livingSettlor.idCardDetails", Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
         bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
-        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, ProvisionalIdDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
         bound.yesNoQuestion(MentalCapacityYesNoPage, "livingSettlor.mentalCapacityYesNo", Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url)),
         if (adding) bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url)) else None
       ).flatten
