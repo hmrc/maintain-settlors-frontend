@@ -75,7 +75,8 @@ class IndividualSettlorExtractor extends SettlorExtractor[IndividualSettlor] {
 
   private def extractPassportOrIdCardDetailsYesNo(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
     if (address.isDefined) {
-      answers.set(PassportOrIdCardDetailsYesNoPage, false)
+      answers.set(PassportDetailsYesNoPage, false)
+        .flatMap(_.set(IdCardDetailsYesNoPage, false))
     } else {
       Success(answers)
     }
