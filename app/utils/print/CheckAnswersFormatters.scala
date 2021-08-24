@@ -16,7 +16,7 @@
 
 package utils.print
 
-import models.{Address, CombinedPassportOrIdCard, IdCard, NonUkAddress, Passport, UkAddress}
+import models.{Address, CombinedPassportOrIdCard, NonUkAddress, UkAddress}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.escape
@@ -82,14 +82,6 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
 
   def country(code: String)(implicit messages: Messages): Html =
     escape(countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse(""))
-
-  def formatPassportDetails(passport: Passport, provisional: Boolean)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(passport.asCombined, provisional)
-  }
-
-  def formatIdCardDetails(idCard: IdCard, provisional: Boolean)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(idCard.asCombined, provisional)
-  }
 
   def formatPassportOrIdCardDetails(passportOrIdCard: CombinedPassportOrIdCard, provisional: Boolean)(implicit messages: Messages): Html = {
 

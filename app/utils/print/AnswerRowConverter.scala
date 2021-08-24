@@ -88,7 +88,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                                 provisional: Gettable[Boolean],
                                 labelKey: String,
                                 changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: Passport) => checkAnswersFormatters.formatPassportDetails(x, isProvisional(provisional))
+      val format = (x: Passport) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined, isProvisional(provisional))
       question(query, labelKey, format, changeUrl)
     }
 
@@ -96,7 +96,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                               provisional: Gettable[Boolean],
                               labelKey: String,
                               changeUrl: Option[String]): Option[AnswerRow] = {
-      val format = (x: IdCard) => checkAnswersFormatters.formatIdCardDetails(x, isProvisional(provisional))
+      val format = (x: IdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined, isProvisional(provisional))
       question(query, labelKey, format, changeUrl)
     }
 
