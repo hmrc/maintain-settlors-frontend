@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package views.individual.living.amend
+package views.individual.living
 
-import base.FakeTrustsApp
-import controllers.individual.living.amend.routes
-import forms.CombinedPassportOrIdCardDetailsFormProvider
-import models.{CombinedPassportOrIdCard, Name}
+import controllers.individual.living.routes
+import forms.PassportDetailsFormProvider
+import models.{Mode, Name, NormalMode, Passport}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptions
 import views.behaviours.QuestionViewBehaviours
-import views.html.individual.living.amend.PassportOrIdCardDetailsView
+import views.html.individual.living.PassportDetailsView
 
-class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPassportOrIdCard] with FakeTrustsApp {
+class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
 
-  private val messageKeyPrefix: String = "livingSettlor.passportOrIdCardDetails"
-  private val name: Name = Name("First", Some("Middle"), "Last")
+  val messageKeyPrefix = "livingSettlor.passportDetails"
+  val name: Name = Name("First", Some("Middle"), "Last")
+  val mode: Mode = NormalMode
 
-  override val form: Form[CombinedPassportOrIdCard] = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
+  override val form: Form[Passport] = new PassportDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
-  "PassportOrIdCardDetails View" must {
+  "PassportDetails view" must {
 
-    val view = viewFor[PassportOrIdCardDetailsView](Some(emptyUserAnswers))
+    val view = viewFor[PassportDetailsView](Some(emptyUserAnswers))
 
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name.displayName, countryOptions)(fakeRequest, messages)
+      view.apply(form, mode, countryOptions, name.displayName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
@@ -53,7 +53,7 @@ class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPas
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportOrIdCardDetailsController.onSubmit().url,
+        routes.PassportDetailsController.onSubmit(mode).url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

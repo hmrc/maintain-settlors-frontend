@@ -77,6 +77,7 @@ site.address.nonUk.line2=Cyfeiriad – llinell 2
 site.address.nonUk.line3=Cyfeiriad - llinell 3 (dewisol)
 site.address.nonUk.country=Gwlad
 site.sign_in=Mewngofnodi
+site.number-ending = Rhif sy’n gorffen gyda {0}
 
 site.address.country.select=Dewiswch wlad
 

@@ -16,11 +16,12 @@
 
 package utils.mappers
 
-import java.time.LocalDate
 import base.SpecBase
 import models.Constant.GB
 import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress}
 import pages.individual.living._
+
+import java.time.LocalDate
 
 class IndividualSettlorMapperSpec extends SpecBase {
 
@@ -121,7 +122,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
 
       result.name mustBe name
       result.dateOfBirth mustBe Some(dateOfBirth)
-      result.identification mustBe Some(passport)
+      result.identification mustBe Some(passport.asCombined)
       result.address mustBe Some(nonUkAddress)
       result.entityStart mustBe startDate
     }
@@ -147,7 +148,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
 
       result.name mustBe name
       result.dateOfBirth mustBe Some(dateOfBirth)
-      result.identification mustBe Some(idcard)
+      result.identification mustBe Some(idcard.asCombined)
       result.address mustBe Some(ukAddress)
       result.entityStart mustBe startDate
     }

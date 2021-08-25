@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.individual.living.add
+package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.YesNoFormProvider
-import javax.inject.Inject
-import models.NormalMode
+import models.Mode
 import navigation.Navigator
 import pages.individual.living.IdCardDetailsYesNoPage
 import play.api.data.Form
@@ -29,8 +28,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.individual.living.add.IdCardDetailsYesNoView
+import views.html.individual.living.IdCardDetailsYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdCardDetailsYesNoController @Inject()(
@@ -46,7 +46,7 @@ class IdCardDetailsYesNoController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("livingSettlor.idCardDetailsYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IdCardDetailsYesNoPage) match {
@@ -54,21 +54,21 @@ class IdCardDetailsYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.settlorName))
+      Ok(view(preparedForm, mode, request.settlorName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.settlorName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsYesNoPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, mode, updatedAnswers))
       )
   }
 }

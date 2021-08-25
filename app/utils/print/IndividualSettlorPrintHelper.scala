@@ -18,7 +18,6 @@ package utils.print
 
 import com.google.inject.Inject
 import controllers.individual.living.add.{routes => addRts}
-import controllers.individual.living.amend.{routes => amendRts}
 import controllers.individual.living.{routes => rts}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.individual.living._
@@ -27,13 +26,13 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, settlorName: String)
+  def apply(userAnswers: UserAnswers, adding: Boolean, settlorName: String)
            (implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, settlorName)
 
     def answerRows: Seq[AnswerRow] = {
-      val mode: Mode = if (provisional) NormalMode else CheckMode
+      val mode: Mode = if (adding) NormalMode else CheckMode
       Seq(
         bound.nameQuestion(NamePage, "livingSettlor.name", Some(rts.NameController.onPageLoad(mode).url)),
         bound.yesNoQuestion(DateOfBirthYesNoPage, "livingSettlor.dateOfBirthYesNo", Some(rts.DateOfBirthYesNoController.onPageLoad(mode).url)),
@@ -50,14 +49,14 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.yesNoQuestion(LiveInTheUkYesNoPage, "livingSettlor.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
         bound.addressQuestion(UkAddressPage, "livingSettlor.ukAddress", Some(rts.UkAddressController.onPageLoad(mode).url)),
         bound.addressQuestion(NonUkAddressPage, "livingSettlor.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-        if (mode == NormalMode) bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(addRts.PassportDetailsYesNoController.onPageLoad().url)) else None,
-        if (mode == NormalMode) bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(addRts.PassportDetailsController.onPageLoad().url)) else None,
-        if (mode == NormalMode) bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(addRts.IdCardDetailsYesNoController.onPageLoad().url)) else None,
-        if (mode == NormalMode) bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(addRts.IdCardDetailsController.onPageLoad().url)) else None,
-        if (mode == CheckMode) bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)) else None,
-        if (mode == CheckMode) bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(amendRts.PassportOrIdCardDetailsController.onPageLoad().url)) else None,
+        bound.yesNoQuestion(PassportDetailsYesNoPage, "livingSettlor.passportDetailsYesNo", Some(rts.PassportDetailsYesNoController.onPageLoad(mode).url)),
+        bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(rts.PassportDetailsController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(rts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
         bound.yesNoQuestion(MentalCapacityYesNoPage, "livingSettlor.mentalCapacityYesNo", Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url)),
-        if (mode == NormalMode) bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url)) else None
+        if (adding) bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url)) else None
       ).flatten
     }
 

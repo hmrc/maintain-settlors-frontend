@@ -14,9 +14,10 @@
  * limitations under the License.
  *@
 
-@import controllers.individual.living.add.routes._
+@import controllers.individual.living.routes._
+@import models.DetailsType
 @import utils.InputOption
-@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton, InputHidden}
 
 @this(
     main_template: MainTemplate,
@@ -26,24 +27,26 @@
     inputSelect: InputSelect,
     inputText: InputText,
     inputDate: InputDate,
+    inputHidden: InputHidden,
     submitButton: SubmitButton
 )
 
-@(form: Form[_], countryOptions: Seq[InputOption], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String, countryOptions: Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("livingSettlor.idCardDetails.title")}",
+    title = s"${errorPrefix(form)}${messages("livingSettlor.passportOrIdCardDetails.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = IdCardDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = PassportOrIdCardDetailsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
-        @heading("livingSettlor.idCardDetails.heading", Some(name))
+        @heading("livingSettlor.passportOrIdCardDetails.heading", Some(name))
 
-        @inputSelect(field = form("country"),
-            label = messages("livingSettlor.idCardDetails.country"),
+        @inputSelect(
+            field = form("country"),
+            label = messages("livingSettlor.passportOrIdCardDetails.country"),
             labelClasses = Set("bold"),
             options = countryOptions,
             placeholder = Some(messages("site.address.country.select")),
@@ -53,17 +56,21 @@
 
         @inputText(
             field = form("number"),
-            label = messages("livingSettlor.idCardDetails.number"),
-            labelClass = Some("govuk-!-width-one-half"),
-            hint = Some(messages("livingSettlor.idCardDetails.number.hint"))
+            inputClass = Some("govuk-!-width-one-half"),
+            label = messages("livingSettlor.passportOrIdCardDetails.number")
         )
 
         @inputDate(
             field = form("expiryDate"),
-            legend = messages("livingSettlor.idCardDetails.expiryDate"),
+            legend = messages("livingSettlor.passportOrIdCardDetails.expiryDate.title"),
             legendClass = "bold",
-            hint = Some(messages("livingSettlor.idCardDetails.expiryDate.hint")),
-            legendAsHeading = false
+            legendAsHeading = false,
+            hint = Some(messages(s"livingSettlor.passportOrIdCardDetails.expiryDate.hint"))
+        )
+
+        @inputHidden(
+            field = form("detailsType"),
+            defaultValue = Some(DetailsType.Combined.toString)
         )
 
         @submitButton()

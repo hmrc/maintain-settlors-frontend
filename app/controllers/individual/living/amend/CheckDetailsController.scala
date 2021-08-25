@@ -56,7 +56,7 @@ class CheckDetailsController @Inject()(
                      index: Int,
                      name: String)
                     (implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, provisional = false, name)
+    val section: AnswerSection = printHelper(userAnswers, adding = false, name)
     Ok(view(section, index))
   }
 
@@ -64,17 +64,17 @@ class CheckDetailsController @Inject()(
     implicit request =>
 
       service.getIndividualSettlor(request.userAnswers.identifier, index) flatMap {
-        trust =>
+        settlor =>
           for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, trust, Some(index)))
+            extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, Some(index)))
             _ <- playbackRepository.set(extractedF)
           } yield {
-            render(extractedF, index, trust.name.displayName)
+            render(extractedF, index, settlor.name.displayName)
           }
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
       render(request.userAnswers, index, request.settlorName)
   }

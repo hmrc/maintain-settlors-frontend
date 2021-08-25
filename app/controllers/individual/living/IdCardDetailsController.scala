@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.individual.living.add
+package controllers.individual.living
 
 import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.IdCardDetailsFormProvider
-import javax.inject.Inject
-import models.{IdCard, NormalMode}
+import models.{IdCard, Mode}
 import navigation.Navigator
 import pages.individual.living.IdCardDetailsPage
 import play.api.data.Form
@@ -30,8 +29,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
-import views.html.individual.living.add.IdCardDetailsView
+import views.html.individual.living.IdCardDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IdCardDetailsController @Inject()(
@@ -48,7 +48,7 @@ class IdCardDetailsController @Inject()(
 
   private val form: Form[IdCard] = formProvider.withPrefix("livingSettlor")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(IdCardDetailsPage) match {
@@ -56,21 +56,21 @@ class IdCardDetailsController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, request.settlorName))
+      Ok(view(preparedForm, mode, countryOptions.options, request.settlorName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.settlorName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options, request.settlorName))),
 
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsPage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(IdCardDetailsPage, mode, updatedAnswers))
       )
   }
 }
