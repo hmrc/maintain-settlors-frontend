@@ -20,6 +20,7 @@ import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.CombinedPassportOrIdCardDetailsFormProvider
+import models.DetailsType._
 import models.{CombinedPassportOrIdCard, Mode}
 import navigation.Navigator
 import pages.individual.living.PassportOrIdCardDetailsPage
@@ -66,10 +67,12 @@ class PassportOrIdCardDetailsController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, request.settlorName, countryOptions.options))),
 
-        value =>
+        newAnswer =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, value))
-            _              <- playbackRepository.set(updatedAnswers)
+            oldAnswer <- Future.successful(request.userAnswers.get(PassportOrIdCardDetailsPage))
+            detailsType = if (oldAnswer.contains(newAnswer)) Combined else CombinedProvisional
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, newAnswer.copy(detailsType = detailsType)))
+            _ <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, mode, updatedAnswers))
       )
   }
