@@ -16,7 +16,7 @@
 
 package pages.individal.living
 
-import models.{CombinedPassportOrIdCard, IdCard, Passport}
+import models.{IdCard, Passport}
 import pages.behaviours.PageBehaviours
 import pages.individual.living._
 
@@ -36,28 +36,20 @@ class PassportDetailsYesNoPageSpec extends PageBehaviours {
       val userAnswers = emptyUserAnswers
         .set(IdCardDetailsYesNoPage, true).success.value
         .set(IdCardDetailsPage, IdCard("FR", "num", LocalDate.parse("2020-01-01"))).success.value
-        .set(PassportOrIdCardDetailsYesNoPage, true).success.value
-        .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("FR", "num", LocalDate.parse("2020-01-01"))).success.value
 
       val result = userAnswers.set(PassportDetailsYesNoPage, true).success.value
 
       result.get(IdCardDetailsYesNoPage) mustNot be(defined)
       result.get(IdCardDetailsPage) mustNot be(defined)
-      result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
-      result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     }
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
         .set(PassportDetailsPage, Passport("FR", "num", LocalDate.parse("2020-01-01"))).success.value
-        .set(PassportOrIdCardDetailsYesNoPage, true).success.value
-        .set(PassportOrIdCardDetailsPage, CombinedPassportOrIdCard("FR", "num", LocalDate.parse("2020-01-01"))).success.value
 
       val result = userAnswers.set(PassportDetailsYesNoPage, false).success.value
 
       result.get(PassportDetailsPage) mustNot be(defined)
-      result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
-      result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
     }
   }
 }
