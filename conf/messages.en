@@ -419,7 +419,12 @@ businessSettlor.nonUkAddress.heading = What is {0}’s address?
 businessSettlor.companyType.checkYourAnswersLabel = What kind of business is {0}?
 businessSettlor.companyType.title = What kind of business is the settlor?
 businessSettlor.companyType.heading = What kind of business is {0}?
-businessSettlor.companyType.error.required = Select what kind of business the settlor is
+businessSettlor.companyType.p1 = A trading business carries out a profession or vocation for profit.
+businessSettlor.companyType.p2 = An investment business either operates for a reason outside of profit, or is mostly involved in:
+businessSettlor.companyType.bullet1 = dealing in securities, stocks and shares
+businessSettlor.companyType.bullet2 = dealing in land or buildings
+businessSettlor.companyType.bullet3 = making or holding of investments
+businessSettlor.companyType.error.required = Select if the business is a trading, or investment business
 
 companyType.Trading = Trading
 companyType.Investment = Investment
