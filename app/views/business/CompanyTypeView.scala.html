@@ -15,14 +15,15 @@
  *@
 
 @import controllers.business.routes._
-@import viewmodels.RadioOption
 @import models.CompanyType
-@import views.html.components.{ErrorSummary, InputRadio, SubmitButton}
+@import views.html.components.{BulletList, ErrorSummary, Heading, InputRadio, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     errorSummary: ErrorSummary,
+    heading: Heading,
+    bulletList: BulletList,
     inputRadio: InputRadio,
     submitButton: SubmitButton
 )
@@ -38,12 +39,24 @@
 
         @errorSummary(form.errors, CompanyType.options)
 
+        @heading(messages("businessSettlor.companyType.heading", name))
+
+        <p>@messages("businessSettlor.companyType.p1")</p>
+
+        <p>@messages("businessSettlor.companyType.p2")</p>
+
+        @bulletList("businessSettlor.companyType", Seq(
+            "bullet1",
+            "bullet2",
+            "bullet3"
+        ))
+
         @inputRadio(
             field = form("value"),
             legend = messages("businessSettlor.companyType.heading", name),
-            legendClass = Some("govuk-heading-l"),
             inputs = mapRadioOptionsToRadioItems(form("value"), false, CompanyType.options),
-            legendAsHeading = true,
+            legendAsHeading = false,
+            legendClass = Some("govuk-visually-hidden"),
             inline = true
         )
 
