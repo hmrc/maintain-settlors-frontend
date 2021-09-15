@@ -57,7 +57,6 @@ trait UserAnswersGenerator extends TryValues {
           case (obj, (path, value)) =>
             obj.setObject(path.path, value).get
         },
-        is5mldEnabled = false,
         isTaxable = true,
         isUnderlyingData5mld = false,
         migratingFromNonTaxableToTaxable = false

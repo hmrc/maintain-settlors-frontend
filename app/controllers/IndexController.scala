@@ -48,7 +48,6 @@ class IndexController @Inject()(
 
       for {
         details <- trustsConnector.getTrustDetails(identifier)
-        is5mldEnabled <- trustsStoreService.is5mldEnabled()
         isUnderlyingData5mld <- trustsConnector.isTrust5mld(identifier)
         allSettlors <- trustsConnector.getSettlors(identifier)
         isDateOfDeathRecorded <- trustsConnector.getIsDeceasedSettlorDateOfDeathRecorded(identifier)
@@ -59,7 +58,6 @@ class IndexController @Inject()(
               trustType = details.typeOfTrust,
               deedOfVariation = details.deedOfVariation,
               isDateOfDeathRecorded = isDateOfDeathRecorded,
-              is5mldEnabled = is5mldEnabled,
               isTaxable = details.isTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld,
               migratingFromNonTaxableToTaxable = taxableMigrationFlag.migratingFromNonTaxableToTaxable
@@ -71,7 +69,6 @@ class IndexController @Inject()(
               trustType = details.typeOfTrust,
               deedOfVariation = details.deedOfVariation,
               isDateOfDeathRecorded = isDateOfDeathRecorded,
-              is5mldEnabled = is5mldEnabled,
               isTaxable = details.isTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld,
               migratingFromNonTaxableToTaxable = taxableMigrationFlag.migratingFromNonTaxableToTaxable

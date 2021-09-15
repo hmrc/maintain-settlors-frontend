@@ -28,256 +28,10 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
 
   "Business settlor navigator" when {
 
-    "4mld" must {
-      "add journey navigation" must {
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
-        val employeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(EmployeeRelated))
-        val nonEmployeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(HeritageTrust))
-        val mode = NormalMode
-
-        "Name page -> Do you know UTR page" in {
-          navigator.nextPage(NamePage, mode, baseAnswers)
-            .mustBe(controllers.business.routes.UtrYesNoController.onPageLoad(mode))
-        }
-
-        "Do you know UTR page -> Yes -> UTR page" in {
-          val answers = baseAnswers
-            .set(UtrYesNoPage, true).success.value
-
-          navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.UtrController.onPageLoad(mode))
-        }
-
-        "UTR page -> (Employee-related trust) -> Company type page" in {
-          val answers = employeeRelatedTrustAnswers
-            .set(UtrYesNoPage, true).success.value
-
-          navigator.nextPage(UtrPage, mode, answers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "UTR page -> (No Trust Type) -> Start date page" in {
-          val answers = baseAnswers
-            .set(UtrYesNoPage, true).success.value
-
-          navigator.nextPage(UtrPage, mode, answers)
-            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
-        }
-
-        "UTR page -> (Non-employee-related trust) -> Start date page" in {
-          val answers = nonEmployeeRelatedTrustAnswers
-            .set(UtrYesNoPage, true).success.value
-
-          navigator.nextPage(UtrPage, mode, answers)
-            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
-        }
-
-        "Do you know UTR page -> No -> Do you know address page" in {
-          val answers = baseAnswers
-            .set(UtrYesNoPage, false).success.value
-
-          navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.AddressYesNoController.onPageLoad(mode))
-        }
-
-        "Do you know address page -> Yes -> Is address in UK page" in {
-          val answers = baseAnswers
-            .set(AddressYesNoPage, true).success.value
-
-          navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode))
-        }
-
-        "Do you know address page -> No (Employee-related trust) -> Company Type page" in {
-          val answers = employeeRelatedTrustAnswers
-            .set(AddressYesNoPage, false).success.value
-
-          navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "Do you know address page -> No (Non-employee-related trust) -> Start Date page" in {
-          val answers = nonEmployeeRelatedTrustAnswers
-            .set(AddressYesNoPage, false).success.value
-
-          navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
-        }
-
-        "Is address in UK page -> Yes -> UK address page" in {
-          val answers = baseAnswers
-            .set(LiveInTheUkYesNoPage, true).success.value
-
-          navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.UkAddressController.onPageLoad(mode))
-        }
-
-        "Is address in UK page -> No -> Non-UK address page" in {
-          val answers = baseAnswers
-            .set(LiveInTheUkYesNoPage, false).success.value
-
-          navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.NonUkAddressController.onPageLoad(mode))
-        }
-
-        "UK address page -> (Employee-related trust) -> Company type page" in {
-          navigator.nextPage(UkAddressPage, mode, employeeRelatedTrustAnswers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "UK address page -> (Non-employee-related trust) -> Start date page" in {
-          navigator.nextPage(UkAddressPage, mode, nonEmployeeRelatedTrustAnswers)
-            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
-        }
-
-        "Non-UK address page -> (Employee-related trust) -> Company type page" in {
-          navigator.nextPage(NonUkAddressPage, mode, employeeRelatedTrustAnswers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "Non-UK address page -> (Non-employee-related trust) -> Start date page" in {
-          navigator.nextPage(NonUkAddressPage, mode, nonEmployeeRelatedTrustAnswers)
-            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
-        }
-
-        "Company type page -> Company time page" in {
-          navigator.nextPage(CompanyTypePage, mode, baseAnswers)
-            .mustBe(controllers.business.routes.CompanyTimeController.onPageLoad(mode))
-        }
-
-        "Company time page -> Start date page" in {
-          navigator.nextPage(CompanyTimePage, mode, baseAnswers)
-            .mustBe(controllers.business.routes.StartDateController.onPageLoad())
-        }
-
-        "Start date page -> Check details page" in {
-          navigator.nextPage(StartDatePage, mode, baseAnswers)
-            .mustBe(controllers.business.add.routes.CheckDetailsController.onPageLoad())
-        }
-      }
-
-      "amend journey navigation" must {
-
-        val mode = CheckMode
-        val index = 0
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
-          .set(IndexPage, index).success.value
-        val employeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(EmployeeRelated))
-        val nonEmployeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(HeritageTrust))
-
-        "Name page -> Do you know UTR page" in {
-          navigator.nextPage(NamePage, mode, baseAnswers)
-            .mustBe(controllers.business.routes.UtrYesNoController.onPageLoad(mode))
-        }
-
-        "Do you know UTR page -> Yes -> UTR page" in {
-          val answers = baseAnswers
-            .set(UtrYesNoPage, true).success.value
-
-          navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.UtrController.onPageLoad(mode))
-        }
-
-        "UTR page -> (Employee-related trust) -> Company type page" in {
-          val answers = employeeRelatedTrustAnswers
-            .set(UtrYesNoPage, true).success.value
-
-          navigator.nextPage(UtrPage, mode, answers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "UTR page -> (Non-employee-related trust) -> Check details page" in {
-          val answers = nonEmployeeRelatedTrustAnswers
-            .set(UtrYesNoPage, true).success.value
-
-          navigator.nextPage(UtrPage, mode, answers)
-            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
-        }
-
-        "Do you know UTR page -> No -> Do you know address page" in {
-          val answers = baseAnswers
-            .set(UtrYesNoPage, false).success.value
-
-          navigator.nextPage(UtrYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.AddressYesNoController.onPageLoad(mode))
-        }
-
-        "Do you know address page -> Yes -> Is address in UK page" in {
-          val answers = baseAnswers
-            .set(AddressYesNoPage, true).success.value
-
-          navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.LiveInTheUkYesNoController.onPageLoad(mode))
-        }
-
-        "Do you know address page -> No (Employee-related trust) -> Company Type page" in {
-          val answers = employeeRelatedTrustAnswers
-            .set(AddressYesNoPage, false).success.value
-
-          navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "Do you know address page -> No (Non-employee-related trust) -> Check details page" in {
-          val answers = nonEmployeeRelatedTrustAnswers
-            .set(AddressYesNoPage, false).success.value
-
-          navigator.nextPage(AddressYesNoPage, mode, answers)
-            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
-        }
-
-        "Is address in UK page -> Yes -> UK address page" in {
-          val answers = baseAnswers
-            .set(LiveInTheUkYesNoPage, true).success.value
-
-          navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.UkAddressController.onPageLoad(mode))
-        }
-
-        "Is address in UK page -> No -> Non-UK address page" in {
-          val answers = baseAnswers
-            .set(LiveInTheUkYesNoPage, false).success.value
-
-          navigator.nextPage(LiveInTheUkYesNoPage, mode, answers)
-            .mustBe(controllers.business.routes.NonUkAddressController.onPageLoad(mode))
-        }
-
-        "UK address page -> (Employee-related trust) -> Company type page" in {
-          navigator.nextPage(UkAddressPage, mode, employeeRelatedTrustAnswers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "UK address page -> (Non-employee-related trust) -> Check details page" in {
-          navigator.nextPage(UkAddressPage, mode, nonEmployeeRelatedTrustAnswers)
-            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
-        }
-
-        "Non-UK address page -> (Employee-related trust) -> Company type page" in {
-          navigator.nextPage(NonUkAddressPage, mode, employeeRelatedTrustAnswers)
-            .mustBe(controllers.business.routes.CompanyTypeController.onPageLoad(mode))
-        }
-
-        "Non-UK address page -> (Non-employee-related trust) -> Check details page" in {
-          navigator.nextPage(NonUkAddressPage, mode, nonEmployeeRelatedTrustAnswers)
-            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
-        }
-
-        "Company type page -> Company time page" in {
-          navigator.nextPage(CompanyTypePage, mode, baseAnswers)
-            .mustBe(controllers.business.routes.CompanyTimeController.onPageLoad(mode))
-        }
-
-        "Company time page -> Check details page" in {
-          navigator.nextPage(CompanyTimePage, mode, baseAnswers)
-            .mustBe(controllers.business.amend.routes.CheckDetailsController.renderFromUserAnswers(index))
-        }
-      }
-    }
-
-    "5mld taxable" must {
+    "taxable" must {
 
       "add journey navigation" must {
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
         val mode = NormalMode
         val employeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(EmployeeRelated))
         val nonEmployeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(HeritageTrust))
@@ -473,7 +227,7 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       "amend journey navigation" must {
         val index = 0
         val mode = CheckMode
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
           .set(IndexPage, index).success.value
         val employeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(EmployeeRelated))
         val nonEmployeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(HeritageTrust))
@@ -672,10 +426,10 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       }
     }
 
-    "5mld non-taxable" must {
+    "non-taxable" must {
 
       "add journey navigation" must {
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
         val mode = NormalMode
         val employeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(EmployeeRelated))
         val nonEmployeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(HeritageTrust))
@@ -758,7 +512,7 @@ class BusinessSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyCheck
       "amend journey navigation" must {
         val index = 0
         val mode = CheckMode
-        val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
           .set(IndexPage, index).success.value
         val employeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(EmployeeRelated))
         val nonEmployeeRelatedTrustAnswers = baseAnswers.copy(trustType = Some(HeritageTrust))

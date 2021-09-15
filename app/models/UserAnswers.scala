@@ -33,7 +33,6 @@ final case class UserAnswers(internalId: String,
                              isDateOfDeathRecorded: Boolean,
                              data: JsObject = Json.obj(),
                              updatedAt: LocalDateTime = LocalDateTime.now,
-                             is5mldEnabled: Boolean,
                              isTaxable: Boolean,
                              isUnderlyingData5mld: Boolean,
                              migratingFromNonTaxableToTaxable: Boolean) {
@@ -115,7 +114,6 @@ object UserAnswers {
       (__ \ "isDateOfDeathRecorded").read[Boolean] and
       (__ \ "data").read[JsObject] and
       (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead) and
-      (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
       (__ \ "isTaxable").readWithDefault[Boolean](true) and
       (__ \ "isUnderlyingData5mld").readWithDefault[Boolean](false) and
       (__ \ "migratingFromNonTaxableToTaxable").readWithDefault[Boolean](false)
@@ -130,7 +128,6 @@ object UserAnswers {
       (__ \ "isDateOfDeathRecorded").write[Boolean] and
       (__ \ "data").write[JsObject] and
       (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite) and
-      (__ \ "is5mldEnabled").write[Boolean] and
       (__ \ "isTaxable").write[Boolean] and
       (__ \ "isUnderlyingData5mld").write[Boolean] and
       (__ \ "migratingFromNonTaxableToTaxable").write[Boolean]

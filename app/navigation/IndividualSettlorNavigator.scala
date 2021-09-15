@@ -36,25 +36,25 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
 
   private def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.DateOfBirthYesNoController.onPageLoad(mode)
-    case DateOfBirthPage => ua => navigateAwayFromDateOfBirthQuestions(ua.is5mldEnabled, mode)
+    case DateOfBirthPage => _ => rts.CountryOfNationalityYesNoController.onPageLoad(mode)
     case CountryOfNationalityPage => ua => navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable)
-    case NationalInsuranceNumberPage => ua => navigateAwayFromNinoPages(mode, ua)
+    case NationalInsuranceNumberPage => _ => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidenceQuestions(mode, ua)
     case UkAddressPage | NonUkAddressPage => ua => navigateToPassportDetails(mode, ua)
-    case PassportDetailsPage | IdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
-    case PassportOrIdCardDetailsPage => ua => navigateToMentalCapacity(mode, ua)
+    case PassportDetailsPage | IdCardDetailsPage => _ => rts.MentalCapacityYesNoController.onPageLoad(mode)
+    case PassportOrIdCardDetailsPage => _ => rts.MentalCapacityYesNoController.onPageLoad(mode)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case DateOfBirthYesNoPage => ua =>
-      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(mode), navigateAwayFromDateOfBirthQuestions(ua.is5mldEnabled, mode))
+      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(mode), rts.CountryOfNationalityYesNoController.onPageLoad(mode))
     case CountryOfNationalityYesNoPage => ua =>
       yesNoNav(ua, CountryOfNationalityYesNoPage, rts.CountryOfNationalityUkYesNoController.onPageLoad(mode), navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable))
     case CountryOfNationalityUkYesNoPage => ua =>
       yesNoNav(ua, CountryOfNationalityUkYesNoPage, navigateAwayFromCountryOfNationalityQuestions(mode, ua.isTaxable), rts.CountryOfNationalityController.onPageLoad(mode))
     case NationalInsuranceNumberYesNoPage => ua =>
-      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(mode), navigateAwayFromNinoPages(mode, ua))
+      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(mode), rts.CountryOfResidenceYesNoController.onPageLoad(mode))
     case CountryOfResidenceYesNoPage => ua =>
       yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceUkYesNoController.onPageLoad(mode), navigateAwayFromCountryOfResidenceQuestions(mode, ua))
     case CountryOfResidenceUkYesNoPage => ua =>
@@ -62,13 +62,13 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), navigateToMentalCapacity(mode, ua))
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case PassportDetailsYesNoPage => ua =>
       yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(mode), rts.IdCardDetailsYesNoController.onPageLoad(mode))
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), navigateToMentalCapacity(mode, ua))
+      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), navigateToMentalCapacity(mode, ua))
+      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case MentalCapacityYesNoPage => ua =>
       yesNoNav(ua, MentalCapacityYesNoPage, navigateToStartDateOrCheckDetails(mode, ua), navigateToStartDateOrCheckDetails(mode, ua))
   }
@@ -78,22 +78,6 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
     } else {
       rts.PassportDetailsYesNoController.onPageLoad(mode)
-    }
-  }
-
-  private def navigateAwayFromDateOfBirthQuestions(is5mldEnabled: Boolean, mode: Mode): Call = {
-    if (is5mldEnabled) {
-      rts.CountryOfNationalityYesNoController.onPageLoad(mode)
-    } else {
-      rts.NationalInsuranceNumberYesNoController.onPageLoad(mode)
-    }
-  }
-
-  private def navigateAwayFromNinoPages(mode: Mode, answers: UserAnswers): Call = {
-    (answers.is5mldEnabled, isNinoDefined(answers)) match {
-      case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-      case (false, true) => navigateToStartDateOrCheckDetails(mode, answers)
-      case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
     }
   }
 
@@ -110,14 +94,6 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       rts.MentalCapacityYesNoController.onPageLoad(mode)
     } else {
       rts.AddressYesNoController.onPageLoad(mode)
-    }
-  }
-
-  private def navigateToMentalCapacity(mode: Mode, ua: UserAnswers): Call = {
-    if (ua.is5mldEnabled) {
-      rts.MentalCapacityYesNoController.onPageLoad(mode)
-    } else {
-      navigateToStartDateOrCheckDetails(mode, ua)
     }
   }
 

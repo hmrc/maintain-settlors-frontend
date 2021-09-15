@@ -39,90 +39,9 @@ class BusinessSettlorExtractorSpec extends SpecBase {
 
     "Populate user answers" when {
 
-      "4mld" when {
-        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = true, isUnderlyingData5mld = false)
-
-        "should populate user answers when the business has a UTR" in {
-
-          val business = BusinessSettlor(
-            name = name,
-            companyType = None,
-            companyTime = None,
-            utr = Some(utr),
-            address = None,
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, business, Some(index)).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage).get mustBe true
-          result.get(UtrPage).get mustBe utr
-          result.get(AddressYesNoPage) mustBe None
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(StartDatePage).get mustBe date
-        }
-
-        "should populate user answers when the business has an address" in {
-
-          val business = BusinessSettlor(
-            name = name,
-            companyType = None,
-            companyTime = None,
-            utr = None,
-            address = Some(address),
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, business, Some(index)).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage).get mustBe false
-          result.get(UtrPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(LiveInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe address
-          result.get(NonUkAddressPage) mustBe None
-          result.get(StartDatePage).get mustBe date
-
-        }
-
-        "should populate user answers when the business has no UTR or address" in {
-
-          val business = BusinessSettlor(
-            name = name,
-            companyType = None,
-            companyTime = None,
-            utr = None,
-            address = None,
-            entityStart = date,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, business, Some(index)).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(UtrYesNoPage).get mustBe false
-          result.get(UtrPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe false
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(StartDatePage).get mustBe date
-        }
-      }
-
-      "5mld" when {
         "taxable" when {
           "underlying trust data is 4mld" when {
-            val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+            val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true, isUnderlyingData5mld = false)
             "has no country of residence and no address" in {
 
               val business = BusinessSettlor(
@@ -181,7 +100,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
           }
 
           "underlying trust data is 5mld" when {
-            val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = true)
+            val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true, isUnderlyingData5mld = true)
 
             "has a UTR" in {
 
@@ -327,7 +246,7 @@ class BusinessSettlorExtractorSpec extends SpecBase {
         }
 
         "non taxable" when {
-          val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false, isUnderlyingData5mld = true)
+          val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = false, isUnderlyingData5mld = true)
 
           "has a UTR" in {
 
@@ -414,7 +333,6 @@ class BusinessSettlorExtractorSpec extends SpecBase {
             result.get(StartDatePage).get mustBe date
           }
         }
-      }
     }
   }
 
