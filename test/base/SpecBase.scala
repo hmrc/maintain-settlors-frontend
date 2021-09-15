@@ -46,7 +46,6 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
     trustType = Some(TypeOfTrust.WillTrustOrIntestacyTrust),
     deedOfVariation = None,
     isDateOfDeathRecorded = true,
-    is5mldEnabled = false,
     isTaxable = true,
     isUnderlyingData5mld = false,
     migratingFromNonTaxableToTaxable = false

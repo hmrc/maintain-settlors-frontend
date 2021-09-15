@@ -42,9 +42,9 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
     case NamePage => ua =>
       navigateAwayFromNamePage(mode, ua)
     case UtrYesNoPage => ua =>
-      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), navigateAwayFromUtrPages(mode, trustType, ua))
-    case UtrPage => ua =>
-      navigateAwayFromUtrPages(mode, trustType, ua)
+      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), rts.CountryOfResidenceYesNoController.onPageLoad(mode))
+    case UtrPage => _ =>
+      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     case CountryOfResidenceYesNoPage => ua =>
       yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceInTheUkYesNoController.onPageLoad(mode), navigateAwayFromResidencePages(mode, trustType, ua))
     case CountryOfResidenceInTheUkYesNoPage => ua =>
@@ -63,25 +63,17 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
 
 
   private def navigateAwayFromNamePage(mode: Mode, answers: UserAnswers): Call = {
-    if (answers.is5mldEnabled && !answers.isTaxable) {
-      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-    } else {
+    if (answers.isTaxable) {
       rts.UtrYesNoController.onPageLoad(mode)
-    }
-  }
-
-  private def navigateAwayFromUtrPages(mode: Mode, trustType: Option[TypeOfTrust], answers: UserAnswers): Call = {
-    (answers.is5mldEnabled, isUtrDefined(answers)) match {
-      case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-      case (false, true) => navigateToEndPages(mode, trustType, answers)
-      case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
+    } else {
+      rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     }
   }
 
   private def navigateAwayFromResidencePages(mode: Mode, trustType: Option[TypeOfTrust], answers: UserAnswers): Call = {
-    val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
+    val isNonTaxable = !answers.isTaxable
 
-    if (isNonTaxable5mld || isUtrDefined(answers)){
+    if (isNonTaxable || isUtrDefined(answers)){
       navigateToEndPages(mode, trustType, answers)
     } else {
      rts.AddressYesNoController.onPageLoad(mode)
@@ -89,10 +81,10 @@ class BusinessSettlorNavigator @Inject()() extends Navigator {
   }
 
   private def navigateToEndPages(mode:Mode, trustType: Option[TypeOfTrust], answers: UserAnswers): Call = {
-    val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
+    val isNonTaxable = !answers.isTaxable
     val isNotEmployeeRelated = !trustType.contains(EmployeeRelated)
 
-    if (isNonTaxable5mld || isNotEmployeeRelated) {
+    if (isNonTaxable || isNotEmployeeRelated) {
       navigateToStartDateOrCheckDetails(mode, answers)
     } else {
       rts.CompanyTypeController.onPageLoad(mode)

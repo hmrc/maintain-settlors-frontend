@@ -43,16 +43,12 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
   val identifier = "1234567890"
   val startDate = "2019-06-01"
   val typeOfTrust: Option[TypeOfTrust] = Some(TypeOfTrust.WillTrustOrIntestacyTrust)
-  val is5mldEnabled = false
   val isTaxable = false
   val isUnderlyingData5mld = false
   val migratingFromNonTaxableToTaxable = false
 
   override def beforeEach(): Unit = {
     reset(mockTrustsStoreService)
-
-    when(mockTrustsStoreService.is5mldEnabled()(any(), any()))
-      .thenReturn(Future.successful(is5mldEnabled))
 
     when(mockTrustConnector.isTrust5mld(any())(any(), any()))
       .thenReturn(Future.successful(isUnderlyingData5mld))
@@ -114,7 +110,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       uaCaptor.getValue.internalId mustBe "id"
       uaCaptor.getValue.identifier mustBe identifier
       uaCaptor.getValue.whenTrustSetup mustBe LocalDate.parse(startDate)
-      uaCaptor.getValue.is5mldEnabled mustBe is5mldEnabled
       uaCaptor.getValue.isTaxable mustBe isTaxable
       uaCaptor.getValue.isUnderlyingData5mld mustBe isUnderlyingData5mld
       uaCaptor.getValue.migratingFromNonTaxableToTaxable mustBe migratingFromNonTaxableToTaxable

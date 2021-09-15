@@ -84,7 +84,7 @@ trait SettlorExtractor[T <: Settlor] {
                                              yesNoPage: QuestionPage[Boolean],
                                              ukYesNoPage: QuestionPage[Boolean],
                                              page: QuestionPage[String]): Try[UserAnswers] = {
-    if (answers.is5mldEnabled && answers.isUnderlyingData5mld) {
+    if (answers.isUnderlyingData5mld) {
       country match {
         case Some(GB) =>
           answers.set(yesNoPage, true)
