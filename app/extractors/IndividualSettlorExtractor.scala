@@ -17,7 +17,7 @@
 package extractors
 
 import models.settlors.IndividualSettlor
-import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers, YesNoDontKnow}
 import pages.QuestionPage
 import pages.individual.living._
 import play.api.libs.json.JsPath

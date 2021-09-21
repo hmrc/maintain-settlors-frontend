@@ -66,11 +66,10 @@ class IndividualSettlorMapper extends SettlorMapper[IndividualSettlor] {
 
   private def readMentalCapacity: Reads[Option[YesNoDontKnow]] = {
     MentalCapacityYesNoPage.path
-      .readNullable[Boolean]
+      .readNullable[YesNoDontKnow]
       .flatMap[Option[YesNoDontKnow]] {
-        case Some(true) => Reads(_ => JsSuccess(Some(YesNoDontKnow.Yes)))
-        case Some(false) => Reads(_ => JsSuccess(Some(YesNoDontKnow.No)))
-        case _ => Reads(_ => JsSuccess(Some(YesNoDontKnow.DontKnow)))
+        case Some(value) => Reads(_ => JsSuccess(Some(value)))
+        case _ => Reads(_ => JsSuccess(None))
       }
   }
 

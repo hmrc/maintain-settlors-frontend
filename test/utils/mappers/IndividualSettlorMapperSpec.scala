@@ -224,7 +224,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe Some(NationalInsuranceNumber(nino))
       result.countryOfResidence mustBe Some(GB)
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(true)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
       result.entityStart mustBe startDate
     }
 
@@ -255,7 +255,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe Some(NationalInsuranceNumber(nino))
       result.countryOfResidence mustBe Some("FR")
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(false)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.No)
       result.entityStart mustBe startDate
     }
 
@@ -282,7 +282,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe Some(NationalInsuranceNumber(nino))
       result.countryOfResidence  mustNot be(defined)
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(true)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
       result.entityStart mustBe startDate
     }
   }
@@ -310,7 +310,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe None
       result.countryOfResidence mustBe Some(GB)
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(true)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
       result.entityStart mustBe startDate
     }
   }
@@ -338,7 +338,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
     result.identification mustBe None
     result.countryOfResidence mustBe Some("FR")
     result.address mustBe None
-    result.mentalCapacityYesNo mustBe Some(false)
+    result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.No)
     result.entityStart mustBe startDate
   }
 
@@ -361,7 +361,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
     result.identification mustBe None
     result.countryOfResidence  mustNot be(defined)
     result.address mustBe None
-    result.mentalCapacityYesNo mustBe Some(true)
+    result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
     result.entityStart mustBe startDate
   }
 
