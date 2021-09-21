@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package pages.individual.living
+package forms
 
+import forms.mappings.Mappings
 import models.YesNoDontKnow
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.data.Form
 
-case object MentalCapacityYesNoPage extends QuestionPage[YesNoDontKnow] {
+import javax.inject.Inject
 
-  override def path: JsPath = basePath \ toString
+class YesNoDontKnowFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "mentalCapacityYesNo"
-
+  def withPrefix(prefix: String): Form[YesNoDontKnow] =
+    Form(
+      "value" -> enumerable[YesNoDontKnow](requiredKey =  s"$prefix.error.required")
+    )
 }

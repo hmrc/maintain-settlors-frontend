@@ -16,7 +16,7 @@
 
 package models.settlors
 
-import models.{Address, IndividualIdentification, Name, TypeOfTrust}
+import models.{Address, IndividualIdentification, Name, TypeOfTrust, YesNoDontKnow}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -28,7 +28,7 @@ final case class IndividualSettlor(name: Name,
                                    countryOfResidence: Option[String],
                                    identification: Option[IndividualIdentification],
                                    address: Option[Address],
-                                   mentalCapacityYesNo: Option[Boolean],
+                                   mentalCapacityYesNo: Option[YesNoDontKnow],
                                    entityStart: LocalDate,
                                    provisional: Boolean) extends Settlor {
 
@@ -45,7 +45,7 @@ object IndividualSettlor extends SettlorReads {
       (__ \ 'countryOfResidence).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
-      (__ \ 'legallyIncapable).readNullable[Boolean].map(_.map(!_)) and
+      (__ \ 'legallyIncapable).readNullable[YesNoDontKnow] and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false))
     .tupled.map{
@@ -60,7 +60,7 @@ object IndividualSettlor extends SettlorReads {
       (__ \ 'countryOfResidence).writeNullable[String] and
       (__ \ 'identification).writeNullable[IndividualIdentification] and
       (__ \ 'identification \ 'address).writeNullable[Address] and
-      (__ \ 'legallyIncapable).writeNullable[Boolean](x => JsBoolean(!x)) and
+      (__ \ 'legallyIncapable).writeNullable[YesNoDontKnow] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     ).apply(unlift(IndividualSettlor.unapply))

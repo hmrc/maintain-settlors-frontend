@@ -15,14 +15,14 @@
  *@
 
 @import controllers.individual.living.routes._
-@import views.html.components.{ErrorSummary, Heading, InputYesNo, BulletList, SubmitButton}
+@import views.html.components.{ErrorSummary, Heading, InputYesNoDontKnow, BulletList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     errorSummary: ErrorSummary,
     heading: Heading,
-    inputYesNo: InputYesNo,
+    inputYesNoDontKnow: InputYesNoDontKnow,
     bulletList: BulletList,
     submitButton: SubmitButton
 )
@@ -44,7 +44,7 @@
 
         @bulletList("livingSettlor.mentalCapacityYesNo", Seq("bulletpoint1", "bulletpoint2", "bulletpoint3", "bulletpoint4"))
 
-        @inputYesNo(
+        @inputYesNoDontKnow(
             field = form("value"),
             label = messages("livingSettlor.mentalCapacityYesNo.heading", name),
             legendClass = Some("govuk-visually-hidden"),

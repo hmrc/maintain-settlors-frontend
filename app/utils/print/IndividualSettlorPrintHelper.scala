@@ -55,7 +55,7 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
         bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
         bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
-        bound.yesNoQuestion(MentalCapacityYesNoPage, "livingSettlor.mentalCapacityYesNo", Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url)),
+        bound.enumQuestion(MentalCapacityYesNoPage, "livingSettlor.mentalCapacityYesNo", rts.MentalCapacityYesNoController.onPageLoad(mode).url, "site"),
         if (adding) bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url)) else None
       ).flatten
     }

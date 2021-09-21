@@ -19,7 +19,7 @@ package navigation
 import controllers.individual.living.add.{routes => addRts}
 import controllers.individual.living.amend.{routes => amendRts}
 import controllers.individual.living.{routes => rts}
-import models.{Mode, NormalMode, UserAnswers}
+import models.{Mode, NormalMode, UserAnswers, YesNoDontKnow}
 import pages.Page
 import pages.individual.living._
 import play.api.mvc.Call
@@ -44,6 +44,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case PassportDetailsPage | IdCardDetailsPage => _ => rts.MentalCapacityYesNoController.onPageLoad(mode)
     case PassportOrIdCardDetailsPage => _ => rts.MentalCapacityYesNoController.onPageLoad(mode)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
+    case MentalCapacityYesNoPage => ua => navigateToStartDateOrCheckDetails(mode, ua)
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -69,9 +70,8 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case PassportOrIdCardDetailsYesNoPage => ua =>
       yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
-    case MentalCapacityYesNoPage => ua =>
-      yesNoNav(ua, MentalCapacityYesNoPage, navigateToStartDateOrCheckDetails(mode, ua), navigateToStartDateOrCheckDetails(mode, ua))
   }
+
 
   private def navigateToPassportDetails(mode: Mode, answers: UserAnswers): Call = {
     if (answers.get(PassportOrIdCardDetailsYesNoPage).isDefined || answers.get(PassportOrIdCardDetailsPage).isDefined) {
