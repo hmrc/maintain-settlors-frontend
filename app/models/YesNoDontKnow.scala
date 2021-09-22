@@ -16,6 +16,8 @@
 
 package models
 
+import scala.language.implicitConversions
+
 sealed trait YesNoDontKnow
 
 object YesNoDontKnow extends Enumerable.Implicits {
@@ -29,7 +31,7 @@ object YesNoDontKnow extends Enumerable.Implicits {
   )
 
   def fromBoolean(v: Option[Boolean]): Option[YesNoDontKnow] = v match {
-    case Some(value) => if (value) Some(Yes) else Some(No)
+    case Some(value) => if (value) Some(No) else Some(Yes)
     case None => Some(DontKnow)
   }
 
