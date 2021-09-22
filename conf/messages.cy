@@ -58,6 +58,7 @@ site.change.details=Newid manylion
 site.yes=Iawn
 site.no=Na
 site.or = neu
+site.option.dontKnow = Ddim yn gwybod
 site.dontKnow = Ddim yn gwybod (neu Heb ddarparu)
 site.continue=Yn eich blaen
 site.service_section=Setlwyr
