@@ -48,6 +48,7 @@ site.hidden-delete=Dileu {0}
 site.hidden-edit=Newid {0}
 site.hidden-update = Diweddaru {0}
 site.change.details=Newid manylion
+site.hidden-cannot-edit = Ni allwch newid
 site.no=Na
 site.yes=Iawn
 site.continue=Yn eich blaen
