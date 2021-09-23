@@ -41,7 +41,7 @@ object SectionFormatter {
             visuallyHiddenText = Some(messages(row.label, row.labelArg)),
             content = row.changeUrl match {
               case Some(_) => Text(messages("site.edit"))
-              case _ => Text(messages("site.hidden-cannot-edit"))
+              case _ => Text(messages("site.cannot.change"))
             }
           ))))
         )

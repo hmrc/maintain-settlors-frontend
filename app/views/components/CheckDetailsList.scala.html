@@ -60,7 +60,7 @@
 
 @actionLink(action: ActionItem) = {
     @action.href match {
-        case "" => {<span class="govuk-visually-hidden">@action.content.asHtml @action.visuallyHiddenText</span>}
+        case "" => {@action.content.asHtml<span class="govuk-visually-hidden"> @action.visuallyHiddenText</span>}
         case _ => {<a class="@ToClasses("govuk-link", action.classes)" href="@action.href" @ToAttributes(action.attributes)> @actionContent(action)</a>}
     }
 }
