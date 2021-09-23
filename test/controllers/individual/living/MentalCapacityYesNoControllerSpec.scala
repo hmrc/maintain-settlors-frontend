@@ -18,8 +18,8 @@ package controllers.individual.living
 
 import base.SpecBase
 import config.annotations.LivingSettlor
-import forms.YesNoFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import models.{Name, NormalMode, UserAnswers, YesNoDontKnow}
 import navigation.{FakeNavigator, Navigator}
 import pages.individual.living.{MentalCapacityYesNoPage, NamePage}
 import play.api.data.Form
@@ -31,7 +31,7 @@ import views.html.individual.living.MentalCapacityYesNoView
 
 class MentalCapacityYesNoControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("livingSettlor.mentalCapacityYesNo")
+  private val form: Form[YesNoDontKnow] = new YesNoDontKnowFormProvider().withPrefix("livingSettlor.mentalCapacityYesNo")
   private val onPageLoadRoute: String = routes.MentalCapacityYesNoController.onPageLoad(NormalMode).url
   private val name: Name = Name("FirstName", None, "LastName")
   private val onwardRoute = Call("GET", "/foo")
@@ -60,7 +60,7 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val answers = baseAnswers.set(MentalCapacityYesNoPage, true).success.value
+      val answers = baseAnswers.set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -73,7 +73,7 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, name.displayName)(request, messages).toString
+        view(form.fill(YesNoDontKnow.Yes), NormalMode, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -88,7 +88,7 @@ class MentalCapacityYesNoControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, onPageLoadRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+          .withFormUrlEncodedBody(("value", "yes"))
 
       val result = route(application, request).value
 

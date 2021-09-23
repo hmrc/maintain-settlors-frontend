@@ -58,6 +58,7 @@ class IndividualSettlorPrintHelperSpec extends SpecBase {
           .set(PassportDetailsPage, Passport("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
           .set(IdCardDetailsYesNoPage, true).success.value
           .set(IdCardDetailsPage, IdCard("GB", "1234567890", LocalDate.of(2030, 10, 10))).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.DontKnow).success.value
 
         val result = helper(userAnswers, adding = true, name.displayName)
         result mustBe AnswerSection(
@@ -76,6 +77,7 @@ class IndividualSettlorPrintHelperSpec extends SpecBase {
             AnswerRow(label = messages("livingSettlor.passportDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />1234567890<br />10 October 2030"), changeUrl = Some(rts.PassportDetailsController.onPageLoad(mode).url)),
             AnswerRow(label = messages("livingSettlor.idCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("livingSettlor.idCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />1234567890<br />10 October 2030"), changeUrl = Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
+            AnswerRow(label = messages("livingSettlor.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("livingSettlor.startDate.checkYourAnswersLabel", name.displayName), answer = Html("1 January 2020"), changeUrl = Some(addRts.StartDateController.onPageLoad().url))
           )
         )

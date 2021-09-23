@@ -35,6 +35,10 @@ trait ModelGenerators {
   implicit lazy val arbitrarySettlorType: Gen[SettlorType] =
     Gen.oneOf[SettlorType](SettlorType.values)
 
+  implicit lazy val arbitraryYesNoDontKnowType: Arbitrary[YesNoDontKnow] = Arbitrary {
+    Gen.oneOf[YesNoDontKnow](YesNoDontKnow.values)
+  }
+
   implicit lazy val arbitraryDetailsType: Arbitrary[DetailsType] = Arbitrary {
     Gen.oneOf(DetailsType.values)
   }

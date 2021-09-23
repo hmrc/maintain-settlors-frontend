@@ -19,8 +19,8 @@ package controllers.individual.living
 import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
-import forms.YesNoFormProvider
-import models.Mode
+import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import models.{Mode, YesNoDontKnow}
 import navigation.Navigator
 import pages.individual.living.MentalCapacityYesNoPage
 import play.api.data.Form
@@ -34,16 +34,16 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class MentalCapacityYesNoController @Inject()(
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   repository: PlaybackRepository,
-                                                   @LivingSettlor navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   formProvider: YesNoFormProvider,
-                                                   view: MentalCapacityYesNoView
+                                               val controllerComponents: MessagesControllerComponents,
+                                               repository: PlaybackRepository,
+                                               @LivingSettlor navigator: Navigator,
+                                               standardActionSets: StandardActionSets,
+                                               nameAction: NameRequiredAction,
+                                               formProvider: YesNoDontKnowFormProvider,
+                                               view: MentalCapacityYesNoView
                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider.withPrefix("livingSettlor.mentalCapacityYesNo")
+  private val form: Form[YesNoDontKnow] = formProvider.withPrefix("livingSettlor.mentalCapacityYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
       implicit request =>

@@ -17,7 +17,7 @@
 package extractors
 
 import models.settlors.IndividualSettlor
-import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers, YesNoDontKnow}
 import pages.QuestionPage
 import pages.individual.living._
 import play.api.libs.json.JsPath
@@ -38,7 +38,11 @@ class IndividualSettlorExtractor extends SettlorExtractor[IndividualSettlor] {
       .flatMap(answers => extractCountryOfResidence(individual.countryOfResidence, answers))
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
-      .flatMap(_.set(MentalCapacityYesNoPage, individual.mentalCapacityYesNo))
+      .flatMap(answers => extractMentalCapacity(individual.mentalCapacityYesNo, answers))
+
+  private def extractMentalCapacity(mentalCapacityYesNo: Option[YesNoDontKnow], answers: UserAnswers): Try[UserAnswers] = {
+    extractIfDefined(mentalCapacityYesNo, MentalCapacityYesNoPage, answers)
+  }
 
   private def extractDateOfBirth(individual: IndividualSettlor, answers: UserAnswers): Try[UserAnswers] = {
     extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)

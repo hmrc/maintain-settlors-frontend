@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.ModelGenerators
 import models.Constant.GB
 import models.settlors.IndividualSettlor
-import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, Passport, UkAddress, UserAnswers}
+import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, Passport, UkAddress, UserAnswers, YesNoDontKnow}
 import org.scalatest.MustMatchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.living._
@@ -306,7 +306,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
         countryOfResidence = Some(GB),
         identification = Some(nino),
         address = None,
-        mentalCapacityYesNo = Some(true),
+        mentalCapacityYesNo = Some(YesNoDontKnow.Yes),
         entityStart = date,
         provisional = true
       )
@@ -337,7 +337,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
-      result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(MentalCapacityYesNoPage).get mustBe YesNoDontKnow.Yes
     }
 
     "with non UK country of Nationality and Residence" in {
@@ -351,7 +351,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
         countryOfResidence = Some("FR"),
         identification = Some(nino),
         address = None,
-        mentalCapacityYesNo = Some(false),
+        mentalCapacityYesNo = Some(YesNoDontKnow.No),
         entityStart = date,
         provisional = true
       )
@@ -382,7 +382,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
-      result.get(MentalCapacityYesNoPage).get mustBe false
+      result.get(MentalCapacityYesNoPage).get mustBe YesNoDontKnow.No
     }
 
     "with unknown country of Nationality and Residence" in {
@@ -396,7 +396,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
         countryOfResidence = None,
         identification = Some(nino),
         address = None,
-        mentalCapacityYesNo = Some(true),
+        mentalCapacityYesNo = Some(YesNoDontKnow.Yes),
         entityStart = date,
         provisional = true
       )
@@ -427,7 +427,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
-      result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(MentalCapacityYesNoPage).get mustBe YesNoDontKnow.Yes
     }
   }
 
@@ -442,7 +442,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
         countryOfResidence = Some(GB),
         identification = None,
         address = None,
-        mentalCapacityYesNo = Some(true),
+        mentalCapacityYesNo = Some(YesNoDontKnow.Yes),
         entityStart = date,
         provisional = true
       )
@@ -473,7 +473,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
-      result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(MentalCapacityYesNoPage).get mustBe YesNoDontKnow.Yes
     }
 
     "with non UK country of Nationality and Residence" in {
@@ -485,7 +485,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
         countryOfResidence = Some("FR"),
         identification = None,
         address = None,
-        mentalCapacityYesNo = Some(false),
+        mentalCapacityYesNo = Some(YesNoDontKnow.No),
         entityStart = date,
         provisional = true
       )
@@ -516,7 +516,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
-      result.get(MentalCapacityYesNoPage).get mustBe false
+      result.get(MentalCapacityYesNoPage).get mustBe YesNoDontKnow.No
     }
 
     "with unknown country of Nationality and Residence" in {
@@ -528,7 +528,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
         countryOfResidence = None,
         identification = None,
         address = None,
-        mentalCapacityYesNo = Some(true),
+        mentalCapacityYesNo = Some(YesNoDontKnow.Yes),
         entityStart = date,
         provisional = true
       )
@@ -559,7 +559,7 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
       result.get(IdCardDetailsPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsYesNoPage) mustNot be(defined)
       result.get(PassportOrIdCardDetailsPage) mustNot be(defined)
-      result.get(MentalCapacityYesNoPage).get mustBe true
+      result.get(MentalCapacityYesNoPage).get mustBe YesNoDontKnow.Yes
     }
   }
 }

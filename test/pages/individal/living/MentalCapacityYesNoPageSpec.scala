@@ -16,6 +16,7 @@
 
 package pages.individal.living
 
+import models.YesNoDontKnow
 import pages.behaviours.PageBehaviours
 import pages.individual.living.MentalCapacityYesNoPage
 
@@ -23,11 +24,11 @@ class MentalCapacityYesNoPageSpec extends PageBehaviours {
 
   "MentalCapacityYesNoPage" must {
 
-    beRetrievable[Boolean](MentalCapacityYesNoPage)
+    beRetrievable[YesNoDontKnow](MentalCapacityYesNoPage)
 
-    beSettable[Boolean](MentalCapacityYesNoPage)
+    beSettable[YesNoDontKnow](MentalCapacityYesNoPage)
 
-    beRemovable[Boolean](MentalCapacityYesNoPage)
+    beRemovable[YesNoDontKnow](MentalCapacityYesNoPage)
 
   }
 }

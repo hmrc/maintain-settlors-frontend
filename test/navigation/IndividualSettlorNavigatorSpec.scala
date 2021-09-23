@@ -169,7 +169,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> Yes -> Start Date page" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(addRts.StartDateController.onPageLoad())
@@ -177,7 +177,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> No -> Start Date page" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, false).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.No).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(addRts.StartDateController.onPageLoad())
@@ -509,7 +509,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> Yes -> Check details" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
@@ -517,7 +517,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> No -> Check details" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, false).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.No).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
@@ -802,7 +802,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> Yes -> Start Date page" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(addRts.StartDateController.onPageLoad())
@@ -810,7 +810,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> No -> Start Date page" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, false).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.No).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(addRts.StartDateController.onPageLoad())
@@ -937,7 +937,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> Yes -> Check details" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, true).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
@@ -945,7 +945,7 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
 
       "Mental Capacity Yes/No page -> No -> Check details" in {
         val answers = baseAnswers
-          .set(MentalCapacityYesNoPage, false).success.value
+          .set(MentalCapacityYesNoPage, YesNoDontKnow.No).success.value
 
         navigator.nextPage(MentalCapacityYesNoPage, mode, answers)
           .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
