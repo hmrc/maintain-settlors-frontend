@@ -16,8 +16,6 @@
 
 package models
 
-import scala.language.implicitConversions
-
 sealed trait YesNoDontKnow
 
 object YesNoDontKnow extends Enumerable.Implicits {
