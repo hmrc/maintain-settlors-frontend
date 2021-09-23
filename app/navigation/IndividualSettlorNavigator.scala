@@ -41,8 +41,8 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case NationalInsuranceNumberPage => _ => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidenceQuestions(mode, ua)
     case UkAddressPage | NonUkAddressPage => ua => navigateToPassportDetails(mode, ua)
-    case PassportDetailsPage | IdCardDetailsPage => ua => navigateAwayFromPassportIdCardCombined(mode, ua)
-    case PassportOrIdCardDetailsPage => ua => navigateAwayFromPassportIdCardCombined(mode, ua)
+    case PassportDetailsPage | IdCardDetailsPage => ua => navigateAwayFromPassportIdCardCombined(mode)
+    case PassportOrIdCardDetailsPage => ua => navigateAwayFromPassportIdCardCombined(mode)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
     case MentalCapacityYesNoPage => ua => navigateToStartDateOrCheckDetails(mode, ua)
   }
@@ -72,7 +72,7 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       if (mode == NormalMode) {
         yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
       } else {
-        checkDetailsRoute(ua)
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
       }
   }
 
@@ -81,19 +81,15 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
       if (mode == NormalMode) {
         rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
       } else {
-        checkDetailsRoute(answers)
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
       }
     } else {
       rts.PassportDetailsYesNoController.onPageLoad(mode)
     }
   }
 
-  private def navigateAwayFromPassportIdCardCombined(mode: Mode, answers: UserAnswers): Call = {
-    if (mode == NormalMode) {
+  private def navigateAwayFromPassportIdCardCombined(mode: Mode): Call = {
       rts.MentalCapacityYesNoController.onPageLoad(mode)
-    } else {
-      checkDetailsRoute(answers)
-    }
   }
 
   private def navigateAwayFromCountryOfNationalityQuestions(mode: Mode, isTaxable: Boolean): Call = {

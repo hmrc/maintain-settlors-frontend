@@ -36,7 +36,8 @@ object SectionFormatter {
         SummaryListRow(
           key = Key(classes = "govuk-!-width-two-thirds", content = Text(messages(row.label, row.labelArg))),
           value = Value(HtmlContent(row.answer)),
-          actions = Option(Actions(items = Seq(ActionItem(href = row.changeUrl.getOrElse(""),
+          actions = Option(Actions(items = Seq(ActionItem(
+            href = row.changeUrl.getOrElse(""),
             classes = s"change-link-$i",
             visuallyHiddenText = Some(messages(row.label, row.labelArg)),
             content = row.changeUrl match {
