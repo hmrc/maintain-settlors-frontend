@@ -18,7 +18,7 @@ package utils.mappers
 
 import base.SpecBase
 import models.Constant.GB
-import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress}
+import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, YesNoDontKnow}
 import pages.individual.living._
 
 import java.time.LocalDate
@@ -213,7 +213,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
         .set(NationalInsuranceNumberPage, nino).success.value
         .set(CountryOfResidenceYesNoPage, true).success.value
         .set(CountryOfResidenceUkYesNoPage, true).success.value
-        .set(MentalCapacityYesNoPage, true).success.value
+        .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
         .set(StartDatePage, startDate).success.value
 
       val result = mapper(userAnswers).get
@@ -224,7 +224,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe Some(NationalInsuranceNumber(nino))
       result.countryOfResidence mustBe Some(GB)
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(true)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
       result.entityStart mustBe startDate
     }
 
@@ -244,7 +244,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
         .set(CountryOfResidenceYesNoPage, true).success.value
         .set(CountryOfResidenceUkYesNoPage, false).success.value
         .set(CountryOfResidencePage, "FR").success.value
-        .set(MentalCapacityYesNoPage, false).success.value
+        .set(MentalCapacityYesNoPage, YesNoDontKnow.No).success.value
         .set(StartDatePage, startDate).success.value
 
       val result = mapper(userAnswers).get
@@ -255,7 +255,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe Some(NationalInsuranceNumber(nino))
       result.countryOfResidence mustBe Some("FR")
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(false)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.No)
       result.entityStart mustBe startDate
     }
 
@@ -271,7 +271,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
         .set(NationalInsuranceNumberYesNoPage, true).success.value
         .set(NationalInsuranceNumberPage, nino).success.value
         .set(CountryOfResidenceYesNoPage, false).success.value
-        .set(MentalCapacityYesNoPage, true).success.value
+        .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
         .set(StartDatePage, startDate).success.value
 
       val result = mapper(userAnswers).get
@@ -282,7 +282,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe Some(NationalInsuranceNumber(nino))
       result.countryOfResidence  mustNot be(defined)
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(true)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
       result.entityStart mustBe startDate
     }
   }
@@ -299,7 +299,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
         .set(CountryOfNationalityUkYesNoPage, true).success.value
         .set(CountryOfResidenceYesNoPage, true).success.value
         .set(CountryOfResidenceUkYesNoPage, true).success.value
-        .set(MentalCapacityYesNoPage, true).success.value
+        .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
         .set(StartDatePage, startDate).success.value
 
       val result = mapper(userAnswers).get
@@ -310,7 +310,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       result.identification mustBe None
       result.countryOfResidence mustBe Some(GB)
       result.address mustBe None
-      result.mentalCapacityYesNo mustBe Some(true)
+      result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
       result.entityStart mustBe startDate
     }
   }
@@ -327,7 +327,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       .set(CountryOfResidenceYesNoPage, true).success.value
       .set(CountryOfResidenceUkYesNoPage, false).success.value
       .set(CountryOfResidencePage, "FR").success.value
-      .set(MentalCapacityYesNoPage, false).success.value
+      .set(MentalCapacityYesNoPage, YesNoDontKnow.No).success.value
       .set(StartDatePage, startDate).success.value
 
     val result = mapper(userAnswers).get
@@ -338,7 +338,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
     result.identification mustBe None
     result.countryOfResidence mustBe Some("FR")
     result.address mustBe None
-    result.mentalCapacityYesNo mustBe Some(false)
+    result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.No)
     result.entityStart mustBe startDate
   }
 
@@ -350,7 +350,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
       .set(DateOfBirthPage, dateOfBirth).success.value
       .set(CountryOfNationalityYesNoPage, false).success.value
       .set(CountryOfResidenceYesNoPage, false).success.value
-      .set(MentalCapacityYesNoPage, true).success.value
+      .set(MentalCapacityYesNoPage, YesNoDontKnow.Yes).success.value
       .set(StartDatePage, startDate).success.value
 
     val result = mapper(userAnswers).get
@@ -361,7 +361,7 @@ class IndividualSettlorMapperSpec extends SpecBase {
     result.identification mustBe None
     result.countryOfResidence  mustNot be(defined)
     result.address mustBe None
-    result.mentalCapacityYesNo mustBe Some(true)
+    result.mentalCapacityYesNo mustBe Some(YesNoDontKnow.Yes)
     result.entityStart mustBe startDate
   }
 

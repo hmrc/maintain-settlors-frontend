@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.DeedOfVariation.PreviouslyAbsoluteInterestUnderWill
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
-import models.{CompanyType, Name, RemoveSettlor, SettlorType, TaxableMigrationFlag, TrustDetails, TypeOfTrust}
+import models.{CompanyType, Name, RemoveSettlor, SettlorType, TaxableMigrationFlag, TrustDetails, TypeOfTrust, YesNoDontKnow}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
@@ -81,7 +81,7 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     countryOfResidence = None,
     identification = None,
     address = None,
-    mentalCapacityYesNo = None,
+    mentalCapacityYesNo = Some(YesNoDontKnow.DontKnow),
     entityStart = date,
     provisional = false
   )
