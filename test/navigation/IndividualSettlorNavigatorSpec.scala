@@ -609,22 +609,22 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
 
         "combined passport/id card details yes/no present" must {
-          "-> Do you know passport or ID card details yes/no page" in {
+          "-> Check details" in {
             val answers = baseAnswers
               .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
             navigator.nextPage(UkAddressPage, mode, answers)
-              .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+              .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
           }
         }
 
         "combined passport/id card details present" must {
-          "-> Do you know passport or ID card details yes/no page" in {
+          "-> Check details" in {
             val answers = baseAnswers
               .set(PassportOrIdCardDetailsPage, passportOrId).success.value
 
             navigator.nextPage(UkAddressPage, mode, answers)
-              .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+              .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
           }
         }
       }
@@ -646,12 +646,12 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
         }
 
         "combined passport/id card details yes/no present" must {
-          "-> Do you know passport or ID card details yes/no page" in {
+          "-> Check details" in {
             val answers = baseAnswers
-              .set(PassportOrIdCardDetailsPage, passportOrId).success.value
+              .set(PassportOrIdCardDetailsYesNoPage, true).success.value
 
             navigator.nextPage(NonUkAddressPage, mode, answers)
-              .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+              .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
           }
         }
 
@@ -661,30 +661,30 @@ class IndividualSettlorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
               .set(PassportOrIdCardDetailsPage, passportOrId).success.value
 
             navigator.nextPage(NonUkAddressPage, mode, answers)
-              .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+              .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
           }
         }
       }
 
-      "Do you know passport or ID card details page -> Yes -> Passport or ID card details page" in {
+      "Do you know passport or ID card details page -> Yes -> Check details" in {
         val answers = baseAnswers
           .set(PassportOrIdCardDetailsYesNoPage, true).success.value
 
         navigator.nextPage(PassportOrIdCardDetailsYesNoPage, mode, answers)
-          .mustBe(rts.PassportOrIdCardDetailsController.onPageLoad(mode))
+          .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
       }
 
-      "Passport or ID card details page -> Mental Capacity Yes/No page" in {
+      "Passport or ID card details page -> Check details" in {
         navigator.nextPage(PassportOrIdCardDetailsPage, mode, baseAnswers)
-          .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+          .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
       }
 
-      "Do you know passport or ID card details page -> No -> Mental Capacity Yes/No page" in {
+      "Do you know passport or ID card details page -> No -> Check details" in {
         val answers = baseAnswers
           .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
         navigator.nextPage(PassportOrIdCardDetailsYesNoPage, mode, answers)
-          .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+          .mustBe(amendRts.CheckDetailsController.renderFromUserAnswers(index))
       }
     }
 
