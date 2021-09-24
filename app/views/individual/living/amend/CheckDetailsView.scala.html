@@ -39,6 +39,9 @@
 
         @heading("livingSettlor.checkDetails.heading")
 
+        <p>@messages("livingSettlor.cannotChange.p1")</p>
+        <p>@messages("livingSettlor.cannotChange.p2")</p>
+
         @checkDetailsList(SummaryList(rows = formatSections(Seq(answerSection))))
 
         @submitButton()

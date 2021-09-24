@@ -379,6 +379,8 @@ livingSettlor.startDate.error.past = The date the settlor was added to the trust
 
 livingSettlor.checkDetails.title = Check individual settlor details
 livingSettlor.checkDetails.heading = Check individual settlor details
+livingSettlor.cannotChange.p1 = Some of the information we ask about the settlor cannot be changed.
+livingSettlor.cannotChange.p2 = If you need to update the settlor’s details, you will need to remove them, then add them as a new settlor.
 
 removeIndividualSettlorYesNo.title = Are you sure you want to remove the individual settlor?
 removeIndividualSettlorYesNo.heading = Are you sure you want to remove {0}?
