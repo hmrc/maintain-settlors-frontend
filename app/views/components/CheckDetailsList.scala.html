@@ -18,9 +18,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{toClasses => ToClasses}
 @import uk.gov.hmrc.govukfrontend.views.html.components.{toAttributes => ToAttributes}
 
-@this()
 
-@(params: SummaryList)
+@this(
+    govukTag: GovukTag
+)
+
+@(params: SummaryList)(implicit messages: Messages)
+
 @import params._
 
 <dl class="@ToClasses("govuk-summary-list", classes)"@ToAttributes(attributes)>
@@ -60,11 +64,25 @@
 
 @actionLink(action: ActionItem) = {
     @action.href match {
-        case "" => {@action.content.asHtml<span class="govuk-visually-hidden"> @action.visuallyHiddenText</span>}
-        case _ => {<a class="@ToClasses("govuk-link", action.classes)" href="@action.href" @ToAttributes(action.attributes)> @actionContent(action)</a>}
+        case "" => {
+            @govukTag(Tag(
+                content = HtmlContent(actionContent(action)),
+                classes = "govuk-tag--grey"
+            ))
+        }
+        case _ => {
+            <a class="@ToClasses("govuk-link", action.classes)" href="@action.href" @ToAttributes(action.attributes)>
+                @actionContent(action)
+            </a>
+        }
     }
 }
 
-@actionContent(action: ActionItem) = {@action.content.asHtml@action.visuallyHiddenText.mapNonEmpty { visuallyHiddenText =><span class="govuk-visually-hidden"> @visuallyHiddenText</span> }}
+@actionContent(action: ActionItem) = {
+    @action.content.asHtml
+    @action.visuallyHiddenText.mapNonEmpty { visuallyHiddenText =>
+        <span class="govuk-visually-hidden"> @visuallyHiddenText</span>
+    }
+}
 
 @anyRowHasActions = @{rows.exists(_.actions.fold(false)(_.items.nonEmpty))}

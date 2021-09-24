@@ -19,7 +19,7 @@ package navigation
 import controllers.individual.living.add.{routes => addRts}
 import controllers.individual.living.amend.{routes => amendRts}
 import controllers.individual.living.{routes => rts}
-import models.{Mode, NormalMode, UserAnswers, YesNoDontKnow}
+import models.{CheckMode, Mode, NormalMode, UserAnswers, YesNoDontKnow}
 import pages.Page
 import pages.individual.living._
 import play.api.mvc.Call
@@ -41,8 +41,8 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case NationalInsuranceNumberPage => _ => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     case CountryOfResidencePage => ua => navigateAwayFromCountryOfResidenceQuestions(mode, ua)
     case UkAddressPage | NonUkAddressPage => ua => navigateToPassportDetails(mode, ua)
-    case PassportDetailsPage | IdCardDetailsPage => _ => rts.MentalCapacityYesNoController.onPageLoad(mode)
-    case PassportOrIdCardDetailsPage => _ => rts.MentalCapacityYesNoController.onPageLoad(mode)
+    case PassportDetailsPage | IdCardDetailsPage => ua => navigateAwayFromPassportIdCardCombined(mode)
+    case PassportOrIdCardDetailsPage => ua => navigateAwayFromPassportIdCardCombined(mode)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
     case MentalCapacityYesNoPage => ua => navigateToStartDateOrCheckDetails(mode, ua)
   }
@@ -65,20 +65,31 @@ class IndividualSettlorNavigator @Inject()() extends Navigator {
     case AddressYesNoPage => ua =>
       yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case PassportDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(mode), rts.IdCardDetailsYesNoController.onPageLoad(mode))
+        yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(mode), rts.IdCardDetailsYesNoController.onPageLoad(mode))
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
+        yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
+      if (mode == NormalMode) {
+        yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
+      } else {
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
+      }
   }
-
 
   private def navigateToPassportDetails(mode: Mode, answers: UserAnswers): Call = {
     if (answers.get(PassportOrIdCardDetailsYesNoPage).isDefined || answers.get(PassportOrIdCardDetailsPage).isDefined) {
-      rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
+      if (mode == NormalMode) {
+        rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
+      } else {
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
+      }
     } else {
       rts.PassportDetailsYesNoController.onPageLoad(mode)
     }
+  }
+
+  private def navigateAwayFromPassportIdCardCombined(mode: Mode): Call = {
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
   }
 
   private def navigateAwayFromCountryOfNationalityQuestions(mode: Mode, isTaxable: Boolean): Call = {

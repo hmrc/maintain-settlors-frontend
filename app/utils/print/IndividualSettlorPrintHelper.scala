@@ -31,6 +31,9 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
 
     val bound = answerRowConverter.bind(userAnswers, settlorName)
 
+    val changeLinkOrNone: (Boolean, String) => Option[String] =
+      (adding: Boolean, route: String) => if(adding) Some(route) else None
+
     def answerRows: Seq[AnswerRow] = {
       val mode: Mode = if (adding) NormalMode else CheckMode
       Seq(
@@ -53,8 +56,8 @@ class IndividualSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
         bound.passportDetailsQuestion(PassportDetailsPage, "livingSettlor.passportDetails", Some(rts.PassportDetailsController.onPageLoad(mode).url)),
         bound.yesNoQuestion(IdCardDetailsYesNoPage, "livingSettlor.idCardDetailsYesNo", Some(rts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
         bound.idCardDetailsQuestion(IdCardDetailsPage, "livingSettlor.idCardDetails", Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
-        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
-        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", Some(rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "livingSettlor.passportOrIdCardDetailsYesNo", changeLinkOrNone(adding, rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url)),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "livingSettlor.passportOrIdCardDetails", changeLinkOrNone(adding, rts.PassportOrIdCardDetailsController.onPageLoad(mode).url)),
         bound.enumQuestion(MentalCapacityYesNoPage, "livingSettlor.mentalCapacityYesNo", rts.MentalCapacityYesNoController.onPageLoad(mode).url, "site"),
         if (adding) bound.dateQuestion(StartDatePage, "livingSettlor.startDate", Some(addRts.StartDateController.onPageLoad().url)) else None
       ).flatten

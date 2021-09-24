@@ -18,13 +18,13 @@
 @import controllers.individual.living.amend.routes._
 @import utils.SectionFormatter.formatSections
 @import viewmodels.AnswerSection
-@import views.html.components.{Heading, SubmitButton}
+@import views.html.components.{Heading, SubmitButton, CheckDetailsList}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
-    govukSummaryList: GovukSummaryList,
+    checkDetailsList: CheckDetailsList,
     submitButton: SubmitButton
 )
 
@@ -39,7 +39,10 @@
 
         @heading("livingSettlor.checkDetails.heading")
 
-        @govukSummaryList(SummaryList(rows = formatSections(Seq(answerSection))))
+        <p>@messages("livingSettlor.cannotChange.p1")</p>
+        <p>@messages("livingSettlor.cannotChange.p2")</p>
+
+        @checkDetailsList(SummaryList(rows = formatSections(Seq(answerSection))))
 
         @submitButton()
     }
