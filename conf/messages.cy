@@ -344,8 +344,8 @@ livingSettlor.startDate.error.invalid=Nodwch ddyddiad go iawn
 livingSettlor.startDate.error.future=Mae’n rhaid i’r dyddiad yr ychwanegwyd y setlwr at yr ymddiriedolaeth fod heddiw neu yn y gorffennol
 livingSettlor.startDate.error.past=Ni all y dyddiad yr ychwanegwyd y setlwr at yr ymddiriedolaeth fod cyn dyddiad dechrau’r ymddiriedolaeth
 
-livingSettlor.checkDetails.title=Gwiriwch fanylion setlwr yr unigolyn
-livingSettlor.checkDetails.heading=Gwiriwch fanylion setlwr yr unigolyn
+livingSettlor.checkDetails.title=Gwiriwch fanylion y setlwr sy’n unigolyn
+livingSettlor.checkDetails.heading=Gwiriwch fanylion y setlwr sy’n unigolyn
 livingSettlor.cannotChange.p1 = Does dim modd newid peth o’r wybodaeth rydym yn gofyn amdani ynghylch y setlwr.
 livingSettlor.cannotChange.p2 = Os oes angen i chi ddiweddaru manylion y setlwr, bydd yn rhaid i chi ei dynnu ac yna ei ychwanegu fel setlwr newydd.
 
