@@ -18,7 +18,7 @@ package controllers.individual.living
 
 import base.SpecBase
 import config.annotations.LivingSettlor
-import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import forms.YesNoDontKnowFormProvider
 import models.{Name, NormalMode, UserAnswers, YesNoDontKnow}
 import navigation.{FakeNavigator, Navigator}
 import pages.individual.living.{MentalCapacityYesNoPage, NamePage}

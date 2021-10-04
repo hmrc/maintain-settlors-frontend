@@ -529,7 +529,7 @@ deceasedSettlor.dateOfDeath.error.required.all = Enter a date of death
 deceasedSettlor.dateOfDeath.error.required.two = Date of death must include a {0} and a {1}
 deceasedSettlor.dateOfDeath.error.required = Date of death must include a {0}
 deceasedSettlor.dateOfDeath.error.invalid = Enter a real date of death
-deceasedSettlor.dateOfDeath.error.future = Date of death must be on or before the trust's start date
+deceasedSettlor.dateOfDeath.error.future = Date of death must be on or before the trust’s start date
 deceasedSettlor.dateOfDeath.error.past = Date of death must be after 31 December 1499
 deceasedSettlor.dateOfDeath.error.beforeDateOfBirth = Date of death must be on or after the date of birth
 

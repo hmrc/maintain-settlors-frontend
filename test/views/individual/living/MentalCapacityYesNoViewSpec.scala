@@ -16,13 +16,12 @@
 
 package views.individual.living
 
-import controllers.individual.living.routes
-import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import forms.YesNoDontKnowFormProvider
 import models.{Name, NormalMode, YesNoDontKnow}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.RadioOption
-import views.behaviours.{OptionsViewBehaviours, QuestionViewBehaviours, YesNoViewBehaviours}
+import views.behaviours.OptionsViewBehaviours
 import views.html.individual.living.MentalCapacityYesNoView
 
 class MentalCapacityYesNoViewSpec extends OptionsViewBehaviours {
