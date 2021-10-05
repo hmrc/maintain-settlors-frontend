@@ -44,8 +44,8 @@ livingSettlor.mentalCapacityYesNo.bulletpoint4=methu â chyfathrebu
 livingSettlor.mentalCapacityYesNo.heading2=Pam mae CThEM yn gofyn y cwestiwn hwn
 livingSettlor.mentalCapacityYesNo.p3=Bydd CThEM yn cymryd bod gan yr setlwr alluedd meddyliol, oni roddwch wybod i CThEM nad oes ganddo alluedd meddyliol.
 livingSettlor.mentalCapacityYesNo.p4=Os nad ydych yn siŵr a oes gan yr setlwr alluedd meddyliol, dewiswch ‘Nid wyf yn gwybod’.
-livingSettlor.mentalCapacityYesNo.p5=Fel arfer, caiff CThEM rannu data person o dan Reoliadau Gwyngalchu Arian ac Ariannu Terfysgaeth (Diwygiad) 2020.
-livingSettlor.mentalCapacityYesNo.p6=Pan nad oes gan berson alluedd meddyliol, mae gofyn i CThEM beidio â rhannu data personol y person hwnnw.
+livingSettlor.mentalCapacityYesNo.p5=O dan amgylchiadau cyfyngedig penodol, caiff CThEM rannu data personol o dan Reoliadau Gwyngalchu Arian ac Ariannu Terfysgaeth (Diwygiad) 2020.
+livingSettlor.mentalCapacityYesNo.p6=Pan nad oes gan berson alluedd meddyliol, ni fydd CThEM yn rhannu data personol y person hwnnw.
 
 site.back=Yn ôl
 site.delete=Tynnu
