@@ -265,8 +265,8 @@ livingSettlor.mentalCapacityYesNo.p3 = HMRC will assume that the settlor does ha
 livingSettlor.mentalCapacityYesNo.p4 = If you are not certain whether the settlor has mental capacity, select ‘I don’t know’.
 
 livingSettlor.mentalCapacityYesNo.heading2 = Why HMRC are asking this question
-livingSettlor.mentalCapacityYesNo.p5 = Normally, HMRC can share a person’s data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020.
-livingSettlor.mentalCapacityYesNo.p6 = Where a person does not have mental capacity, HMRC are required to not share their personal data.
+livingSettlor.mentalCapacityYesNo.p5 = Under certain limited circumstances, HMRC can share personal data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020
+livingSettlor.mentalCapacityYesNo.p6 = Where a person does not have mental capacity, HMRC will not share their personal data.
 
 livingSettlor.addressYesNo.checkYourAnswersLabel = Do you know {0}’s address?
 livingSettlor.addressYesNo.title = Do you know the settlor’s address?
