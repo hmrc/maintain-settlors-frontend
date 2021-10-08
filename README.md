@@ -1,7 +1,15 @@
+# Maintain settlors frontend
 
-# maintain-settlors-frontend
+This service is responsible for updating the information held about a deceased settlor or living settlors in a trust registration.
+There is limited information the user is allowed to change for a deceased settlor, as they are the reason the will trust was created.
 
-This is a placeholder README.md for a new repository
+To run locally using the micro-service provided by the service manager:
+
+***sm --start TRUSTS_ALL -r***
+
+If you want to run your local copy, then stop the frontend ran by the service manager and run your local code by using the following (port number is 9795 but is defaulted to that in build.sbt).
+
+`sbt run`
 
 ### License
 
