@@ -42,6 +42,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
   def emptyUserAnswers: UserAnswers = UserAnswers(
     internalId = userInternalId,
     identifier = "UTRUTRUTR",
+    sessionId = "sessionId",
     whenTrustSetup = LocalDate.now(),
     trustType = Some(TypeOfTrust.WillTrustOrIntestacyTrust),
     deedOfVariation = None,

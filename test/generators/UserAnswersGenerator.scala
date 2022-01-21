@@ -42,6 +42,7 @@ trait UserAnswersGenerator extends TryValues {
       for {
         id <- nonEmptyString
         utr <- nonEmptyString
+        sessionId <- nonEmptyString
         data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
           case _ => Gen.mapOf(oneOf(generators))
@@ -49,6 +50,7 @@ trait UserAnswersGenerator extends TryValues {
       } yield UserAnswers(
         internalId = id,
         identifier = utr,
+        sessionId = sessionId,
         whenTrustSetup = LocalDate.now(),
         trustType = None,
         deedOfVariation = None,

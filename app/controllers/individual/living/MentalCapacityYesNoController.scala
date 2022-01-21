@@ -19,7 +19,7 @@ package controllers.individual.living
 import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
-import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import forms.YesNoDontKnowFormProvider
 import models.{Mode, YesNoDontKnow}
 import navigation.Navigator
 import pages.individual.living.MentalCapacityYesNoPage

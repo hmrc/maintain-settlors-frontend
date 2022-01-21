@@ -19,7 +19,7 @@ package navigation
 import controllers.individual.living.add.{routes => addRts}
 import controllers.individual.living.amend.{routes => amendRts}
 import controllers.individual.living.{routes => rts}
-import models.{CheckMode, Mode, NormalMode, UserAnswers, YesNoDontKnow}
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.individual.living._
 import play.api.mvc.Call

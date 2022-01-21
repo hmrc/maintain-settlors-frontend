@@ -65,6 +65,7 @@ class IndexController @Inject()(
             case None => UserAnswers(
               internalId = request.user.internalId,
               identifier = identifier,
+              sessionId = Session.id(hc),
               whenTrustSetup = details.startDate,
               trustType = details.typeOfTrust,
               deedOfVariation = details.deedOfVariation,
