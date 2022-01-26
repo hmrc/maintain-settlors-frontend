@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package controllers.individual.living
 import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
-import forms.{YesNoDontKnowFormProvider, YesNoFormProvider}
+import forms.YesNoDontKnowFormProvider
 import models.{Mode, YesNoDontKnow}
 import navigation.Navigator
 import pages.individual.living.MentalCapacityYesNoPage

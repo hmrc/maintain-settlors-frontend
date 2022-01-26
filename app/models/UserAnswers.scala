@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(internalId: String,
                              identifier: String,
+                             sessionId: String,
                              whenTrustSetup: LocalDate,
                              trustType: Option[TypeOfTrust],
                              deedOfVariation: Option[DeedOfVariation],
@@ -108,6 +109,7 @@ object UserAnswers {
   implicit lazy val reads: Reads[UserAnswers] = (
     (__ \ "internalId").read[String] and
       ((__ \ "utr").read[String] or (__ \ "identifier").read[String]) and
+      (__ \ "sessionId").read[String] and
       (__ \ "whenTrustSetup").read[LocalDate] and
       (__ \ "trustType").readNullable[TypeOfTrust] and
       (__ \ "deedOfVariation").readNullable[DeedOfVariation] and
@@ -122,6 +124,7 @@ object UserAnswers {
   implicit lazy val writes: Writes[UserAnswers] = (
     (__ \ "internalId").write[String] and
       (__ \ "identifier").write[String] and
+      (__ \ "sessionId").write[String] and
       (__ \ "whenTrustSetup").write[LocalDate] and
       (__ \ "trustType").writeNullable[TypeOfTrust] and
       (__ \ "deedOfVariation").writeNullable[DeedOfVariation] and

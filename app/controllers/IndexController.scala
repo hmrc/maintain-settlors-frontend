@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,7 @@ class IndexController @Inject()(
             case None => UserAnswers(
               internalId = request.user.internalId,
               identifier = identifier,
+              sessionId = Session.id(hc),
               whenTrustSetup = details.startDate,
               trustType = details.typeOfTrust,
               deedOfVariation = details.deedOfVariation,
