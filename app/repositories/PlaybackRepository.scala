@@ -53,8 +53,8 @@ class PlaybackRepositoryImpl @Inject()(
   )
 
   private val internalIdAndUtrIndex = MongoIndex(
-    key = Seq("internalId" -> IndexType.Ascending, "utr" -> IndexType.Ascending, "newId" -> IndexType.Ascending),
-    name = "internal-id-and-utr-and-newId-compound-index"
+    key = Seq("newId" -> IndexType.Ascending),
+    name = "internal-id-and-utr-and-sessionId-compound-index"
   )
 
   private lazy val ensureIndexes = for {
@@ -64,8 +64,6 @@ class PlaybackRepositoryImpl @Inject()(
     } yield createdLastUpdatedIndex && createdIdIndex
 
   private def selector(internalId: String, utr: String, sessionId: String): JsObject = Json.obj(
-    "internalId" -> internalId,
-    "utr" -> utr,
     "newId" -> s"$internalId-$utr-$sessionId"
   )
 
