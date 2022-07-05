@@ -19,10 +19,12 @@ package repositories
 import models.UtrSession
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.freespec.AsyncFreeSpec
+import org.scalatest.matchers.must.Matchers
 
 import scala.language.implicitConversions
 
-class ActiveSessionRepositorySpec extends AsyncFreeSpec with MustMatchers
+class ActiveSessionRepositorySpec extends AsyncFreeSpec with Matchers
   with ScalaFutures with OptionValues with MongoSuite {
 
   "a session repository" - {

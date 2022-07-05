@@ -17,15 +17,15 @@ GET        /assets/*file                                                    cont
 
 GET        /language/:lang                                                  controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /this-service-has-been-reset                                     controllers.SessionExpiredController.onPageLoad
-POST       /this-service-has-been-reset                                     controllers.SessionExpiredController.onSubmit
+GET        /this-service-has-been-reset                                     controllers.SessionExpiredController.onPageLoad()
+POST       /this-service-has-been-reset                                     controllers.SessionExpiredController.onSubmit()
 
 GET        /what-kind                                                       controllers.AddNowController.onPageLoad()
 POST       /what-kind                                                       controllers.AddNowController.onSubmit()
 
 GET        /logout                                                          controllers.LogoutController.logout()
 
-GET        /unauthorised                                                    controllers.UnauthorisedController.onPageLoad
+GET        /unauthorised                                                    controllers.UnauthorisedController.onPageLoad()
 
 GET        /keep-alive                                                      controllers.SessionTimeoutController.keepAlive
 
