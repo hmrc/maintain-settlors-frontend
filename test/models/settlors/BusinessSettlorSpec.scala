@@ -20,10 +20,11 @@ import java.time.LocalDate
 
 import models.CompanyType.Investment
 import models.{NonUkAddress, UkAddress}
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
 
-class BusinessSettlorSpec extends WordSpec with MustMatchers {
+class BusinessSettlorSpec extends AnyWordSpec with Matchers {
 
   "BusinessSettlor" must {
     "deserialise from backend JSON" when {

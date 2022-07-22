@@ -21,13 +21,13 @@ import generators.ModelGenerators
 import models.Constant.GB
 import models.settlors.IndividualSettlor
 import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, Passport, UkAddress, UserAnswers, YesNoDontKnow}
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.living._
 
 import java.time.LocalDate
 
-class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with MustMatchers {
+class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators with Matchers {
 
   val answers: UserAnswers = emptyUserAnswers
 
