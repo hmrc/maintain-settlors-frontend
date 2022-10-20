@@ -19,12 +19,13 @@ package controllers.business
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.CompanyTypeFormProvider
-import models.{CompanyType, NormalMode}
+import models.{CompanyType, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{CompanyTypePage, NamePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -36,17 +37,17 @@ import scala.concurrent.Future
 
 class CompanyTypeControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   val formProvider = new CompanyTypeFormProvider()
-  val form = formProvider()
+  val form: Form[CompanyType] = formProvider()
   val name = "Name"
-  val validAnswer = CompanyType.Investment
+  val validAnswer: CompanyType.Investment.type = CompanyType.Investment
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  lazy val companyTypeControllerRoute = routes.CompanyTypeController.onPageLoad(NormalMode).url
+  lazy val companyTypeControllerRoute: String = routes.CompanyTypeController.onPageLoad(NormalMode).url
 
   "CompanyType Controller" must {
 

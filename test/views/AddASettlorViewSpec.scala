@@ -26,12 +26,12 @@ import views.html.AddASettlorView
 
 class AddASettlorViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 
-  val completeSettlors = Seq(
+  val completeSettlors: Seq[AddRow] = Seq(
     AddRow("Joe Bloggs", "Individual", "#", None),
     AddRow("Tom Jones", "Individual", "#", None)
   )
 
-  val inProgressSettlors = Seq(
+  val inProgressSettlors: Seq[AddRow] = Seq(
     AddRow("John Doe", "Individual", "#", None)
   )
 

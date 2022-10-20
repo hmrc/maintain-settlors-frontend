@@ -21,7 +21,7 @@ import config.annotations.DeceasedSettlor
 import forms.UkAddressFormProvider
 import models.{Name, UkAddress}
 import navigation.Navigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.deceased.{NamePage, UkAddressPage}
@@ -36,14 +36,14 @@ import scala.concurrent.Future
 
 class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   val form = new UkAddressFormProvider()()
 
-  val name = Name("FirstName", None, "LastName")
-  val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  val name: Name = Name("FirstName", None, "LastName")
+  val validAnswer: UkAddress = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val ukAddressControllerRoute = routes.UkAddressController.onPageLoad().url
+  lazy val ukAddressControllerRoute: String = routes.UkAddressController.onPageLoad().url
 
   "UkAddress Controller" must {
 

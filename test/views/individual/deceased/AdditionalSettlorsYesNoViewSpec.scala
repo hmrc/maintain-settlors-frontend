@@ -16,7 +16,6 @@
 
 package views.individual.deceased
 
-import controllers.individual.deceased.routes
 import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -40,7 +39,7 @@ class AdditionalSettlorsYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, None, routes.AdditionalSettlorsYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, None)
 
     behave like pageWithASubmitButton(applyView(form))
   }

@@ -16,7 +16,6 @@
 
 package views.individual.deceased
 
-import controllers.individual.deceased.routes
 import forms.NonUkAddressFormProvider
 import models.{Name, NonUkAddress}
 import play.api.data.Form
@@ -49,7 +48,6 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
     behave like nonUkAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.NonUkAddressController.onSubmit().url,
       name.displayName
     )
 

@@ -16,12 +16,12 @@
 
 package views
 
+import base.SpecBase
 import models.UserAnswers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import play.twirl.api.Html
-import base.SpecBase
 import org.scalatest.Assertion
+import play.twirl.api.Html
 
 import scala.reflect.ClassTag
 
@@ -157,7 +157,7 @@ trait ViewSpecBase extends SpecBase {
     assert(doc.select(cssSelector).isEmpty, "\n\nElement " + cssSelector + " was rendered on the page.\n")
   }
 
-  def assertContainsLabel(doc: Document, forElement: String, expectedText: String, expectedHintText: Option[String] = None) = {
+  def assertContainsLabel(doc: Document, forElement: String, expectedText: String, expectedHintText: Option[String] = None): Any = {
     val labels = doc.getElementsByAttributeValue("for", forElement)
     assert(labels.size == 1, s"\n\nLabel for $forElement was not rendered on the page.")
     val label = labels.first

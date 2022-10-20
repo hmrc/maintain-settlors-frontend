@@ -97,4 +97,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
    * @return either true or false
    */
   def countMaxAsCombined: Boolean = configuration.get[Boolean]("microservice.services.features.count-max-as-combined")
+
+  val cachettlplaybackInSeconds: Long = configuration.get[Long]("mongodb.playback.ttlSeconds")
+  val cachettlSessionInSeconds: Long = configuration.get[Long]("mongodb.session.ttlSeconds")
+  val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+
 }

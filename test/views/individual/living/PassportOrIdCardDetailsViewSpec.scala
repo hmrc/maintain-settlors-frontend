@@ -17,7 +17,6 @@
 package views.individual.living
 
 import base.FakeTrustsApp
-import controllers.individual.living.routes
 import forms.CombinedPassportOrIdCardDetailsFormProvider
 import models.{CombinedPassportOrIdCard, Mode, Name, NormalMode}
 import play.api.data.Form
@@ -54,7 +53,6 @@ class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPas
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportOrIdCardDetailsController.onSubmit(mode).url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

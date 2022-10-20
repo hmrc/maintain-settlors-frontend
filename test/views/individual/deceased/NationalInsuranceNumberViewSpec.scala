@@ -42,10 +42,7 @@ class NationalInsuranceNumberViewSpec extends QuestionViewBehaviours[String] {
     behave like pageWithBackLink(applyView(form))
 
     behave like pageWithTextFields(form, applyView,
-      messageKeyPrefix,
-      Some(name.displayName),
-      ""
-    )
+      messageKeyPrefix)
 
     behave like pageWithASubmitButton(applyView(form))
 

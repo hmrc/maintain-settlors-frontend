@@ -19,11 +19,11 @@ package services
 import connectors.TrustConnector
 import models.settlors._
 import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, RemoveSettlor, SettlorType}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}

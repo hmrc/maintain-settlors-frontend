@@ -24,8 +24,8 @@ import models.TaskStatus.Completed
 import models.settlors.{BusinessSettlor, DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{AddASettlor, Name, RemoveSettlor, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{never, reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.inject.bind
@@ -235,7 +235,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
           status(result) mustEqual OK
 
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(playbackRepository).set(uaCaptor.capture)
           uaCaptor.getValue.get(pages.individual.living.NamePage) mustNot be(defined)
           uaCaptor.getValue.get(pages.business.NamePage) mustNot be(defined)
@@ -267,7 +267,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
           status(result) mustEqual SEE_OTHER
 
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(playbackRepository).set(uaCaptor.capture)
           uaCaptor.getValue.get(pages.individual.living.NamePage) mustNot be(defined)
           uaCaptor.getValue.get(pages.business.NamePage) mustNot be(defined)
@@ -298,29 +298,6 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
 
         verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
-
-        application.stop()
-      }
-
-      "redirect to the maintain task list when the user says they want to add later" ignore {
-
-        val fakeService = new FakeService(settlors)
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-          .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
-          .build()
-
-        val request = FakeRequest(POST, submitRoute)
-          .withFormUrlEncodedBody(("value", AddASettlor.YesLater.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
-
-        verify(mockStoreConnector, never()).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }

@@ -19,12 +19,13 @@ package controllers.individual.living
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
-import models.{Name, NormalMode}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.living.{AddressYesNoPage, NamePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -36,17 +37,17 @@ import scala.concurrent.Future
 
 class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("livingSettlor.addressYesNo")
+  val form: Form[Boolean] = formProvider.withPrefix("livingSettlor.addressYesNo")
   val trusteeName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
+  lazy val addressYesNoControllerRoute: String = routes.AddressYesNoController.onPageLoad(NormalMode).url
 
   "AddressYesNo Controller" must {
 

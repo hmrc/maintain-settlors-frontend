@@ -16,7 +16,6 @@
 
 package views.individual.living
 
-import controllers.individual.living.routes
 import forms.IdCardDetailsFormProvider
 import models.{IdCard, Mode, Name, NormalMode}
 import play.api.data.Form
@@ -53,7 +52,6 @@ class IdCardDetailsViewSpec extends QuestionViewBehaviours[IdCard] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.IdCardDetailsController.onSubmit(mode).url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

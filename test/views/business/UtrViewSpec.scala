@@ -16,7 +16,6 @@
 
 package views.business
 
-import controllers.business.routes
 import forms.UtrFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -42,7 +41,7 @@ class UtrViewSpec extends StringViewBehaviours {
 
     behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(name), routes.UtrController.onSubmit(NormalMode).url)
+    behave like stringPage(form, applyView, messageKeyPrefix, Some(name))
 
     behave like pageWithBackLink(applyView(form))
   }

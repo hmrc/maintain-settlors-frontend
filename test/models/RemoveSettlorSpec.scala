@@ -16,10 +16,10 @@
 
 package models
 
-import java.time.LocalDate
-
 import base.SpecBase
 import play.api.libs.json.Json
+
+import java.time.LocalDate
 
 class RemoveSettlorSpec extends SpecBase {
 

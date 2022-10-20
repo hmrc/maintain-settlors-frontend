@@ -21,10 +21,11 @@ import config.annotations.BusinessSettlor
 import forms.StringFormProvider
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import pages.business.NamePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -36,13 +37,13 @@ import scala.concurrent.Future
 
 class NameControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   val formProvider = new StringFormProvider()
-  val form = formProvider.withPrefix("businessSettlor.name", 105)
+  val form: Form[String] = formProvider.withPrefix("businessSettlor.name", 105)
   val name = "Name"
 
-  lazy val nameRoute = routes.NameController.onPageLoad(NormalMode).url
+  lazy val nameRoute: String = routes.NameController.onPageLoad(NormalMode).url
 
   "Name Controller" must {
 

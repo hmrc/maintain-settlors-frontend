@@ -28,10 +28,10 @@ import java.time.LocalDate
 
 class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  val name = Name("First", None, "Last")
-  val date = LocalDate.parse("1967-02-03")
-  val dateOfDeath = LocalDate.parse("1957-02-03")
-  val address = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  val name: Name = Name("First", None, "Last")
+  val date: LocalDate = LocalDate.parse("1967-02-03")
+  val dateOfDeath: LocalDate = LocalDate.parse("1957-02-03")
+  val address: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
 
   val extractor = new DeceasedSettlorExtractor()
 
@@ -116,7 +116,7 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     result.get(NonUkAddressPage) mustNot be(defined)
   }
 
-  val settlor = DeceasedSettlor(
+  val settlor: DeceasedSettlor = DeceasedSettlor(
     bpMatchStatus = None,
     name = name,
     dateOfDeath = None,

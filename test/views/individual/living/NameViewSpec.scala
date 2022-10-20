@@ -47,8 +47,6 @@ class NameViewSpec extends QuestionViewBehaviours[Name] {
         form,
         applyView,
         messageKeyPrefix,
-        None,
-        "",
         "firstName",
         "middleName",
         "lastName"

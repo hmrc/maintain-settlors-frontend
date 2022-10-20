@@ -26,12 +26,14 @@ import play.api.data.Forms._
 
 class NameFormProvider @Inject() extends Mappings {
 
+  private val nameMaxLength = 35
+
    def withPrefix(prefix: String): Form[Name] =   Form(
     mapping(
       "firstName" -> text(s"$prefix.error.firstName.required")
         .verifying(
           firstError(
-            maxLength(35, s"$prefix.error.firstName.length"),
+            maxLength(nameMaxLength, s"$prefix.error.firstName.length"),
             nonEmptyString("firstName", s"$prefix.error.firstName.required"),
             regexp(Validation.nameRegex, s"$prefix.error.firstName.invalid")
           )
@@ -40,14 +42,14 @@ class NameFormProvider @Inject() extends Mappings {
         .transform(trimWhitespace, identity[String])
         .verifying(
           firstError(
-            maxLength(35, s"$prefix.error.middleName.length"),
+            maxLength(nameMaxLength, s"$prefix.error.middleName.length"),
             regexp(Validation.nameRegex, s"$prefix.error.middleName.invalid"))
         )
       ).transform(emptyToNone, identity[Option[String]]),
       "lastName" -> text(s"$prefix.error.lastName.required")
         .verifying(
           firstError(
-            maxLength(35, s"$prefix.error.lastName.length"),
+            maxLength(nameMaxLength, s"$prefix.error.lastName.length"),
             nonEmptyString("lastName", s"$prefix.error.lastName.required"),
             regexp(Validation.nameRegex, s"$prefix.error.lastName.invalid")
           )

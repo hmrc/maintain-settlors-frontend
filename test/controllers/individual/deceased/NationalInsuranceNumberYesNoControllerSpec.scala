@@ -19,12 +19,13 @@ package controllers.individual.deceased
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.YesNoFormProvider
-import models.Name
+import models.{Name, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.deceased.{NamePage, NationalInsuranceNumberYesNoPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,13 +37,13 @@ import scala.concurrent.Future
 class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumberYesNo")
-  val name = Name("FirstName", None, "LastName")
+  val form: Form[Boolean] = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumberYesNo")
+  val name: Name = Name("FirstName", None, "LastName")
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad().url
+  lazy val nationalInsuranceNumberYesNoRoute: String = routes.NationalInsuranceNumberYesNoController.onPageLoad().url
 
   "NationalInsuranceNumberYesNo Controller" must {
 

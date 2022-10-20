@@ -16,7 +16,6 @@
 
 package views.business
 
-import controllers.business.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -29,7 +28,7 @@ class CountryOfResidenceInTheUkYesNoViewSpec extends YesNoViewBehaviours {
   val messageKeyPrefix = "businessSettlor.countryOfResidenceInTheUkYesNo"
   val name = "Name"
 
-  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "CountryOfResidenceInTheUkYesNoView view" must {
 
@@ -42,6 +41,6 @@ class CountryOfResidenceInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.CountryOfResidenceInTheUkYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name))
   }
 }

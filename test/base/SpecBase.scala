@@ -43,6 +43,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
     internalId = userInternalId,
     identifier = "UTRUTRUTR",
     sessionId = "sessionId",
+    newId = s"$userInternalId-UTRUTRUTR-sessionId",
     whenTrustSetup = LocalDate.now(),
     trustType = Some(TypeOfTrust.WillTrustOrIntestacyTrust),
     deedOfVariation = None,

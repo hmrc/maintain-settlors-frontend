@@ -16,8 +16,4 @@
 
 package viewmodels.addAnother
 
-case class AddToRows(inProgress : List[AddRow], complete: List[AddRow]) {
-
-  def count : Int = inProgress.size + complete.size
-
-}
+case class AddToRows(inProgress : List[AddRow], complete: List[AddRow])

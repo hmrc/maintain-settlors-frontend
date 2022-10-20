@@ -40,7 +40,7 @@ trait ModelGenerators {
   }
 
   implicit lazy val arbitraryDetailsType: Arbitrary[DetailsType] = Arbitrary {
-    Gen.oneOf(DetailsType.values)
+    Gen.oneOf(DetailsType.values.toSeq)
   }
 
 }

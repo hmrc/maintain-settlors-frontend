@@ -22,7 +22,7 @@ import models.TaskStatus.InProgress
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{Name, TaxableMigrationFlag, TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import pages.AdditionalSettlorsYesNoPage
@@ -104,7 +104,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result) mustBe Some(controllers.routes.AddASettlorController.onPageLoad().url)
 
-      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
       uaCaptor.getValue.internalId mustBe "id"

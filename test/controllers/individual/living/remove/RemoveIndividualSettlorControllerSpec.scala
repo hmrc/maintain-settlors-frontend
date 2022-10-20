@@ -21,10 +21,11 @@ import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
 import models.Name
 import models.settlors.{IndividualSettlor, Settlors}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,7 +40,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
   val messagesPrefix = "removeIndividualSettlorYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form = formProvider(messagesPrefix)
+  lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
   lazy val name : Name = Name("First", None, "Last")
 
@@ -57,7 +58,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
     provisional = provisional
   )
 
-  val settlors = List(
+  val settlors: List[IndividualSettlor] = List(
     individualSettlor(1, provisional = false),
     individualSettlor(2, provisional = true),
     individualSettlor(3, provisional = true)

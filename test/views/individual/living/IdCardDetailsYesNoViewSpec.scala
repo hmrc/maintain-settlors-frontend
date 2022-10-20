@@ -16,7 +16,6 @@
 
 package views.individual.living
 
-import controllers.individual.living.routes
 import forms.YesNoFormProvider
 import models.{Mode, Name, NormalMode}
 import play.api.data.Form
@@ -43,7 +42,7 @@ class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.IdCardDetailsYesNoController.onSubmit(mode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName))
 
     behave like pageWithASubmitButton(applyView(form))
   }

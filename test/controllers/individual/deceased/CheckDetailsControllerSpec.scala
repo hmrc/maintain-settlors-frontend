@@ -23,7 +23,7 @@ import models.BpMatchStatus.{FailedToMatch, FullyMatched}
 import models.TaskStatus.Completed
 import models.settlors.{DeceasedSettlor, IndividualSettlor, Settlors}
 import models.{BpMatchStatus, Name, NationalInsuranceNumber, UserAnswers}
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar

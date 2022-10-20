@@ -16,18 +16,18 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.FakeTrustsApp
 import forms.behaviours.DateBehaviours
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
+
+import java.time.{LocalDate, ZoneOffset}
 
 class DateOfDeathFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
   private val min = frontendAppConfig.minDate
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  val form = new DateOfDeathFormProvider(frontendAppConfig).withConfig("deceasedSettlor.dateOfDeath", max)
+  val form: Form[LocalDate] = new DateOfDeathFormProvider(frontendAppConfig).withConfig("deceasedSettlor.dateOfDeath", max)
 
   ".value" should {
 

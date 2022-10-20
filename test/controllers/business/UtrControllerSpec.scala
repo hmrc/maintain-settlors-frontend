@@ -21,7 +21,7 @@ import config.annotations.BusinessSettlor
 import forms.UtrFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{NamePage, UtrPage}

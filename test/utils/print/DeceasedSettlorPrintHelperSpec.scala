@@ -16,8 +16,6 @@
 
 package utils.print
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.BpMatchStatus.{FailedToMatch, FullyMatched}
 import models.{BpMatchStatus, Name, NonUkAddress, UkAddress, UserAnswers}
@@ -25,6 +23,8 @@ import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
+
+import java.time.LocalDate
 
 class DeceasedSettlorPrintHelperSpec extends SpecBase {
 
