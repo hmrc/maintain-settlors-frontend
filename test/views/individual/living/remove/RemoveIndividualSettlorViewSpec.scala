@@ -16,7 +16,6 @@
 
 package views.individual.living.remove
 
-import controllers.individual.living.remove.routes
 import forms.YesNoFormProvider
 import models.Name
 import play.api.data.Form
@@ -27,7 +26,7 @@ import views.html.individual.living.remove.RemoveIndividualSettlorView
 class RemoveIndividualSettlorViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "removeIndividualSettlorYesNo"
-  val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name: Name = Name("First", None, "Last")
   val index = 0
 
@@ -42,6 +41,6 @@ class RemoveIndividualSettlorViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.RemoveIndividualSettlorController.onSubmit(index).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName))
   }
 }

@@ -21,12 +21,13 @@ import config.annotations.BusinessSettlor
 import forms.NonUkAddressFormProvider
 import models.{NonUkAddress, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{NamePage, NonUkAddressPage}
+import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
@@ -38,9 +39,9 @@ import scala.concurrent.Future
 
 class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  val form = new NonUkAddressFormProvider().apply()
+  val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
   val name: String = "Name"
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
@@ -48,7 +49,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(NormalMode).url
 
-  val getRequest = FakeRequest(GET, nonUkAddressRoute)
+  val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, nonUkAddressRoute)
 
   val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 

@@ -16,7 +16,6 @@
 
 package views.business
 
-import controllers.business.routes
 import forms.UkAddressFormProvider
 import models.{NormalMode, UkAddress}
 import play.api.data.Form
@@ -45,7 +44,6 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     behave like ukAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.UkAddressController.onSubmit(NormalMode).url,
       name
     )
 

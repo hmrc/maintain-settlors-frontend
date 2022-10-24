@@ -19,12 +19,13 @@ package controllers.individual.living
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
-import models.{Name, NormalMode}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.living.{DateOfBirthYesNoPage, NamePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,13 +37,13 @@ import scala.concurrent.Future
 class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("livingSettlor.dateOfBirthYesNo")
+  val form: Form[Boolean] = formProvider.withPrefix("livingSettlor.dateOfBirthYesNo")
 
-  lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url
+  lazy val dateOfBirthYesNoRoute: String = routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url
 
-  val name = Name("New", None, "Settlor")
+  val name: Name = Name("New", None, "Settlor")
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   "Living Settlor DateOfBirthYesNoPage Controller" must {

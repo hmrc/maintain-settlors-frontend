@@ -25,16 +25,14 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
   val errorKey = "value"
   val errorPrefix = "site.error"
   val errorMessage = "error.number"
-  val error = FormError(errorKey, errorMessage)
+  val error: FormError = FormError(errorKey, errorMessage)
 
   val form: Form[A]
 
   def pageWithTextFields(form: Form[A],
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
-                         messageKeyParam: Option[String],
-                         expectedFormAction: String,
-                         fields: String*) = {
+                         fields: String*): Unit = {
 
     "behave like a question page" when {
 
@@ -88,12 +86,11 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
   def pageWithPassportOrIDCardDetailsFields(form: Form[A],
                                             createView: Form[A] => HtmlFormat.Appendable,
                                             messageKeyPrefix: String,
-                                            expectedFormAction: String,
                                             textFields: Seq[(String, Option[String])],
                                             dateKey : String,
-                                            args: String*) = {
+                                            args: String*): Unit = {
 
-    val dateFields = Seq(s"${dateKey}.day", s"${dateKey}.month", s"${dateKey}.year")
+    val dateFields = Seq(s"$dateKey.day", s"$dateKey.month", s"$dateKey.year")
 
     "behave like a passportOrIDCard page" when {
 
@@ -179,9 +176,9 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
                          key: String,
-                         args: String*) = {
+                         args: String*): Unit = {
 
-    val fields = Seq(s"${key}.day", s"${key}.month", s"${key}.year")
+    val fields = Seq(s"$key.day", s"$key.month", s"$key.year")
 
     "behave like a question page" when {
 

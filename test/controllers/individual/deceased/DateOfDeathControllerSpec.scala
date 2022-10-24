@@ -20,9 +20,9 @@ import base.SpecBase
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
 import forms.DateOfDeathFormProvider
-import models.{Name, TrustDetails}
+import models.{Name, TrustDetails, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage, NamePage}
@@ -38,24 +38,24 @@ import scala.concurrent.Future
 
 class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
-  val name = Name("FirstName", None, "LastName")
+  val validAnswer: LocalDate = LocalDate.now(ZoneOffset.UTC)
+  val name: Name = Name("FirstName", None, "LastName")
   val index: Int = 0
-  val trustStartDate = LocalDate.parse("2019-02-03")
+  val trustStartDate: LocalDate = LocalDate.parse("2019-02-03")
 
   val formProvider = new DateOfDeathFormProvider(frontendAppConfig)
   private def form = formProvider.withConfig("deceasedSettlor.dateOfDeath", trustStartDate)
 
-  val mockTrustConnector = mock[TrustConnector]
+  val mockTrustConnector: TrustConnector = mock[TrustConnector]
 
-  lazy val dateOfDeathRoute = routes.DateOfDeathController.onPageLoad().url
+  lazy val dateOfDeathRoute: String = routes.DateOfDeathController.onPageLoad().url
 
-  val userAnswersWithName = emptyUserAnswers
+  val userAnswersWithName: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfDeathRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -84,7 +84,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
         )
         .build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       val view = application.injector.instanceOf[DateOfDeathView]
 
@@ -118,12 +118,12 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
       val view = application.injector.instanceOf[DateOfDeathView]
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -248,7 +248,7 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url

@@ -16,14 +16,14 @@
 
 package views.individual.deceased
 
-import java.time.LocalDate
-
 import forms.DateOfDeathFormProvider
 import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.individual.deceased.DateOfDeathView
+
+import java.time.LocalDate
 
 class DateOfDeathViewSpec extends QuestionViewBehaviours[LocalDate] {
 

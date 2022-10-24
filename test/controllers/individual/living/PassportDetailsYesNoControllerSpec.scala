@@ -21,12 +21,12 @@ import config.annotations.LivingSettlor
 import forms.YesNoFormProvider
 import models.{Mode, Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.living.{NamePage, PassportDetailsYesNoPage}
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
@@ -49,7 +49,7 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val passportDetailsYesNoRoute: String = routes.PassportDetailsYesNoController.onPageLoad(mode).url
 
-  val getRequest = FakeRequest(GET, passportDetailsYesNoRoute)
+  val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, passportDetailsYesNoRoute)
 
   "PassportDetailsYesNo Controller" must {
 

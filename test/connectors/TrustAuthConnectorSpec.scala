@@ -19,8 +19,8 @@ package connectors
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.freespec.AsyncFreeSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -43,7 +43,7 @@ class TrustAuthConnectorSpec extends AsyncFreeSpec with Matchers with WireMockHe
   private def allowedResponse = responseFromJson(Json.obj("authorised" -> true))
   private def allowedAgentResponse = responseFromJson(Json.obj("arn" -> "SomeArn"))
 
-  private def redirectResponse(redirectUrl: String) = responseFromJson(Json.obj("redirectUrl" -> redirectUrl))
+  private def redirectResponse(): ResponseDefinitionBuilder = responseFromJson(Json.obj("redirectUrl" -> "redirect-url"))
 
   private def wiremock(url: String, response: ResponseDefinitionBuilder) = {
     server.stubFor(get(urlEqualTo(url)).willReturn(response))
@@ -75,7 +75,7 @@ class TrustAuthConnectorSpec extends AsyncFreeSpec with Matchers with WireMockHe
       "returns 'Denied' when" - {
         "service returns a redirect url" in {
 
-          wiremock(authorisedUrlFor(utr), redirectResponse("redirect-url"))
+          wiremock(authorisedUrlFor(utr), redirectResponse())
 
           connector.authorisedUrlFor(utr) map { result =>
             result mustEqual TrustAuthDenied("redirect-url")
@@ -109,7 +109,7 @@ class TrustAuthConnectorSpec extends AsyncFreeSpec with Matchers with WireMockHe
       "returns 'Denied' when" - {
         "service returns a redirect url" in {
 
-          wiremock(authorisedUrl, redirectResponse("redirect-url"))
+          wiremock(authorisedUrl, redirectResponse())
 
           connector.agentIsAuthorised() map { result =>
             result mustEqual TrustAuthDenied("redirect-url")

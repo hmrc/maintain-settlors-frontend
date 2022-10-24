@@ -16,13 +16,13 @@
 
 package utils.print
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.{CheckMode, CompanyType, NonUkAddress, NormalMode, UkAddress}
 import pages.business._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
+
+import java.time.LocalDate
 
 class BusinessSettlorPrintHelperSpec extends SpecBase {
 

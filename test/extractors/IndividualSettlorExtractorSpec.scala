@@ -33,9 +33,9 @@ class IndividualSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChe
 
   val index = 0
 
-  val name = Name("First", None, "Last")
-  val date = LocalDate.parse("1996-02-03")
-  val address = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  val name: Name = Name("First", None, "Last")
+  val date: LocalDate = LocalDate.parse("1996-02-03")
+  val address: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
 
   val extractor = new IndividualSettlorExtractor()
 

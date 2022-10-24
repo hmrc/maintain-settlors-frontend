@@ -20,10 +20,11 @@ import base.SpecBase
 import connectors.TrustConnector
 import forms.RemoveIndexFormProvider
 import models.settlors.{BusinessSettlor, Settlors}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,7 +39,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
   val messagesPrefix = "removeBusinessSettlorYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form = formProvider(messagesPrefix)
+  lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
   lazy val name : String = "Name"
 
@@ -54,7 +55,7 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
     provisional = provisional
   )
 
-  val settlors = List(
+  val settlors: List[BusinessSettlor] = List(
     businessSettlor(1, provisional = false),
     businessSettlor(2, provisional = true),
     businessSettlor(3, provisional = true)

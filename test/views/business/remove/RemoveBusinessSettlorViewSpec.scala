@@ -16,7 +16,6 @@
 
 package views.business.remove
 
-import controllers.individual.living.remove.routes
 import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -26,7 +25,7 @@ import views.html.business.remove.RemoveBusinessSettlorView
 class RemoveBusinessSettlorViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "removeBusinessSettlorYesNo"
-  val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name: String = "Name"
   val index = 0
 
@@ -41,6 +40,6 @@ class RemoveBusinessSettlorViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.RemoveIndividualSettlorController.onSubmit(index).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name))
   }
 }

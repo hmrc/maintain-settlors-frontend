@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package repositories
+package views
 
-import javax.inject.{Inject, Singleton}
-import play.modules.reactivemongo.ReactiveMongoApi
+import views.behaviours.ViewBehaviours
+import views.html.PageNotFoundView
 
-@Singleton
-class TrustsMongoDriver @Inject()(val api : ReactiveMongoApi) extends MongoDriver
+class PageNotFoundViewSpec extends ViewBehaviours {
 
-sealed trait MongoDriver {
-  val api : ReactiveMongoApi
+  "PageNotFound view" must {
+
+    val application = applicationBuilder().build()
+
+    val view = application.injector.instanceOf[PageNotFoundView]
+
+    val applyView = view.apply()(fakeRequest, messages)
+
+    behave like normalPage(applyView, "pageNotFound")
+  }
 }

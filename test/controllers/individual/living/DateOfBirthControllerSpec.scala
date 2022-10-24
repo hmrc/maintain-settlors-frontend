@@ -19,9 +19,9 @@ package controllers.individual.living
 import base.SpecBase
 import config.annotations.LivingSettlor
 import forms.DateOfBirthFormProvider
-import models.{Name, NormalMode}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.living.{DateOfBirthPage, NamePage}
@@ -40,19 +40,19 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DateOfBirthFormProvider(frontendAppConfig)
   private def form = formProvider.withConfig("livingSettlor.dateOfBirth")
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  val validAnswer: LocalDate = LocalDate.now(ZoneOffset.UTC)
   val trusteeName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  val name: Name = Name("FirstName", None, "LastName")
   val index: Int = 0
 
-  lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(NormalMode).url
+  lazy val dateOfBirthRoute: String = routes.DateOfBirthController.onPageLoad(NormalMode).url
 
-  val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
+  val userAnswersWithName: UserAnswers = emptyUserAnswers.set(NamePage, name)
     .success.value
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfBirthRoute)
 
   def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -69,7 +69,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(userAnswersWithName)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       val view = application.injector.instanceOf[DateOfBirthView]
 
@@ -91,12 +91,12 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
       val view = application.injector.instanceOf[DateOfBirthView]
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName, NormalMode)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name.displayName, NormalMode)(getRequest, messages).toString
 
       application.stop()
     }
@@ -149,7 +149,7 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url

@@ -16,7 +16,6 @@
 
 package views.individual.living
 
-import controllers.individual.living.routes
 import forms.PassportDetailsFormProvider
 import models.{Mode, Name, NormalMode, Passport}
 import play.api.data.Form
@@ -53,7 +52,6 @@ class PassportDetailsViewSpec extends QuestionViewBehaviours[Passport] {
         form,
         applyView,
         messageKeyPrefix,
-        routes.PassportDetailsController.onSubmit(mode).url,
         Seq(("country", None), ("number", None)),
         "expiryDate",
         name.displayName

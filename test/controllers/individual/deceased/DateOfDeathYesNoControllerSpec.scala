@@ -19,12 +19,13 @@ package controllers.individual.deceased
 import base.SpecBase
 import config.annotations.DeceasedSettlor
 import forms.YesNoFormProvider
-import models.Name
+import models.{Name, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.deceased.{DateOfDeathYesNoPage, NamePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,13 +37,13 @@ import scala.concurrent.Future
 class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("deceasedSettlor.dateOfDeathYesNo")
+  val form: Form[Boolean] = formProvider.withPrefix("deceasedSettlor.dateOfDeathYesNo")
 
-  lazy val dateOfDeathYesNoRoute = routes.DateOfDeathYesNoController.onPageLoad().url
+  lazy val dateOfDeathYesNoRoute: String = routes.DateOfDeathYesNoController.onPageLoad().url
 
-  val name = Name("New", None, "Settlor")
+  val name: Name = Name("New", None, "Settlor")
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
   "DateOfDeathYesNoPage Controller" must {

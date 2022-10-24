@@ -18,7 +18,7 @@ package controllers.individual.living
 
 import base.SpecBase
 import models.{Mode, Name, NormalMode, UserAnswers}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.living.{IndexPage, NamePage, PassportOrIdCardDetailsYesNoPage}

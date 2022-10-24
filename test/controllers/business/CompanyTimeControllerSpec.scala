@@ -19,12 +19,13 @@ package controllers.business
 import base.SpecBase
 import config.annotations.BusinessSettlor
 import forms.YesNoFormProvider
-import models.NormalMode
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{CompanyTimePage, NamePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -36,16 +37,16 @@ import scala.concurrent.Future
 
 class CompanyTimeControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  def onwardRoute: Call = Call("GET", "/foo")
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("businessSettlor.companyTimeYesNo")
+  val form: Form[Boolean] = formProvider.withPrefix("businessSettlor.companyTimeYesNo")
   val name = "Name"
 
-  override val emptyUserAnswers = super.emptyUserAnswers
+  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
 
-  lazy val companyTimeControllerRoute = routes.CompanyTimeController.onPageLoad(NormalMode).url
+  lazy val companyTimeControllerRoute: String = routes.CompanyTimeController.onPageLoad(NormalMode).url
 
   "CompanyTime Controller" must {
 

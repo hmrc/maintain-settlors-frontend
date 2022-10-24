@@ -27,7 +27,7 @@ class MaxedOutSettlorsViewSpec extends OptionsViewBehaviours with TabularDataVie
 
   val view: MaxedOutSettlorsView = viewFor[MaxedOutSettlorsView](Some(emptyUserAnswers))
 
-  val rows = Seq(
+  val rows: Seq[AddRow] = Seq(
     AddRow("Joe Bloggs", "Individual", "#", None),
     AddRow("Amazon", "Business", "#", None)
   )

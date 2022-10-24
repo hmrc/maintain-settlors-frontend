@@ -21,7 +21,7 @@ import config.annotations.DeceasedSettlor
 import forms.NationalInsuranceNumberFormProvider
 import models.Name
 import navigation.Navigator
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar

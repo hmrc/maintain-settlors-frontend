@@ -21,12 +21,12 @@ import config.annotations.LivingSettlor
 import forms.PassportDetailsFormProvider
 import models.{Mode, Name, NormalMode, Passport, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.living.{NamePage, PassportDetailsPage}
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
@@ -52,7 +52,7 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
   val passportDetailsRoute: String = routes.PassportDetailsController.onPageLoad(mode).url
 
-  val getRequest = FakeRequest(GET, passportDetailsRoute)
+  val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, passportDetailsRoute)
 
   val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 

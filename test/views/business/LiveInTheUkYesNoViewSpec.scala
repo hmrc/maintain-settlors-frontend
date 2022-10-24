@@ -16,7 +16,6 @@
 
 package views.business
 
-import controllers.business.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -42,7 +41,7 @@ class LiveInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.LiveInTheUkYesNoController.onSubmit(NormalMode).url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name))
 
     behave like pageWithASubmitButton(applyView(form))
   }

@@ -16,9 +16,6 @@
 
 package generators
 
-import java.time.LocalDate
-
-
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -26,6 +23,8 @@ import org.scalatest.TryValues
 import pages.QuestionPage
 import pages.individual.living.NamePage
 import play.api.libs.json.{JsValue, Json}
+
+import java.time.LocalDate
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
@@ -51,6 +50,7 @@ trait UserAnswersGenerator extends TryValues {
         internalId = id,
         identifier = utr,
         sessionId = sessionId,
+        newId = s"$id-$utr-$sessionId",
         whenTrustSetup = LocalDate.now(),
         trustType = None,
         deedOfVariation = None,

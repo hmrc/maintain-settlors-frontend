@@ -26,6 +26,8 @@ import play.api.data.{Form, Forms}
 
 class NonUkAddressFormProvider @Inject() extends Mappings {
 
+  private val addressMaxLength = 35
+
   def apply(): Form[NonUkAddress] = Form(
     mapping(
       "line1" ->
@@ -33,7 +35,7 @@ class NonUkAddressFormProvider @Inject() extends Mappings {
           .verifying(
             firstError(
               nonEmptyString("line1", "nonUkAddress.error.line1.required"),
-              maxLength(35, "nonUkAddress.error.line1.length"),
+              maxLength(addressMaxLength, "nonUkAddress.error.line1.length"),
               regexp(Validation.addressLineRegex, "nonUkAddress.error.line1.invalidCharacters")
             )),
       "line2" ->
@@ -41,7 +43,7 @@ class NonUkAddressFormProvider @Inject() extends Mappings {
           .verifying(
             firstError(
               nonEmptyString("line2", "nonUkAddress.error.line2.required"),
-              maxLength(35, "nonUkAddress.error.line2.length"),
+              maxLength(addressMaxLength, "nonUkAddress.error.line2.length"),
               regexp(Validation.addressLineRegex, "nonUkAddress.error.line2.invalidCharacters")
             )),
       "line3" ->
@@ -49,14 +51,14 @@ class NonUkAddressFormProvider @Inject() extends Mappings {
           .transform(trimWhitespace, identity[String])
           .verifying(
             firstError(
-              maxLength(35, "nonUkAddress.error.line3.length"),
+              maxLength(addressMaxLength, "nonUkAddress.error.line3.length"),
               regexp(Validation.addressLineRegex, "nonUkAddress.error.line3.invalidCharacters")
             ))).transform(emptyToNone, identity[Option[String]]),
       "country" ->
         text("nonUkAddress.error.country.required")
           .verifying(
             firstError(
-              maxLength(35, "nonUkAddress.error.country.length"),
+              maxLength(addressMaxLength, "nonUkAddress.error.country.length"),
               nonEmptyString("country", "nonUkAddress.error.country.required")
             ))
     )(NonUkAddress.apply)(NonUkAddress.unapply)

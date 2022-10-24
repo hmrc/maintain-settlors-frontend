@@ -30,7 +30,7 @@ class CountryOfResidenceViewSpec extends SelectCountryViewBehaviours {
 
   val prefix = "businessSettlor.countryOfResidence"
 
-  val form = new CountryFormProvider().withPrefix(prefix)
+  val form: Form[String] = new CountryFormProvider().withPrefix(prefix)
   val name = "Name"
 
   "CountryOfResidence view" must {

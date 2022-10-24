@@ -16,7 +16,6 @@
 
 package views.individual.deceased
 
-import controllers.individual.deceased.routes
 import forms.UkAddressFormProvider
 import models.{Name, UkAddress}
 import play.api.data.Form
@@ -45,7 +44,6 @@ class UkAddressViewSpec extends UkAddressViewBehaviours {
     behave like ukAddressPage(
       applyView,
       Some(messageKeyPrefix),
-      routes.UkAddressController.onSubmit().url,
       name.displayName
     )
 

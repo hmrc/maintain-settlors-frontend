@@ -16,7 +16,6 @@
 
 package views.individual.deceased
 
-import controllers.individual.deceased.routes
 import forms.YesNoFormProvider
 import models.Name
 import play.api.data.Form
@@ -42,7 +41,7 @@ class AddressYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName), routes.AddressYesNoController.onSubmit().url)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName))
 
     behave like pageWithASubmitButton(applyView(form))
   }

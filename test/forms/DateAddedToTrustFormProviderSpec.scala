@@ -16,17 +16,17 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
-
 import forms.behaviours.DateBehaviours
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
+
+import java.time.{LocalDate, ZoneOffset}
 
 class DateAddedToTrustFormProviderSpec extends DateBehaviours {
 
   private val min = LocalDate.of(1500, 1, 1)
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  val form = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate("livingSettlor.startDate", min)
+  val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate("livingSettlor.startDate", min)
 
   ".value" should {
 

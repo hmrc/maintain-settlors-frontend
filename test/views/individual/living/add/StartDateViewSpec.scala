@@ -16,14 +16,14 @@
 
 package views.individual.living.add
 
-import java.time.LocalDate
-
 import forms.DateAddedToTrustFormProvider
 import models.Name
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.individual.living.add.StartDateView
+
+import java.time.LocalDate
 
 class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
