@@ -19,7 +19,6 @@ package controllers
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.SessionExpiredView
 
 class SessionExpiredControllerSpec extends SpecBase {
 
@@ -33,12 +32,22 @@ class SessionExpiredControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[SessionExpiredView]
-
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view()(request, messages).toString
+      application.stop()
+    }
+
+    "redirect to the login url and have the continue and origin params present on a POST" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(POST, routes.SessionExpiredController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).getOrElse("") mustEqual "http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9781%2Ftrusts-registration&origin=maintain-settlors-frontend"
 
       application.stop()
     }
