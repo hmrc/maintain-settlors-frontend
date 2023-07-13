@@ -51,7 +51,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
   val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, nonUkAddressRoute)
 
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
   val validData: NonUkAddress = NonUkAddress("line1", "line2", None, "country")
 

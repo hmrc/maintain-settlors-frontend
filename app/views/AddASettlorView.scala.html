@@ -50,7 +50,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AddASettlorController.submit(), 'autoComplete -> "off") {
+    @formHelper(action = AddASettlorController.submit(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, AddASettlor.options)
 

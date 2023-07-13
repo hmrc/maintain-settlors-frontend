@@ -36,24 +36,24 @@ final case class DeceasedSettlor(bpMatchStatus: Option[BpMatchStatus],
 object DeceasedSettlor extends SettlorReads {
 
   implicit val reads: Reads[DeceasedSettlor] = (
-    (__ \ 'bpMatchStatus).readNullable[BpMatchStatus] and
-      (__ \ 'name).read[Name] and
-      (__ \ 'dateOfBirth).readNullable[LocalDate] and
-      (__ \ 'dateOfDeath).readNullable[LocalDate] and
-      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)))
+    (__ \ Symbol("bpMatchStatus")).readNullable[BpMatchStatus] and
+      (__ \ Symbol("name")).read[Name] and
+      (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
+      (__ \ Symbol("dateOfDeath")).readNullable[LocalDate] and
+      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
+      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))))
     .tupled.map{
     case (bpMatchStatus, name, dob, dod, nino, identification) =>
       DeceasedSettlor(bpMatchStatus, name, dob, dod, nino, identification)
   }
 
   implicit val writes: Writes[DeceasedSettlor] = (
-    (__ \ 'bpMatchStatus).writeNullable[BpMatchStatus] and
-      (__ \ 'name).write[Name] and
-      (__ \ 'dateOfBirth).writeNullable[LocalDate] and
-      (__ \ 'dateOfDeath).writeNullable[LocalDate] and
-      (__ \ 'identification).writeNullable[IndividualIdentification] and
-      (__ \ 'identification \ 'address).writeNullable[Address]
+    (__ \ Symbol("bpMatchStatus")).writeNullable[BpMatchStatus] and
+      (__ \ Symbol("name")).write[Name] and
+      (__ \ Symbol("dateOfBirth")).writeNullable[LocalDate] and
+      (__ \ Symbol("identification")).writeNullable[LocalDate] and
+      (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
+      (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address]
     ).apply(settlor => (
     None,
     settlor.name,

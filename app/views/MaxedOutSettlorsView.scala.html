@@ -46,7 +46,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AddASettlorController.submitComplete(), 'autoComplete -> "off") {
+    @formHelper(action = AddASettlorController.submitComplete(), Symbol("autoComplete") -> "off") {
 
         @heading(messages("addASettlor.count.heading", size))
 

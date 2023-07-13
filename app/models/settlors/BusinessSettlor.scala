@@ -48,12 +48,12 @@ final case class BusinessSettlor(name: String,
 object BusinessSettlor extends SettlorReads {
 
   implicit val reads: Reads[BusinessSettlor] = (
-    (__ \ 'name).read[String] and
-      (__ \ 'companyType).readNullable[CompanyType] and
-      (__ \ 'companyTime).readNullable[Boolean] and
-      __.lazyRead(readNullableAtSubPath[String](__ \ 'identification \ 'utr)) and
-      (__ \ 'countryOfResidence).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
+    (__ \ Symbol("name")).read[String] and
+      (__ \ Symbol("companyType")).readNullable[CompanyType] and
+      (__ \ Symbol("companyTime")).readNullable[Boolean] and
+      __.lazyRead(readNullableAtSubPath[String](__ \ Symbol("identification") \  Symbol("utr"))) and
+      (__ \ Symbol("countryOfResidence")).readNullable[String] and
+      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false))
     .tupled.map {
@@ -62,12 +62,12 @@ object BusinessSettlor extends SettlorReads {
   }
 
   implicit val writes: Writes[BusinessSettlor] = (
-    (__ \ 'name).write[String] and
-      (__ \ 'companyType).writeNullable[CompanyType] and
-      (__ \ 'companyTime).writeNullable[Boolean] and
-      (__ \ 'identification \ 'utr).writeNullable[String] and
-      (__ \ 'countryOfResidence).writeNullable[String] and
-      (__ \ 'identification \ 'address).writeNullable[Address] and
+    (__ \ Symbol("name")).write[String] and
+      (__ \ Symbol("companyType")).writeNullable[CompanyType] and
+      (__ \ Symbol("companyTime")).writeNullable[Boolean] and
+      (__ \ Symbol("identification") \ Symbol("utr")).writeNullable[String] and
+      (__ \ Symbol("countryOfResidence")).writeNullable[String] and
+      (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     ).apply(unlift(BusinessSettlor.unapply))
