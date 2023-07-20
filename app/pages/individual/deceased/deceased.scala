@@ -19,5 +19,5 @@ package pages.individual
 import play.api.libs.json.JsPath
 
 package object deceased {
-  val basePath: JsPath = JsPath \ 'individual \ 'deceased
+  val basePath: JsPath = JsPath \ Symbol("individual") \ Symbol("deceased")
 }

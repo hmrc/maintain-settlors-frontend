@@ -120,7 +120,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
   }
 
   override def beforeEach(): Unit = {
-    reset(playbackRepository, mockStoreConnector)
+    reset(playbackRepository)
+    reset(mockStoreConnector)
 
     when(playbackRepository.set(any())).thenReturn(Future.successful(true))
 

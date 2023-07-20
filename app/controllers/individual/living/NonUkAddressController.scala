@@ -21,9 +21,10 @@ import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.NonUkAddressFormProvider
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, NonUkAddress}
 import navigation.Navigator
 import pages.individual.living.NonUkAddressPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -45,7 +46,7 @@ class NonUkAddressController @Inject()(
                                         val countryOptions: CountryOptionsNonUK
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[NonUkAddress] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
@@ -55,7 +56,7 @@ class NonUkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, request.settlorName, mode))
+      Ok(view(preparedForm, countryOptions.options(), request.settlorName, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
@@ -63,7 +64,7 @@ class NonUkAddressController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, request.settlorName, mode))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), request.settlorName, mode))),
 
         value =>
           for {
