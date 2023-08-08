@@ -17,7 +17,7 @@ lazy val root = (project in file("."))
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
     libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
     scalacOptions += "-Wconf:src=routes/.*:s",
-    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
+    scalacOptions += "-Wconf:cat=unused-imports&src=views/.*:s",
     inConfig(Test)(testSettings),
     majorVersion := 0,
     name := appName,
@@ -34,8 +34,7 @@ lazy val root = (project in file("."))
     ),
     PlayKeys.playDefaultPort := 9795,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController",
+      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;",
     ScoverageKeys.coverageMinimumStmtTotal := 93,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
@@ -61,13 +60,13 @@ lazy val root = (project in file("."))
     uglify / includeFilter := GlobFilter("maintainsettlorsfrontend-*.js")
   )
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
+  .settings(integrationTestSettings())
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork        := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"
   )
 )
 
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle it:scalastyle")
+addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle IntegrationTest/scalastyle")
