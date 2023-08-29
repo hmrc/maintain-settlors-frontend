@@ -23,7 +23,7 @@
     govukTag: GovukTag
 )
 
-@(params: SummaryList)(implicit messages: Messages)
+@(params: SummaryList)
 
 @import params._
 
@@ -36,13 +36,13 @@
             <dd class="@ToClasses("govuk-summary-list__value", row.value.classes)">
                 @row.value.content.asHtml
             </dd>
-            @if(row.actions.exists(_.items.length > 0)) {
+            @if(row.actions.exists(_.items.nonEmpty)) {
                 <dd class="@ToClasses("govuk-summary-list__actions", row.actions.map(_.classes).getOrElse(""))">
                     @if(row.actions.exists(_.items.length == 1)) {
                         @row.actions.map { actions => @actionLink(actions.items.head) }
                     } else {
                         <ul class="govuk-summary-list__actions-list">
-                            @row.actions.map { actions =>
+                            @row.actions.foreach { actions =>
                                 @for(action <- actions.items) {
                                     <li class="govuk-summary-list__actions-list-item">
                                         @actionLink(action)

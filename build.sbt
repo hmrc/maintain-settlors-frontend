@@ -33,8 +33,8 @@ lazy val root = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9795,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;",
+    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;.*Mode.*;" +
+      ".*BuildInfo.*;.*Routes.*;.*package.*;",
     ScoverageKeys.coverageMinimumStmtTotal := 93,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
@@ -47,7 +47,6 @@ lazy val root = (project in file("."))
           "javascripts/maintainsettlorsfrontend.js",
           "javascripts/autocomplete.js",
           "javascripts/iebacklink.js",
-          "javascripts/print.js",
           "javascripts/libraries/location-autocomplete.min.js"
         ))
     ),
@@ -69,4 +68,4 @@ lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   )
 )
 
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle IntegrationTest/scalastyle")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle IntegrationTest/scalastyle")
