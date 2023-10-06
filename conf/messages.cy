@@ -486,6 +486,14 @@ deceasedSettlor.dateOfDeath.error.invalid=Nodwch ddyddiad go iawn ar gyfer y far
 deceasedSettlor.dateOfDeath.error.future=Mae’n rhaid i ddyddiad y farwolaeth fod ar neu cyn dyddiad dechrau’r ymddiriedolaeth
 deceasedSettlor.dateOfDeath.error.past=Mae’n rhaid i ddyddiad y farwolaeth fod ar ôl 31 Rhagfyr 1499
 deceasedSettlor.dateOfDeath.error.beforeDateOfBirth=Mae’n rhaid i ddyddiad y farwolaeth fod ar neu ar ôl y dyddiad geni
+
+deceasedSettlor.countryOfResidenceYesNo.checkYourAnswersLabel = A ydych yn gwybod beth oedd gwlad breswyl hysbys ddiwethaf {0}?
+deceasedSettlor.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel = A oedd {0} yn breswylydd yn y DU?
+deceasedSettlor.countryOfResidence.checkYourAnswersLabel = Beth oedd gwlad breswyl {0}?
+deceasedSettlor.nationalityYesNo.checkYourAnswersLabel = A ydych yn gwybod gwlad breswyl {0}?
+deceasedSettlor.nationalityInTheUKYesNo.checkYourAnswersLabel = A oedd gan {0} genedligrwydd y DU?
+deceasedSettlor.nationality.checkYourAnswersLabel = Beth oedd gwlad cenedligrwydd {0}?
+
 deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel=A ydych yn gwybod rhif Yswiriant Gwladol {0}?
 deceasedSettlor.nationalInsuranceNumberYesNo.title=A ydych yn gwybod rhif Yswiriant Gwladol y setlwr?
 deceasedSettlor.nationalInsuranceNumberYesNo.heading=A ydych yn gwybod rhif Yswiriant Gwladol {0}?

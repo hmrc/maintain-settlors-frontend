@@ -101,6 +101,8 @@ class TrustConnectorSpec extends SpecBase with Generators with ScalaFutures
     name = Name("Carmel", None, "Settlor"),
     dateOfBirth = None,
     dateOfDeath = None,
+    nationality = None,
+    countryOfResidence = None,
     identification = None,
     address = None
   )

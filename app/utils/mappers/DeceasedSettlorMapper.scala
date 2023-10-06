@@ -32,6 +32,8 @@ class DeceasedSettlorMapper extends SettlorMapper[DeceasedSettlor] {
       NamePage.path.read[Name] and
       DateOfBirthPage.path.readNullable[LocalDate] and
       DateOfDeathPage.path.readNullable[LocalDate] and
+      CountryOfNationalityPage.path.readNullable[String] and
+      CountryOfResidencePage.path.readNullable[String] and
       readIdentification and
       readAddress
     )(DeceasedSettlor.apply _)

@@ -44,6 +44,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       name = name,
       dateOfDeath = Some(dateOfDeath),
       dateOfBirth = Some(date),
+      nationality = None,
+      countryOfResidence = None,
       identification = Some(nino),
       address = None
     )
@@ -71,6 +73,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       name = name,
       dateOfDeath = Some(dateOfDeath),
       dateOfBirth = Some(date),
+      nationality = None,
+      countryOfResidence = None,
       identification = None,
       address = Some(address)
     )
@@ -98,6 +102,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       name = name,
       dateOfDeath = None,
       dateOfBirth = None,
+      nationality = None,
+      countryOfResidence = None,
       identification = None,
       address = None
     )
@@ -121,6 +127,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     name = name,
     dateOfDeath = None,
     dateOfBirth = None,
+    nationality = None,
+    countryOfResidence = None,
     identification = None,
     address = None
   )
@@ -194,6 +202,8 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       name = name,
       dateOfDeath = None,
       dateOfBirth = None,
+      nationality = None,
+      countryOfResidence = None,
       identification = None,
       address = None
     )

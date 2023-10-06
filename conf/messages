@@ -540,6 +540,13 @@ deceasedSettlor.dateOfDeath.error.future = Date of death must be on or before th
 deceasedSettlor.dateOfDeath.error.past = Date of death must be after 31 December 1499
 deceasedSettlor.dateOfDeath.error.beforeDateOfBirth = Date of death must be on or after the date of birth
 
+deceasedSettlor.countryOfResidenceYesNo.checkYourAnswersLabel = Do you know {0}’s last known country of residence?
+deceasedSettlor.countryOfResidenceInTheUkYesNo.checkYourAnswersLabel = Was {0} a UK resident?
+deceasedSettlor.countryOfResidence.checkYourAnswersLabel = What was {0}’s country of residence?
+deceasedSettlor.nationalityYesNo.checkYourAnswersLabel = Do you know {0}’s country of nationality?
+deceasedSettlor.nationalityInTheUKYesNo.checkYourAnswersLabel = Did {0} have UK nationality?
+deceasedSettlor.nationality.checkYourAnswersLabel = What was {0}’s country of nationality?
+
 deceasedSettlor.nationalInsuranceNumberYesNo.checkYourAnswersLabel = Do you know {0}’s National Insurance number?
 deceasedSettlor.nationalInsuranceNumberYesNo.title = Do you know the settlors’s National Insurance number?
 deceasedSettlor.nationalInsuranceNumberYesNo.heading = Do you know {0}’s National Insurance number?
