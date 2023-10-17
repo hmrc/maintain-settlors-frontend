@@ -35,6 +35,8 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
       .flatMap(answers => extractDateOfDeath(settlor, answers))
+      .flatMap(answers => extractNationality(settlor, answers))
+      .flatMap(answers => extractCountryOfResidence(settlor, answers))
       .flatMap(answers => extractAddress(settlor.address, answers))
       .flatMap(answers => extractIdentification(settlor, answers))
       .flatMap(answers => extractAdditionalSettlorsYesNo(hasAdditionalSettlors, answers))
@@ -49,6 +51,26 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
 
   private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
     extractConditionalAnswer(individual.dateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
+  }
+
+  def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+    extractCountryOfResidenceOrNationality(
+      country = individual.nationality,
+      answers = answers,
+      yesNoPage = countryOfNationalityYesNoPage,
+      ukYesNoPage = ukCountryOfNationalityYesNoPage,
+      page = countryOfNationalityPage
+    )
+  }
+
+  def extractCountryOfResidence(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+    extractCountryOfResidenceOrNationality(
+      country = individual.countryOfResidence,
+      answers = answers,
+      yesNoPage = countryOfResidenceYesNoPage,
+      ukYesNoPage = ukCountryOfResidenceYesNoPage,
+      page = countryOfResidencePage
+    )
   }
 
   private def extractIdentification(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
@@ -73,6 +95,18 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
         Success(answers)
     }
   }
+
+  override def countryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityYesNoPage
+
+  override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityUkYesNoPage
+
+  override def countryOfNationalityPage: QuestionPage[String] = CountryOfNationalityPage
+
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+
+  override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceUkYesNoPage
+
+  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
   override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
   override def ukAddressYesNoPage: QuestionPage[Boolean] = LivedInTheUkYesNoPage

@@ -26,6 +26,8 @@ final case class DeceasedSettlor(bpMatchStatus: Option[BpMatchStatus],
                                  name: Name,
                                  dateOfBirth: Option[LocalDate],
                                  dateOfDeath: Option[LocalDate],
+                                 nationality: Option[String],
+                                 countryOfResidence: Option[String],
                                  identification: Option[IndividualIdentification],
                                  address: Option[Address]) extends Settlor {
 
@@ -40,17 +42,22 @@ object DeceasedSettlor extends SettlorReads {
       (__ \ Symbol("name")).read[Name] and
       (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
       (__ \ Symbol("dateOfDeath")).readNullable[LocalDate] and
+      (__ \ Symbol("nationality")).readNullable[String] and
+      (__ \ Symbol("countryOfResidence")).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
       __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))))
     .tupled.map{
-    case (bpMatchStatus, name, dob, dod, nino, identification) =>
-      DeceasedSettlor(bpMatchStatus, name, dob, dod, nino, identification)
+    case (bpMatchStatus, name, dob, dod, nationality, countryOfResidence, nino, identification) =>
+      DeceasedSettlor(bpMatchStatus, name, dob, dod, nationality, countryOfResidence, nino, identification)
   }
 
   implicit val writes: Writes[DeceasedSettlor] = (
     (__ \ Symbol("bpMatchStatus")).writeNullable[BpMatchStatus] and
       (__ \ Symbol("name")).write[Name] and
       (__ \ Symbol("dateOfBirth")).writeNullable[LocalDate] and
+      (__ \ Symbol("dateOfDeath")).writeNullable[LocalDate] and
+      (__ \ Symbol("nationality")).writeNullable[String] and
+      (__ \ Symbol("countryOfResidence")).writeNullable[String] and
       (__ \ Symbol("identification")).writeNullable[LocalDate] and
       (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
       (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address]
@@ -58,6 +65,9 @@ object DeceasedSettlor extends SettlorReads {
     None,
     settlor.name,
     settlor.dateOfBirth,
+    settlor.dateOfDeath,
+    settlor.nationality,
+    settlor.countryOfResidence,
     settlor.dateOfDeath,
     settlor.identification,
     settlor.address

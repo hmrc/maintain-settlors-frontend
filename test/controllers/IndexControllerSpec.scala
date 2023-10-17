@@ -82,7 +82,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             deceased = Some(DeceasedSettlor(
               None,
               Name("First", None, "Last"),
-              None, None, None, None
+              None, None, None, None, None, None
             ))
           )
         ))
@@ -139,7 +139,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             deceased = Some(DeceasedSettlor(
               None,
               Name("First", None, "Last"),
-              None, None, None, None
+              None, None, None, None, None, None
             ))
           )
         ))
@@ -185,7 +185,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             settlorCompany = Nil,
             deceased = Some(DeceasedSettlor(
               None, Name("First", None, "Last"),
-              None, None, None, None
+              None, None, None, None, None, None
             ))
           )
         ))

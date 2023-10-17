@@ -39,6 +39,8 @@ class AddASettlorViewHelperSpec extends SpecBase {
     name = name,
     dateOfDeath = None,
     dateOfBirth = None,
+    nationality = None,
+    countryOfResidence = None,
     identification = None,
     address = None
   )

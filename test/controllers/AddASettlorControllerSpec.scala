@@ -57,6 +57,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
     name = Name(firstName = "Some", middleName = None, lastName = "One"),
     dateOfDeath = None,
     dateOfBirth = None,
+    nationality = None,
+    countryOfResidence = None,
     identification = None,
     address = None
   )

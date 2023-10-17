@@ -94,6 +94,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     name = name,
     dateOfDeath = Some(dateOfDeath),
     dateOfBirth = Some(dateOfBirth),
+    nationality = None,
+    countryOfResidence = None,
     identification = Some(NationalInsuranceNumber(nino)),
     address = None
   )
