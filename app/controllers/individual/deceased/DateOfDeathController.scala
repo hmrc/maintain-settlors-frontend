@@ -17,16 +17,16 @@
 package controllers.individual.deceased
 
 import java.time.LocalDate
-
 import config.FrontendAppConfig
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
 import controllers.actions.{SettlorNameRequest, StandardActionSets}
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.DateOfDeathFormProvider
+
 import javax.inject.Inject
 import navigation.Navigator
-import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage}
+import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage, DateOfDeathYesNoPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -73,7 +73,10 @@ class DateOfDeathController @Inject()(
             Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
           value =>
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathPage, value))
+              updatedAnswers <- Future.fromTry(
+                request.userAnswers.set(DateOfDeathPage, value)
+                  .flatMap(_.set(DateOfDeathYesNoPage, true))
+              )
               _ <- sessionRepository.set(updatedAnswers)
             } yield {
               Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
