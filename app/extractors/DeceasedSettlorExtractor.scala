@@ -34,7 +34,7 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
       .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
-      .flatMap(answers => extractDateOfDeath(settlor, answers))
+      .flatMap(answers => extractDateOfDeath(answers))
       .flatMap(answers => extractNationality(settlor, answers))
       .flatMap(answers => extractCountryOfResidence(settlor, answers))
       .flatMap(answers => extractAddress(settlor.address, answers))
@@ -49,8 +49,8 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
     extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
   }
 
-  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    extractConditionalAnswer(individual.dateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
+  private def extractDateOfDeath(answers: UserAnswers): Try[UserAnswers] = {
+    extractConditionalAnswer(answers.get(DateOfDeathPage), answers, DateOfDeathYesNoPage, DateOfDeathPage)
   }
 
   def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
@@ -113,6 +113,6 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  override def basePath: JsPath = pages.individual.deceased.basePath
+  override def basePath: JsPath = JsPath(List())
 
 }
