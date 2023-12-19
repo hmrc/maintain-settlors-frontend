@@ -22,6 +22,7 @@ import pages.individual.deceased._
 import pages.{AdditionalSettlorsYesNoPage, QuestionPage}
 import play.api.libs.json.JsPath
 
+import java.time.LocalDate
 import scala.util.{Success, Try}
 
 class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
@@ -34,7 +35,7 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
       .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
-      .flatMap(answers => extractDateOfDeath(answers))
+      .flatMap(answers => extractDateOfDeath(settlor, answers))
       .flatMap(answers => extractNationality(settlor, answers))
       .flatMap(answers => extractCountryOfResidence(settlor, answers))
       .flatMap(answers => extractAddress(settlor.address, answers))
@@ -49,8 +50,13 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
     extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
   }
 
-  private def extractDateOfDeath(answers: UserAnswers): Try[UserAnswers] = {
-    extractConditionalAnswer(answers.get(DateOfDeathPage), answers, DateOfDeathYesNoPage, DateOfDeathPage)
+  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+    val maybeDateOfDeath: Option[LocalDate] = (individual.dateOfDeath, answers.get(DateOfDeathPage)) match {
+      case (Some(date), _) => Some(date)
+      case (None, Some(date)) => Some(date)
+      case _ => None
+    }
+    extractConditionalAnswer(maybeDateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
   }
 
   def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {

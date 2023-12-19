@@ -19,12 +19,14 @@ package extractors
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.settlors.DeceasedSettlor
-import models.{Name, NationalInsuranceNumber, UkAddress}
+import models.{Name, NationalInsuranceNumber, UkAddress, UserAnswers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
+import play.api.libs.json.{JsObject, JsString}
 
 import java.time.LocalDate
+import scala.util.Try
 
 class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -119,6 +121,74 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     result.get(AddressYesNoPage).get mustBe false
     result.get(LivedInTheUkYesNoPage) mustNot be(defined)
     result.get(UkAddressPage) mustNot be(defined)
+    result.get(NonUkAddressPage) mustNot be(defined)
+  }
+
+  "should use date of death when populated in user answer but not in deceased settlor" in {
+
+    val individual = DeceasedSettlor(
+      bpMatchStatus = None,
+      name = name,
+      dateOfDeath = None,
+      dateOfBirth = Some(date),
+      nationality = None,
+      countryOfResidence = None,
+      identification = None,
+      address = Some(address)
+    )
+
+    val userAnswersWithDateOfDeathPopulated: UserAnswers = emptyUserAnswers.set(
+      DateOfDeathPage, dateOfDeath
+    ).get
+
+    val result = extractor(userAnswersWithDateOfDeathPopulated, individual, None, hasAdditionalSettlors = Some(false)).get
+
+    result.get(BpMatchStatusPage) mustNot be(defined)
+    result.get(NamePage).get mustBe name
+    result.get(DateOfDeathYesNoPage).get mustBe true
+    result.get(DateOfDeathPage).get mustBe dateOfDeath
+    result.get(DateOfBirthYesNoPage).get mustBe true
+    result.get(DateOfBirthPage).get mustBe date
+    result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+    result.get(NationalInsuranceNumberPage) mustNot be(defined)
+    result.get(AddressYesNoPage).get mustBe true
+    result.get(LivedInTheUkYesNoPage).get mustBe true
+    result.get(UkAddressPage).get mustBe address
+    result.get(NonUkAddressPage) mustNot be(defined)
+  }
+
+  "should use date of death from deceased settlor when populated in deceased settlor and in user answer" in {
+
+    val individualDateOfDeath: LocalDate = dateOfDeath.plusDays(10)
+
+    val individual = DeceasedSettlor(
+      bpMatchStatus = None,
+      name = name,
+      dateOfDeath = Some(individualDateOfDeath),
+      dateOfBirth = Some(date),
+      nationality = None,
+      countryOfResidence = None,
+      identification = None,
+      address = Some(address)
+    )
+
+    val userAnswersWithDateOfDeathPopulated: UserAnswers = emptyUserAnswers.set(
+      DateOfDeathPage, dateOfDeath
+    ).get
+
+    val result = extractor(userAnswersWithDateOfDeathPopulated, individual, None, hasAdditionalSettlors = Some(false)).get
+
+    result.get(BpMatchStatusPage) mustNot be(defined)
+    result.get(NamePage).get mustBe name
+    result.get(DateOfDeathYesNoPage).get mustBe true
+    result.get(DateOfDeathPage).get mustBe individualDateOfDeath
+    result.get(DateOfBirthYesNoPage).get mustBe true
+    result.get(DateOfBirthPage).get mustBe date
+    result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+    result.get(NationalInsuranceNumberPage) mustNot be(defined)
+    result.get(AddressYesNoPage).get mustBe true
+    result.get(LivedInTheUkYesNoPage).get mustBe true
+    result.get(UkAddressPage).get mustBe address
     result.get(NonUkAddressPage) mustNot be(defined)
   }
 
