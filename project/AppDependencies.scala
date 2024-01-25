@@ -21,7 +21,7 @@ object AppDependencies {
     "org.scalatestplus"           %% "scalacheck-1-17"          % "3.2.17.0",
     "org.scalatestplus"           %% "mockito-4-11"             % "3.2.17.0",
     "org.jsoup"                   %  "jsoup"                    % "1.17.2",
-    "com.github.tomakehurst"      %  "wiremock-standalone"      % "3.0.1",
+    "org.wiremock"                %  "wiremock-standalone"      % "3.3.1",
     "wolfendale"                  %% "scalacheck-gen-regexp"    % "0.1.2",
     "com.vladsch.flexmark"        %  "flexmark-all"             % "0.64.8"
   ).map(_ % "it, test")
