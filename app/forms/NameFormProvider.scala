@@ -39,7 +39,6 @@ class NameFormProvider @Inject() extends Mappings {
           )
         ),
       "middleName" -> optional(text()
-        .transform(trimWhitespace, identity[String])
         .verifying(
           firstError(
             maxLength(nameMaxLength, s"$prefix.error.middleName.length"),
