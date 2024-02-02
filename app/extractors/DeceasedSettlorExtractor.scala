@@ -22,6 +22,7 @@ import pages.individual.deceased._
 import pages.{AdditionalSettlorsYesNoPage, QuestionPage}
 import play.api.libs.json.JsPath
 
+import java.time.LocalDate
 import scala.util.{Success, Try}
 
 class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
@@ -50,7 +51,12 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   }
 
   private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    extractConditionalAnswer(individual.dateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
+    val maybeDateOfDeath: Option[LocalDate] = (individual.dateOfDeath, answers.get(DateOfDeathPage)) match {
+      case (Some(date), _) => Some(date)
+      case (None, Some(date)) => Some(date)
+      case _ => None
+    }
+    extractConditionalAnswer(maybeDateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
   }
 
   def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
@@ -113,6 +119,6 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  override def basePath: JsPath = pages.individual.deceased.basePath
+  override def basePath: JsPath = JsPath(List())
 
 }
