@@ -47,16 +47,14 @@ class UkAddressFormProvider @Inject() extends Mappings {
               regexp(Validation.addressLineRegex, "ukAddress.error.line2.invalidCharacters")
             )),
       "line3" ->
-        optional(Forms.text
-          .transform(trimWhitespace, identity[String])
+        optional(text()
           .verifying(
             firstError(
               maxLength(addressMaxLength, "ukAddress.error.line3.length"),
               regexp(Validation.addressLineRegex, "ukAddress.error.line3.invalidCharacters")
             ))).transform(emptyToNone, identity[Option[String]]),
       "line4" ->
-        optional(Forms.text
-          .transform(trimWhitespace, identity[String])
+        optional(text()
           .verifying(
             firstError(
               maxLength(addressMaxLength, "ukAddress.error.line4.length"),
