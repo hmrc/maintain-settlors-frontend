@@ -29,10 +29,13 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   override def apply(answers: UserAnswers,
                      settlor: DeceasedSettlor,
                      index: Option[Int],
-                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] =
+                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] = {
+    /*
+      TODO after the super.apply call, answers are deleted at pages.individual.deceased.basePath
+     */
     super.apply(answers, settlor, index, hasAdditionalSettlors)
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
-      .flatMap(_.set(NamePage, settlor.name))
+      .flatMap(answers => extractName(settlor, answers))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
       .flatMap(answers => extractDateOfDeath(settlor, answers))
       .flatMap(answers => extractNationality(settlor, answers))
@@ -40,17 +43,29 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       .flatMap(answers => extractAddress(settlor.address, answers))
       .flatMap(answers => extractIdentification(settlor, answers))
       .flatMap(answers => extractAdditionalSettlorsYesNo(hasAdditionalSettlors, answers))
+  }
 
   private def extractBpMatchStatus(bpMatchStatus: Option[BpMatchStatus], answers: UserAnswers): Try[UserAnswers] = {
     extractIfDefined(bpMatchStatus, BpMatchStatusPage, answers)
   }
 
+  private def extractName(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+    answers.get(NamePage) match {
+      case Some(value) =>
+        answers.set(NamePage, value)
+      case None =>
+        answers.set(NamePage, individual.name)
+    }
+  }
+
   private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
+    val maybeDateOfBirth = Some(answers.get(DateOfBirthPage)).getOrElse(individual.dateOfBirth)
+    extractConditionalAnswer(maybeDateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
   }
 
   private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    extractConditionalAnswer(individual.dateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
+    val maybeDateOfDeath = Some(answers.get(DateOfDeathPage)).getOrElse(individual.dateOfDeath)
+    extractConditionalAnswer(maybeDateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
   }
 
   def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
@@ -109,8 +124,11 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
   override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
+
   override def ukAddressYesNoPage: QuestionPage[Boolean] = LivedInTheUkYesNoPage
+
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def basePath: JsPath = pages.individual.deceased.basePath
