@@ -32,8 +32,7 @@ trait SettlorExtractor[T <: Settlor] {
             index: Option[Int] = None,
             hasAdditionalSettlors: Option[Boolean] = None): Try[UserAnswers] = {
 
-//    answers.deleteAtPath(basePath) // TODO figure out why this is here
-    Try(answers)
+    answers.deleteAtPath(basePath)
       .flatMap(answers => extractIfDefined(settlor.startDate, startDatePage, answers))
       .flatMap(answers => extractIfDefined(index, indexPage, answers))
   }

@@ -58,7 +58,6 @@ object DeceasedSettlor extends SettlorReads {
       (__ \ Symbol("dateOfDeath")).writeNullable[LocalDate] and
       (__ \ Symbol("nationality")).writeNullable[String] and
       (__ \ Symbol("countryOfResidence")).writeNullable[String] and
-      (__ \ Symbol("identification")).writeNullable[LocalDate] and
       (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
       (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address]
     ).apply(settlor => (
@@ -68,7 +67,6 @@ object DeceasedSettlor extends SettlorReads {
     settlor.dateOfDeath,
     settlor.nationality,
     settlor.countryOfResidence,
-    settlor.dateOfDeath,
     settlor.identification,
     settlor.address
   ))

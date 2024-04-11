@@ -35,7 +35,7 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
      */
     super.apply(answers, settlor, index, hasAdditionalSettlors)
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
-      .flatMap(answers => extractName(settlor, answers))
+      .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
       .flatMap(answers => extractDateOfDeath(settlor, answers))
       .flatMap(answers => extractNationality(settlor, answers))
@@ -49,23 +49,12 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
     extractIfDefined(bpMatchStatus, BpMatchStatusPage, answers)
   }
 
-  private def extractName(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    answers.get(NamePage) match {
-      case Some(value) =>
-        answers.set(NamePage, value)
-      case None =>
-        answers.set(NamePage, individual.name)
-    }
-  }
-
   private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    val maybeDateOfBirth = answers.get(DateOfBirthPage).orElse(individual.dateOfBirth)
-    extractConditionalAnswer(maybeDateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
+    extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
   }
 
   private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    val maybeDateOfDeath = answers.get(DateOfDeathPage).orElse(individual.dateOfDeath)
-    extractConditionalAnswer(maybeDateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
+    extractConditionalAnswer(individual.dateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
   }
 
   def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {

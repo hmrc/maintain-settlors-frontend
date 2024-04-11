@@ -19,7 +19,7 @@ package extractors
 import base.SpecBase
 import models.BpMatchStatus.FullyMatched
 import models.settlors.DeceasedSettlor
-import models.{Name, NationalInsuranceNumber, UkAddress}
+import models.{Name, NationalInsuranceNumber, UkAddress, UserAnswers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.AdditionalSettlorsYesNoPage
 import pages.individual.deceased._
