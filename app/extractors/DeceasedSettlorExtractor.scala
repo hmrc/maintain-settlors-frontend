@@ -59,12 +59,12 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   }
 
   private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    val maybeDateOfBirth = Some(answers.get(DateOfBirthPage)).getOrElse(individual.dateOfBirth)
+    val maybeDateOfBirth = answers.get(DateOfBirthPage).orElse(individual.dateOfBirth)
     extractConditionalAnswer(maybeDateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
   }
 
   private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
-    val maybeDateOfDeath = Some(answers.get(DateOfDeathPage)).getOrElse(individual.dateOfDeath)
+    val maybeDateOfDeath = answers.get(DateOfDeathPage).orElse(individual.dateOfDeath)
     extractConditionalAnswer(maybeDateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
   }
 
