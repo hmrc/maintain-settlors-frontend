@@ -69,7 +69,6 @@ class AddASettlorController @Inject()(
           trustType = updatedAnswers.trustType
         )
 
-        // TODO views here not updating name?
         if (settlors.nonMaxedOutOptions.isEmpty) {
           Ok(completeView(
             trustDescription,
