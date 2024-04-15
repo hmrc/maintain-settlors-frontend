@@ -16,29 +16,31 @@
 
 package models.settlors
 
-import models.BpMatchStatus.FailedToMatch
 import models.TypeOfTrust.HeritageTrust
-import models.{CombinedPassportOrIdCard, DetailsType, Name, UkAddress}
+import models.{CombinedPassportOrIdCard, DetailsType, Name, UkAddress, YesNoDontKnow}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDate
 
-class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
+class IndividualSettlorSpec extends AnyWordSpec with Matchers {
 
-  val jsonWithUndefinedOptionalFields: JsValue = Json.parse(
-    """
-      |{
-      |  "name": {
-      |     "firstName": "Jim",
-      |     "lastName": "Bowen"
-      |  }
-      |}
-      |""".stripMargin
-  )
+  val jsonWithUndefinedOptionalFields: JsValue =
+    Json.parse(
+      """
+        |{
+        |  "name": {
+        |     "firstName": "Transit",
+        |     "lastName": "Morrison"
+        |  },
+        |  "entityStart": "2021-04-21",
+        |  "provisional": true
+        |}
+        |""".stripMargin
+    )
 
-  "DeceasedSettlor" must {
+  "IndividualSettlor" must {
 
     "read and write JSON" when {
 
@@ -46,22 +48,18 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
         val json = Json.parse(
           """
             |{
-            |  "bpMatchStatus": "99",
             |  "name": {
-            |     "firstName": "Jim",
-            |     "lastName": "Bowen"
+            |     "firstName": "Transit",
+            |     "lastName": "Morrison"
             |  },
-            |  "dateOfBirth": "1937-08-20",
-            |  "dateOfDeath": "2018-03-14",
+            |  "dateOfBirth": "1945-08-31",
             |  "nationality": "GB",
             |  "countryOfResidence": "GB",
             |  "identification": {
             |    "address": {
-            |      "line1": "8 Gillison Close",
-            |      "line2": "Melling",
-            |      "line3": "Carnforth",
-            |      "line4": "Lancashire",
-            |      "postCode": "LA6 2RD",
+            |      "line1": "125 Hyndford Street",
+            |      "line2": "Belfast",
+            |      "postCode": "BT5 5EN",
             |      "country": "GB"
             |    },
             |    "passport": {
@@ -69,53 +67,58 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
             |      "expirationDate": "2025-05-21",
             |      "countryOfIssue": "GB"
             |    }
-            |  }
+            |  },
+            |  "legallyIncapable": false,
+            |  "entityStart": "2021-04-21",
+            |  "provisional": true
             |}
             |""".stripMargin
         )
 
 
-        val expectedDeceasedSettlor = DeceasedSettlor(
-          bpMatchStatus = Some(FailedToMatch),
-          name = Name("Jim", None, "Bowen"),
-          dateOfBirth = Some(LocalDate.of(1937, 8, 20)),
-          dateOfDeath = Some(LocalDate.of(2018, 3, 14)),
-          nationality = Some("GB"),
+        val expectedIndividualSettlor = IndividualSettlor(
+          name = Name("Transit", None, "Morrison"),
+          dateOfBirth = Some(LocalDate.of(1945, 8, 31)),
+          countryOfNationality = Some("GB"),
           countryOfResidence = Some("GB"),
           identification = Some(CombinedPassportOrIdCard("GB", "987345987398457", LocalDate.of(2025, 5, 21), DetailsType.Combined)),
-          address = Some(UkAddress("8 Gillison Close", "Melling", Some("Carnforth"), Some("Lancashire"), "LA6 2RD"))
+          address = Some(UkAddress("125 Hyndford Street", "Belfast", None, None, "BT5 5EN")),
+          mentalCapacityYesNo = Some(YesNoDontKnow.Yes),
+          entityStart = LocalDate.of(2021, 4, 21),
+          provisional = true
         )
 
-        val result = json.as[DeceasedSettlor]
+        val result = json.as[IndividualSettlor]
 
-        result mustBe expectedDeceasedSettlor
+        result mustBe expectedIndividualSettlor
       }
 
       "with undefined optional fields" in {
-        val expectedDeceasedSettlor = DeceasedSettlor(
-          bpMatchStatus = None,
-          name = Name("Jim", None, "Bowen"),
+
+        val expectedIndividualSettlor = IndividualSettlor(
+          name = Name("Transit", None, "Morrison"),
           dateOfBirth = None,
-          dateOfDeath = None,
-          nationality = None,
+          countryOfNationality = None,
           countryOfResidence = None,
           identification = None,
-          address = None
+          address = None,
+          mentalCapacityYesNo = Some(YesNoDontKnow.DontKnow),
+          entityStart = LocalDate.of(2021, 4, 21),
+          provisional = true
         )
 
-        val result = jsonWithUndefinedOptionalFields.as[DeceasedSettlor]
+        val result = jsonWithUndefinedOptionalFields.as[IndividualSettlor]
 
-        result mustBe expectedDeceasedSettlor
+        result mustBe expectedIndividualSettlor
       }
-
     }
 
     "have expected startDate and results from hasRequiredData" when {
 
       "with undefined optional fields" in {
-        val result = jsonWithUndefinedOptionalFields.as[DeceasedSettlor]
+        val result = jsonWithUndefinedOptionalFields.as[IndividualSettlor]
 
-        result.startDate mustBe None
+        result.startDate mustBe Some(LocalDate.of(2021, 4, 21))
         result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None) mustBe true
         result.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = None) mustBe true
         result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = Some(HeritageTrust)) mustBe true

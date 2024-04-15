@@ -61,7 +61,7 @@ object DeceasedSettlor extends SettlorReads {
       (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
       (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address]
     ).apply(settlor => (
-    None,
+    None, // bpMatchStatus shouldn't be written to the backend
     settlor.name,
     settlor.dateOfBirth,
     settlor.dateOfDeath,
