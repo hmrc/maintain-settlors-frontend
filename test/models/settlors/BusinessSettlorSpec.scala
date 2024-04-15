@@ -182,7 +182,7 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
         provisional = false
       )
 
-      "when migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
         "and companyType and companyTime are not defined" in {
 
         val result = testSettlor.hasRequiredData(
@@ -193,7 +193,7 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
         result mustBe false
       }
 
-      "when migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
         "companyType is Investment and companyTime is not defined" in {
 
         val result = testSettlor.copy(companyType = Some(Investment))
@@ -205,7 +205,7 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
         result mustBe false
       }
 
-      "when migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
         "companyType is not defined, and companyTime is true" in {
 
         val result =
@@ -218,7 +218,7 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
         result mustBe false
       }
 
-      "when migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
         "companyType is Investment, and companyTime is true" in {
 
         val result =
@@ -231,12 +231,12 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
         result mustBe true
       }
 
-      "when migratingFromNonTaxableToTaxable is true and trust type is undefined" in {
+      "migratingFromNonTaxableToTaxable is true and trust type is undefined" in {
         val result = testSettlor.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None)
         result mustBe true
       }
 
-      "when migratingFromNonTaxableToTaxable is false" in {
+      "migratingFromNonTaxableToTaxable is false" in {
         val result = testSettlor.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = None)
         result mustBe true
       }

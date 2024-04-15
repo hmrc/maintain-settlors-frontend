@@ -42,7 +42,7 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
 
     "read and write JSON" when {
 
-      "with defined optional fields" in {
+      "JSON has defined optional fields" in {
         val json = Json.parse(
           """
             |{
@@ -91,7 +91,7 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
         result mustBe expectedDeceasedSettlor
       }
 
-      "with undefined optional fields" in {
+      "JSON has undefined optional fields" in {
         val expectedDeceasedSettlor = DeceasedSettlor(
           bpMatchStatus = None,
           name = Name("Jim", None, "Bowen"),
@@ -110,9 +110,9 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
 
     }
 
-    "have expected startDate and results from hasRequiredData" when {
+    "return expected startDate and results from hasRequiredData" when {
 
-      "with undefined optional fields" in {
+      "JSON has undefined optional fields" in {
         val result = jsonWithUndefinedOptionalFields.as[DeceasedSettlor]
 
         result.startDate mustBe None

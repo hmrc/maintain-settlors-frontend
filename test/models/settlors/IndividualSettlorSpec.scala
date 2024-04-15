@@ -44,7 +44,7 @@ class IndividualSettlorSpec extends AnyWordSpec with Matchers {
 
     "read and write JSON" when {
 
-      "with defined optional fields" in {
+      "JSON has defined optional fields" in {
         val json = Json.parse(
           """
             |{
@@ -93,7 +93,7 @@ class IndividualSettlorSpec extends AnyWordSpec with Matchers {
         result mustBe expectedIndividualSettlor
       }
 
-      "with undefined optional fields" in {
+      "JSON has undefined optional fields" in {
 
         val expectedIndividualSettlor = IndividualSettlor(
           name = Name("Transit", None, "Morrison"),
@@ -113,9 +113,9 @@ class IndividualSettlorSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    "have expected startDate and results from hasRequiredData" when {
+    "return expected startDate and results from hasRequiredData" when {
 
-      "with undefined optional fields" in {
+      "JSON has undefined optional fields" in {
         val result = jsonWithUndefinedOptionalFields.as[IndividualSettlor]
 
         result.startDate mustBe Some(LocalDate.of(2021, 4, 21))
