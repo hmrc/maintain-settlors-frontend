@@ -29,10 +29,7 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   override def apply(answers: UserAnswers,
                      settlor: DeceasedSettlor,
                      index: Option[Int],
-                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] = {
-    /*
-      TODO after the super.apply call, answers are deleted at pages.individual.deceased.basePath
-     */
+                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] =
     super.apply(answers, settlor, index, hasAdditionalSettlors)
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
       .flatMap(_.set(NamePage, settlor.name))
@@ -43,7 +40,6 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       .flatMap(answers => extractAddress(settlor.address, answers))
       .flatMap(answers => extractIdentification(settlor, answers))
       .flatMap(answers => extractAdditionalSettlorsYesNo(hasAdditionalSettlors, answers))
-  }
 
   private def extractBpMatchStatus(bpMatchStatus: Option[BpMatchStatus], answers: UserAnswers): Try[UserAnswers] = {
     extractIfDefined(bpMatchStatus, BpMatchStatusPage, answers)
