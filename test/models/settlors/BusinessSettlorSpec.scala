@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package models.settlors
 
 import models.CompanyType.Investment
+import models.TypeOfTrust.EmployeeRelated
 import models.{NonUkAddress, UkAddress}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -165,6 +166,79 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
           entityStart = LocalDate.of(2017, 2, 28),
           provisional = false
         )
+      }
+    }
+
+    "return expected result from hasRequiredData" when {
+
+      val testSettlor = BusinessSettlor(
+        name = "Fred Dibnah's Chimney Obliteration Service",
+        companyType = None,
+        companyTime = None,
+        utr = None,
+        countryOfResidence = None,
+        address = None,
+        entityStart = LocalDate.of(2017, 2, 28),
+        provisional = false
+      )
+
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+        "and companyType and companyTime are not defined" in {
+
+        val result = testSettlor.hasRequiredData(
+          migratingFromNonTaxableToTaxable = true,
+          Some(EmployeeRelated)
+        )
+
+        result mustBe false
+      }
+
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+        "companyType is Investment and companyTime is not defined" in {
+
+        val result = testSettlor.copy(companyType = Some(Investment))
+          .hasRequiredData(
+            migratingFromNonTaxableToTaxable = true,
+            Some(EmployeeRelated)
+          )
+
+        result mustBe false
+      }
+
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+        "companyType is not defined, and companyTime is true" in {
+
+        val result =
+          testSettlor.copy(companyTime = Some(true))
+            .hasRequiredData(
+              migratingFromNonTaxableToTaxable = true,
+              Some(EmployeeRelated)
+            )
+
+        result mustBe false
+      }
+
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+        "companyType is Investment, and companyTime is true" in {
+
+        val result =
+          testSettlor.copy(companyType = Some(Investment), companyTime = Some(true))
+            .hasRequiredData(
+              migratingFromNonTaxableToTaxable = true,
+              Some(EmployeeRelated)
+            )
+
+        result mustBe true
+      }
+
+      "migratingFromNonTaxableToTaxable is true and trust type is undefined" in {
+        val result = testSettlor.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None)
+        result mustBe true
+      }
+
+      "migratingFromNonTaxableToTaxable is false" in {
+        val result = testSettlor.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = None)
+        result mustBe true
       }
     }
   }

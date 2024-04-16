@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,17 +58,15 @@ object DeceasedSettlor extends SettlorReads {
       (__ \ Symbol("dateOfDeath")).writeNullable[LocalDate] and
       (__ \ Symbol("nationality")).writeNullable[String] and
       (__ \ Symbol("countryOfResidence")).writeNullable[String] and
-      (__ \ Symbol("identification")).writeNullable[LocalDate] and
       (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
       (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address]
     ).apply(settlor => (
-    None,
+    None, // bpMatchStatus shouldn't be written to the backend
     settlor.name,
     settlor.dateOfBirth,
     settlor.dateOfDeath,
     settlor.nationality,
     settlor.countryOfResidence,
-    settlor.dateOfDeath,
     settlor.identification,
     settlor.address
   ))

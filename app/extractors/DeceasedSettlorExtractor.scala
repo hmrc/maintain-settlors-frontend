@@ -109,8 +109,11 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
   override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
 
   override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
+
   override def ukAddressYesNoPage: QuestionPage[Boolean] = LivedInTheUkYesNoPage
+
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def basePath: JsPath = pages.individual.deceased.basePath
