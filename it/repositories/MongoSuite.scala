@@ -28,8 +28,7 @@ trait MongoSuite extends ScalaFutures {
   val application: Application = new GuiceApplicationBuilder()
     .configure(Seq(
       "metrics.enabled" -> false,
-      "auditing.enabled" -> false,
-      "mongo-async-driver.akka.log-dead-letters" -> 0
+      "auditing.enabled" -> false
     ): _*)
 
     .build()
