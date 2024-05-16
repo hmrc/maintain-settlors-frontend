@@ -24,7 +24,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.living.{IndexPage, NamePage, PassportOrIdCardDetailsYesNoPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
 
 import scala.concurrent.Future
 
@@ -81,9 +80,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
     "redirect to the check details when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
-
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+      when(playbackRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .build()

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package repositories
+package test.repositories
 
 import models.UserAnswers
 import org.mongodb.scala.bson.BsonDocument
@@ -23,6 +23,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.libs.json.Json
+import repositories.PlaybackRepositoryImpl
 import uk.gov.hmrc.mongo.test.MongoSupport
 
 import java.time.{LocalDate, LocalDateTime}

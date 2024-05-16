@@ -24,7 +24,9 @@ object AppDependencies {
     "org.wiremock"                %  "wiremock-standalone"      % "3.5.4",
     "wolfendale"                  %% "scalacheck-gen-regexp"    % "0.1.2",
     "com.vladsch.flexmark"        %  "flexmark-all"             % "0.64.8"
-  ).map(_ % "it, test")
+  ).map(_ % Test)
+
+  val itDependencies: Seq[ModuleID] = Seq()
 
   def apply(): Seq[ModuleID] = compile ++ test
 }

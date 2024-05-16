@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package repositories
+package test.repositories
 
 import models.UtrSession
 import org.mongodb.scala.bson.BsonDocument
@@ -22,6 +22,7 @@ import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import repositories.ActiveSessionRepositoryImpl
 import uk.gov.hmrc.mongo.test.MongoSupport
 
 import scala.concurrent.Await

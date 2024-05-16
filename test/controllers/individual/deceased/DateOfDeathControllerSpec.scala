@@ -30,7 +30,6 @@ import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
 import views.html.individual.deceased.DateOfDeathView
 
 import java.time.{LocalDate, ZoneOffset}
@@ -130,9 +129,8 @@ class DateOfDeathControllerSpec extends SpecBase with MockitoSugar {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val mockPlaybackRepository = mock[PlaybackRepository]
 
-      when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+      when(playbackRepository.set(any())) thenReturn Future.successful(true)
 
       when(mockTrustConnector.getTrustDetails(any())(any(), any()))
         .thenReturn(Future.successful(TrustDetails(
