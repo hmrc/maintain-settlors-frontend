@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.PlaybackRepository
 import services.TrustServiceImpl
 import views.html.individual.living.NationalInsuranceNumberView
 
@@ -138,9 +137,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
       "adding" in {
 
-        val mockPlaybackRepository = mock[PlaybackRepository]
-
-        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+        when(playbackRepository.set(any())) thenReturn Future.successful(true)
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
@@ -167,9 +164,7 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
 
         val userAnswers = emptyUserAnswers.set(IndexPage, index).success.value
 
-        val mockPlaybackRepository = mock[PlaybackRepository]
-
-        when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
+        when(playbackRepository.set(any())) thenReturn Future.successful(true)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
