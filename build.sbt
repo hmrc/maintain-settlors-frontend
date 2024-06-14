@@ -6,7 +6,7 @@ import scala.collection.immutable.Seq
 
 lazy val appName: String = "maintain-settlors-frontend"
 
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.14"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = (project in file("."))
