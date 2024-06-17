@@ -173,12 +173,12 @@ trait ViewSpecBase extends SpecBase {
     }
   }
 
-  def assertContainsClass(doc: Document, className: String): Any = {
-    assert(doc.getElementsByClass(className).size() > 0, s"\n\nPage did not contain element with class $className")
+  def assertContainsClass(element: Element, className: String): Any = {
+    assert(element.getElementsByClass(className).size() > 0, s"\n\nPage did not contain element with class $className")
   }
 
-  def assertElementHasClass(doc: Document, id: String, expectedClass: String): Assertion = {
-    assert(doc.getElementById(id).hasClass(expectedClass), s"\n\nElement $id does not have class $expectedClass")
+  def assertElementHasClass(doc: Document, elementId: String, expectedClass: String): Assertion = {
+    assert(doc.getElementById(elementId).hasClass(expectedClass), s"\n\nElement $elementId does not have class $expectedClass")
   }
 
   def assertRenderedByClass(doc: Document, cssClass: String): Assertion =
