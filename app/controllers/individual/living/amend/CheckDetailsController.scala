@@ -87,10 +87,10 @@ class CheckDetailsController @Inject()(
         _ <- connector.amendIndividualSettlor(request.userAnswers.identifier, index, individual)
       } yield {
         Redirect(controllers.routes.AddASettlorController.onPageLoad())
-      }).recover {
+      }).recoverWith {
         case e =>
           logger.error(e.getMessage)
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 }
