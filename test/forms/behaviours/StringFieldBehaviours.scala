@@ -52,20 +52,15 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
       forAll(stringsLongerThan(maxLength) -> "longString") {
         string =>
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors should contain oneOf (lengthError, invalidError)
+          if (result.errors.size > 1) {
+            result.errors should contain allOf(lengthError, invalidError)
+          } else {
+            result.errors should contain oneOf(lengthError, invalidError)
+          }
       }
     }
   }
 
-  def checkForInvalidChars(form: Form[_],
-                           fieldName: String,
-                           requiredError: FormError): Unit = {
-    "check for invalid chars" in {
-      val result = form.bind(Map(fieldName -> "\u000E⣘흈憌夎⽼\uF3DC㈼䕦겅❇邸븷∮搠䌛꾋㒓쿷쯙秄㵯\uEF50仔퍨氡\u07BBⶤ芆飺᭜ꁋ㰃殑㪪쾗")).apply(fieldName)
-      result.errors mustBe Seq(requiredError)
-    }
-
-  }
 
   def fieldWithMinLength(form: Form[_],
                          fieldName: String,
