@@ -2,11 +2,9 @@ import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
-import scala.collection.immutable.Seq
-
 lazy val appName: String = "maintain-settlors-frontend"
 
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.15"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = (project in file("."))
