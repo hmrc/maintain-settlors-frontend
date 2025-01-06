@@ -35,14 +35,12 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def getTrustDetails(identifier: String)
                      (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
     val url: String = s"$trustsUrl/trust-details/$identifier/transformed"
-    //http.GET[TrustDetails](url)
     http.get(url"$url").execute[TrustDetails]
   }
 
   def getSettlors(identifier: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] = {
     val url: String = s"$settlorsUrl/$identifier/transformed"
-   // http.GET[Settlors](url)
     http.get(url"$url").execute[Settlors]
 
   }
@@ -50,7 +48,6 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def getIsDeceasedSettlorDateOfDeathRecorded(identifier: String)
                                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val url: String = s"$settlorsUrl/$identifier/transformed/deceased-settlor-death-recorded"
-    //http.GET[Boolean](url)
     http.get(url"$url").execute[Boolean]
 
   }
@@ -58,7 +55,6 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def addIndividualSettlor(identifier: String, settlor: IndividualSettlor)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$settlorsUrl/add-individual/$identifier"
-   // http.POST[JsValue, HttpResponse](url, Json.toJson(settlor))
     http.post(url"$url").withBody(Json.toJson(settlor)).execute[HttpResponse]
 
   }
@@ -66,7 +62,6 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def amendIndividualSettlor(identifier: String, index: Int, individual: IndividualSettlor)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$settlorsUrl/amend-individual/$identifier/$index"
-   // http.POST[JsValue, HttpResponse](url, Json.toJson(individual))
     http.post(url"$url").withBody(Json.toJson(individual)).execute[HttpResponse]
 
   }
@@ -74,7 +69,6 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def addBusinessSettlor(identifier: String, settlor: BusinessSettlor)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$settlorsUrl/add-business/$identifier"
-   // http.POST[JsValue, HttpResponse](url, Json.toJson(settlor))
     http.post(url"$url").withBody(Json.toJson(settlor)).execute[HttpResponse]
 
   }
@@ -82,7 +76,6 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def amendBusinessSettlor(identifier: String, index: Int, business: BusinessSettlor)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$settlorsUrl/amend-business/$identifier/$index"
-  //  http.POST[JsValue, HttpResponse](url, Json.toJson(business))
     http.post(url"$url").withBody(Json.toJson(business)).execute[HttpResponse]
 
   }
@@ -90,7 +83,6 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def amendDeceasedSettlor(identifier: String, deceasedSettlor: DeceasedSettlor)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$settlorsUrl/amend-deceased/$identifier"
-  //  http.POST[JsValue, HttpResponse](url, Json.toJson(deceasedSettlor))
     http.post(url"$url").withBody(Json.toJson(deceasedSettlor)).execute[HttpResponse]
 
   }
@@ -98,7 +90,6 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def removeSettlor(identifier: String, settlor: RemoveSettlor)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$settlorsUrl/$identifier/remove"
-   // http.PUT[JsValue, HttpResponse](url, Json.toJson(settlor))
     http.put(url"$url").withBody(Json.toJson(settlor)).execute[HttpResponse]
 
   }
@@ -106,13 +97,11 @@ class TrustConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def isTrust5mld(identifier: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val url: String = s"$trustsUrl/$identifier/is-trust-5mld"
-    //http.GET[Boolean](url)
     http.get(url"$url").execute[Boolean]
   }
 
   def getTrustMigrationFlag(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TaxableMigrationFlag] = {
     val url = s"$trustsUrl/$identifier/taxable-migration/migrating-to-taxable"
-    //http.GET[TaxableMigrationFlag](url)
     http.get(url"$url").execute[TaxableMigrationFlag]
   }
 
