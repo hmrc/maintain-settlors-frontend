@@ -19,6 +19,7 @@ package forms.behaviours
 import forms.{NationalInsuranceNumberFormProvider, UtrFormProvider, Validation}
 import models.Constant.MAX
 import org.scalacheck.Gen
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.domain.Nino
 import wolfendale.scalacheck.regexp.RegexpGen
@@ -40,14 +41,35 @@ trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours
     }
   }
 
-  def fieldWithMinLength(form : Form[_],
-                         fieldName : String,
-                         minLength : Int,
-                         lengthError : FormError) : Unit = {
+  def checkForMaxLengthAndInvalid(form: Form[_],
+                                  fieldName: String,
+                                  maxLength: Int,
+                                  lengthError: FormError,
+                                  invalidError: FormError): Unit = {
+
+    s"check for max length and invalid for generated $maxLength chars" in {
+
+      forAll(stringsLongerThan(maxLength) -> "longString") {
+        string =>
+          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+          if (result.errors.size > 1) {
+            result.errors should contain allOf(lengthError, invalidError)
+          } else {
+            result.errors should contain oneOf(lengthError, invalidError)
+          }
+      }
+    }
+  }
+
+
+  def fieldWithMinLength(form: Form[_],
+                         fieldName: String,
+                         minLength: Int,
+                         lengthError: FormError): Unit = {
 
     s"not bind strings shorter than $minLength characters" in {
 
-      val length = if (minLength > 0 && minLength < 2) minLength else minLength -1
+      val length = if (minLength > 0 && minLength < 2) minLength else minLength - 1
 
       forAll(stringsWithMaxLength(length) -> "shortString") {
         string =>
