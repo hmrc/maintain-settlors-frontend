@@ -95,10 +95,10 @@ class CheckDetailsController @Inject()(
         _ <- connector.amendBusinessSettlor(request.userAnswers.identifier, index, business)
       } yield {
         Redirect(controllers.routes.AddASettlorController.onPageLoad())
-      }).recover {
+      }).recoverWith {
         case e =>
           logger.error(e.getMessage)
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 }

@@ -28,7 +28,7 @@
     submitButton: SubmitButton
 )
 
-@(answerSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answerSection: AnswerSection)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = messages("businessSettlor.checkDetails.title"),

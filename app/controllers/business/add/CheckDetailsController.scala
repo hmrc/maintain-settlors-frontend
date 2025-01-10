@@ -61,7 +61,7 @@ class CheckDetailsController @Inject()(
       mapper(request.userAnswers) match {
         case Failure(exception) =>
           logger.error(exception.getMessage)
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         case Success(settlor) =>
           connector.addBusinessSettlor(request.userAnswers.identifier, settlor).map(_ =>
             Redirect(controllers.routes.AddASettlorController.onPageLoad())

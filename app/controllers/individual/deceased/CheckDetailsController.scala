@@ -114,10 +114,10 @@ class CheckDetailsController @Inject()(
         } else {
           Redirect(controllers.routes.AddASettlorController.onPageLoad())
         }
-      }).recover {
+      }).recoverWith {
         case e =>
           logger.error(e.getMessage)
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
   }
 }
