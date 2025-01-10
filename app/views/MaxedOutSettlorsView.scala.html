@@ -39,7 +39,7 @@
     completeSettlors: Seq[AddRow],
     size: Int,
     migrating: Boolean
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = s"${messages("addASettlor.count.heading", size)}",
