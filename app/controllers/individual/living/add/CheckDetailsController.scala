@@ -31,7 +31,7 @@ import viewmodels.AnswerSection
 import views.html.individual.living.add.CheckDetailsView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 class CheckDetailsController @Inject()(

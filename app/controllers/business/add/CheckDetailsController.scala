@@ -32,7 +32,7 @@ import utils.print.BusinessSettlorPrintHelper
 import viewmodels.AnswerSection
 import views.html.business.add.CheckDetailsView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 class CheckDetailsController @Inject()(

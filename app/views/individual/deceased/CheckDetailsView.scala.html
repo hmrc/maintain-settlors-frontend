@@ -43,14 +43,14 @@
 
         @heading("deceasedSettlor.checkDetails.heading")
 
-        @checkDetailsList(SummaryList(rows = formatSections(Seq(answerSection))))
-
         @if(is01MatchStatus){
             <p>@messages("deceasedSettlor.checkDetails.p1", name)</p>
             @if(!isDateOfDeathRecorded){
                 <p>@messages("deceasedSettlor.checkDetails.p2", name)</p>
             }
         }
+
+        @checkDetailsList(SummaryList(rows = formatSections(Seq(answerSection))))
 
         @submitButton()
     }
