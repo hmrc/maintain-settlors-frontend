@@ -65,10 +65,9 @@
 @actionLink(action: ActionItem) = {
     @action.href match {
         case "" => {
-            @govukTag(Tag(
-                content = HtmlContent(tagContent(action)),
-                classes = "govuk-tag--grey"
-            ))
+            <span class="govuk-visually-hidden">
+               @actionContent(action)
+            </span>
         }
         case _ => {
             <a class="@ToClasses("govuk-link", action.classes)" href="@action.href" @ToAttributes(action.attributes)>
