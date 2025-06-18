@@ -1,4 +1,4 @@
-service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+service.name=Rheoli ymddiriedolaeth
 
 livingSettlor.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd y setlwr?
 livingSettlor.countryOfNationalityYesNo.heading=A ydych yn gwybod gwlad cenedligrwydd {0}?
@@ -162,7 +162,7 @@ date.year=Blwyddyn
 session_expired.title=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.heading=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.guidance=Mae’r manylion a roddwyd gennych wedi’u dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth ers 15 munud.
-session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i gynnal yr ymddiriedolaeth.
+session_expired.guidance.2=Bydd angen i chi fewngofnodi i barhau i reoli’r ymddiriedolaeth.
 
 unauthorised.title=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 unauthorised.heading=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
