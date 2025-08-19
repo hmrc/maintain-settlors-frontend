@@ -10,6 +10,7 @@ ThisBuild / majorVersion := 0
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin, SbtSassify)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .settings(CodeCoverageSettings())
   .settings(
     scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
     scalacOptions += "-Wconf:cat=unused-imports&src=routes/.*:s",
@@ -27,11 +28,6 @@ lazy val microservice = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9795,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;.*Mode.*;" +
-      ".*BuildInfo.*;.*Routes.*;.*package.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 93,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
     // concatenate js
@@ -66,5 +62,3 @@ lazy val testSettings: Seq[Def.Setting[?]] = Seq(
     "-Dconfig.resource=test.application.conf"
   )
 )
-
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle IntegrationTest/scalastyle")
