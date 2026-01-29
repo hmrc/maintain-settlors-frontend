@@ -25,16 +25,19 @@ import play.api.libs.json.{JsError, JsSuccess, Reads}
 import scala.reflect.{ClassTag, classTag}
 import scala.util.{Failure, Success, Try}
 
-abstract class SettlorMapper[T <: Settlor : ClassTag] {
+abstract class SettlorMapper[T <: Settlor: ClassTag] {
 
-  def apply(answers: UserAnswers): Try[T] = {
+  def apply(answers: UserAnswers): Try[T] =
     answers.data.validate[T](reads) match {
       case JsSuccess(value, _) =>
         Success(value)
-      case JsError(errors) =>
-        Failure(new Throwable(s"[UTR: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors"))
+      case JsError(errors)     =>
+        Failure(
+          new Throwable(
+            s"[UTR: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors"
+          )
+        )
     }
-  }
 
   val reads: Reads[T]
 
@@ -42,40 +45,47 @@ abstract class SettlorMapper[T <: Settlor : ClassTag] {
   def ukAddressPage: QuestionPage[UkAddress]
   def nonUkAddressPage: QuestionPage[NonUkAddress]
 
-  def readAddress: Reads[Option[Address]] = {
+  def readAddress: Reads[Option[Address]] =
     ukAddressYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => ukAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
+      case Some(true)  => ukAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
       case Some(false) => nonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
-      case _ => Reads(_ => JsSuccess(None))
+      case _           => Reads(_ => JsSuccess(None))
     }
-  }
 
-  def countryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def countryOfNationalityYesNoPage: QuestionPage[Boolean]   = new EmptyPage[Boolean]
   def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def countryOfNationalityPage: QuestionPage[String] = new EmptyPage[String]
+  def countryOfNationalityPage: QuestionPage[String]         = new EmptyPage[String]
 
-  def readCountryOfNationality: Reads[Option[String]] = {
-    readCountryOfResidenceOrNationality(countryOfNationalityYesNoPage, ukCountryOfNationalityYesNoPage, countryOfNationalityPage)
-  }
+  def readCountryOfNationality: Reads[Option[String]] =
+    readCountryOfResidenceOrNationality(
+      countryOfNationalityYesNoPage,
+      ukCountryOfNationalityYesNoPage,
+      countryOfNationalityPage
+    )
 
-  def countryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = new EmptyPage[Boolean]
   def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def countryOfResidencePage: QuestionPage[String] = new EmptyPage[String]
+  def countryOfResidencePage: QuestionPage[String]         = new EmptyPage[String]
 
-  def readCountryOfResidence: Reads[Option[String]] = {
-    readCountryOfResidenceOrNationality(countryOfResidenceYesNoPage, ukCountryOfResidenceYesNoPage, countryOfResidencePage)
-  }
+  def readCountryOfResidence: Reads[Option[String]] =
+    readCountryOfResidenceOrNationality(
+      countryOfResidenceYesNoPage,
+      ukCountryOfResidenceYesNoPage,
+      countryOfResidencePage
+    )
 
-  def readCountryOfResidenceOrNationality(yesNoPage: QuestionPage[Boolean],
-                                          ukYesNoPage: QuestionPage[Boolean],
-                                          page: QuestionPage[String]): Reads[Option[String]] = {
+  def readCountryOfResidenceOrNationality(
+    yesNoPage: QuestionPage[Boolean],
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Reads[Option[String]] =
     yesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-      case Some(true) => ukYesNoPage.path.read[Boolean].flatMap {
-        case true => Reads(_ => JsSuccess(Some(GB)))
-        case false => page.path.read[String].map(Some(_))
-      }
-      case _ => Reads(_ => JsSuccess(None))
+      case Some(true) =>
+        ukYesNoPage.path.read[Boolean].flatMap {
+          case true  => Reads(_ => JsSuccess(Some(GB)))
+          case false => page.path.read[String].map(Some(_))
+        }
+      case _          => Reads(_ => JsSuccess(None))
     }
-  }
 
 }

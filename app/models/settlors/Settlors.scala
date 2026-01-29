@@ -31,31 +31,30 @@ trait Settlor {
   def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean
 }
 
-case class Settlors(settlor: List[IndividualSettlor] = Nil,
-                    settlorCompany: List[BusinessSettlor] = Nil,
-                    deceased: Option[DeceasedSettlor] = None) {
+case class Settlors(
+  settlor: List[IndividualSettlor] = Nil,
+  settlorCompany: List[BusinessSettlor] = Nil,
+  deceased: Option[DeceasedSettlor] = None
+) {
 
   val size: Int = (settlor ++ settlorCompany ++ deceased).size
 
   val hasLivingSettlors: Boolean = settlor.nonEmpty || settlorCompany.nonEmpty
 
-  def addToHeading(implicit mp: MessagesProvider): String = {
+  def addToHeading(implicit mp: MessagesProvider): String =
 
     size match {
       case c if c > 1 => Messages("addASettlor.count.heading", c)
-      case _ => Messages("addASettlor.heading")
+      case _          => Messages("addASettlor.heading")
     }
-  }
 
-  private val options: List[(Int, SettlorType)] = {
+  private val options: List[(Int, SettlorType)] =
     (settlor.size, SettlorType.IndividualSettlor) ::
       (settlorCompany.size, SettlorType.BusinessSettlor) ::
       Nil
-  }
 
-  def nonMaxedOutOptions(implicit config: FrontendAppConfig): List[RadioOption] = {
+  def nonMaxedOutOptions(implicit config: FrontendAppConfig): List[RadioOption] =
     options.toRadioList.filterNot(maxedOutOptions.toSet)
-  }
 
   def maxedOutOptions(implicit config: FrontendAppConfig): List[RadioOption] = {
     val filteredOptions = if (config.countMaxAsCombined) {
@@ -68,26 +67,32 @@ case class Settlors(settlor: List[IndividualSettlor] = Nil,
   }
 
   implicit class RadioList(list: List[(Int, SettlorType)]) {
-    def toRadioList: List[RadioOption] = list.map {
-      x => RadioOption(SettlorType.prefix, x._2.toString)
+
+    def toRadioList: List[RadioOption] = list.map { x =>
+      RadioOption(SettlorType.prefix, x._2.toString)
     }
+
   }
 
 }
 
 object Settlors {
+
   implicit val reads: Reads[Settlors] = (
     (__ \ "settlors" \ "settlor").readWithDefault[List[IndividualSettlor]](Nil)
       and (__ \ "settlors" \ "settlorCompany").readWithDefault[List[BusinessSettlor]](Nil)
       and (__ \ "settlors" \ "deceased").readNullable[DeceasedSettlor]
-    ).apply(Settlors.apply _)
+  ).apply(Settlors.apply _)
+
 }
 
 trait SettlorReads {
-  def readNullableAtSubPath[T: Reads](subPath: JsPath): Reads[Option[T]] = Reads (
+
+  def readNullableAtSubPath[T: Reads](subPath: JsPath): Reads[Option[T]] = Reads(
     _.transform(subPath.json.pick)
       .flatMap(_.validate[T])
       .map(Some(_))
       .recoverWith(_ => JsSuccess(None))
   )
+
 }

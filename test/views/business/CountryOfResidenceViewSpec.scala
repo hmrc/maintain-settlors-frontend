@@ -25,13 +25,12 @@ import utils.countryOptions.CountryOptionsNonUK
 import views.behaviours.SelectCountryViewBehaviours
 import views.html.business.CountryOfResidenceView
 
-
 class CountryOfResidenceViewSpec extends SelectCountryViewBehaviours {
 
   val prefix = "businessSettlor.countryOfResidence"
 
   val form: Form[String] = new CountryFormProvider().withPrefix(prefix)
-  val name = "Name"
+  val name               = "Name"
 
   "CountryOfResidence view" must {
 
@@ -50,4 +49,5 @@ class CountryOfResidenceViewSpec extends SelectCountryViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

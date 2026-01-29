@@ -21,7 +21,6 @@ import pages.individual.deceased.{DateOfBirthPage, DateOfBirthYesNoPage}
 
 import java.time.LocalDate
 
-
 class DateOfBirthYesNoPageSpec extends PageBehaviours {
 
   "DateOfBirthYesNoPage" must {
@@ -40,4 +39,5 @@ class DateOfBirthYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(DateOfBirthPage) mustNot be(defined)
     }
   }
+
 }

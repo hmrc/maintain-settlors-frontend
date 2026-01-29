@@ -21,17 +21,17 @@ import java.time.LocalDate
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
-case class RemoveSettlor(`type`: SettlorType, index : Int, endDate: LocalDate)
+case class RemoveSettlor(`type`: SettlorType, index: Int, endDate: LocalDate)
 
 object RemoveSettlor {
 
-  implicit val writes : Writes[RemoveSettlor] =
+  implicit val writes: Writes[RemoveSettlor] =
     (
       (JsPath \ "type").write[SettlorType](SettlorType.writesToTrusts) and
-      (JsPath \ "index").write[Int] and
-      (JsPath \ "endDate").write[LocalDate]
+        (JsPath \ "index").write[Int] and
+        (JsPath \ "endDate").write[LocalDate]
     ).apply(unlift(RemoveSettlor.unapply))
 
-  def apply(`type`: SettlorType, index: Int): RemoveSettlor =  RemoveSettlor(`type`, index, LocalDate.now)
+  def apply(`type`: SettlorType, index: Int): RemoveSettlor = RemoveSettlor(`type`, index, LocalDate.now)
 
 }

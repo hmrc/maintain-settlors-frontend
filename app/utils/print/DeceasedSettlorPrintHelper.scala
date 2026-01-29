@@ -24,38 +24,108 @@ import pages.individual.deceased._
 import play.api.i18n.Messages
 import viewmodels.{AnswerRow, AnswerSection}
 
-class DeceasedSettlorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class DeceasedSettlorPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, settlorName: String, hasAdditionalSettlors: Boolean)
-           (implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, settlorName: String, hasAdditionalSettlors: Boolean)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, settlorName)
 
     def answerRows: Seq[AnswerRow] = {
-      val fullyMatched = userAnswers.get(BpMatchStatusPage).contains(FullyMatched)
+      val fullyMatched                       = userAnswers.get(BpMatchStatusPage).contains(FullyMatched)
       val fullyMatchedAndDateOfDeathRecorded = fullyMatched && userAnswers.isDateOfDeathRecorded
       Seq(
-        bound.nameQuestion(NamePage, "deceasedSettlor.name", if (fullyMatched) None else Some(controllers.individual.deceased.routes.NameController.onPageLoad().url)),
-        bound.yesNoQuestion(DateOfDeathYesNoPage, "deceasedSettlor.dateOfDeathYesNo", if (fullyMatchedAndDateOfDeathRecorded) None else Some(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url)),
-        bound.dateQuestion(DateOfDeathPage, "deceasedSettlor.dateOfDeath", if (fullyMatchedAndDateOfDeathRecorded) None else Some(controllers.individual.deceased.routes.DateOfDeathController.onPageLoad().url)),
-        bound.yesNoQuestion(DateOfBirthYesNoPage, "deceasedSettlor.dateOfBirthYesNo", if (fullyMatched) None else Some(controllers.individual.deceased.routes.DateOfBirthYesNoController.onPageLoad().url)),
-        bound.dateQuestion(DateOfBirthPage, "deceasedSettlor.dateOfBirth", if (fullyMatched) None else Some(controllers.individual.deceased.routes.DateOfBirthController.onPageLoad().url)),
+        bound.nameQuestion(
+          NamePage,
+          "deceasedSettlor.name",
+          if (fullyMatched) None else Some(controllers.individual.deceased.routes.NameController.onPageLoad().url)
+        ),
+        bound.yesNoQuestion(
+          DateOfDeathYesNoPage,
+          "deceasedSettlor.dateOfDeathYesNo",
+          if (fullyMatchedAndDateOfDeathRecorded) None
+          else Some(controllers.individual.deceased.routes.DateOfDeathYesNoController.onPageLoad().url)
+        ),
+        bound.dateQuestion(
+          DateOfDeathPage,
+          "deceasedSettlor.dateOfDeath",
+          if (fullyMatchedAndDateOfDeathRecorded) None
+          else Some(controllers.individual.deceased.routes.DateOfDeathController.onPageLoad().url)
+        ),
+        bound.yesNoQuestion(
+          DateOfBirthYesNoPage,
+          "deceasedSettlor.dateOfBirthYesNo",
+          if (fullyMatched) None
+          else Some(controllers.individual.deceased.routes.DateOfBirthYesNoController.onPageLoad().url)
+        ),
+        bound.dateQuestion(
+          DateOfBirthPage,
+          "deceasedSettlor.dateOfBirth",
+          if (fullyMatched) None
+          else Some(controllers.individual.deceased.routes.DateOfBirthController.onPageLoad().url)
+        ),
         bound.yesNoQuestion(CountryOfNationalityYesNoPage, "deceasedSettlor.nationalityYesNo", None),
         bound.yesNoQuestion(CountryOfNationalityUkYesNoPage, "deceasedSettlor.nationalityInTheUKYesNo", None),
-        bound.countryQuestion(CountryOfNationalityUkYesNoPage, CountryOfNationalityPage, "deceasedSettlor.nationality", None),
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "deceasedSettlor.nationalInsuranceNumberYesNo", if (fullyMatched) None else Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "deceasedSettlor.nationalInsuranceNumber", if (fullyMatched) None else Some(controllers.individual.deceased.routes.NationalInsuranceNumberController.onPageLoad().url)),
+        bound.countryQuestion(
+          CountryOfNationalityUkYesNoPage,
+          CountryOfNationalityPage,
+          "deceasedSettlor.nationality",
+          None
+        ),
+        bound.yesNoQuestion(
+          NationalInsuranceNumberYesNoPage,
+          "deceasedSettlor.nationalInsuranceNumberYesNo",
+          if (fullyMatched) None
+          else Some(controllers.individual.deceased.routes.NationalInsuranceNumberYesNoController.onPageLoad().url)
+        ),
+        bound.ninoQuestion(
+          NationalInsuranceNumberPage,
+          "deceasedSettlor.nationalInsuranceNumber",
+          if (fullyMatched) None
+          else Some(controllers.individual.deceased.routes.NationalInsuranceNumberController.onPageLoad().url)
+        ),
         bound.yesNoQuestion(CountryOfResidenceYesNoPage, "deceasedSettlor.countryOfResidenceYesNo", None),
         bound.yesNoQuestion(CountryOfResidenceUkYesNoPage, "deceasedSettlor.countryOfResidenceInTheUkYesNo", None),
-        bound.countryQuestion(CountryOfResidenceUkYesNoPage, CountryOfResidencePage, "deceasedSettlor.countryOfResidence", None),
-        bound.yesNoQuestion(AddressYesNoPage, "deceasedSettlor.addressYesNo", if (fullyMatched) None else Some(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url)),
-        bound.yesNoQuestion(LivedInTheUkYesNoPage, "deceasedSettlor.livedInTheUkYesNo", if (fullyMatched) None else Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)),
-        bound.addressQuestion(UkAddressPage, "deceasedSettlor.ukAddress", if (fullyMatched) None else Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)),
-        bound.addressQuestion(NonUkAddressPage, "deceasedSettlor.nonUkAddress", if (fullyMatched) None else Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url)),
-        bound.additionalSettlorsQuestion(AdditionalSettlorsYesNoPage, "deceasedSettlor.additionalSettlorsYesNo", Some(controllers.individual.deceased.routes.AdditionalSettlorsYesNoController.onPageLoad().url), hasAdditionalSettlors)
+        bound.countryQuestion(
+          CountryOfResidenceUkYesNoPage,
+          CountryOfResidencePage,
+          "deceasedSettlor.countryOfResidence",
+          None
+        ),
+        bound.yesNoQuestion(
+          AddressYesNoPage,
+          "deceasedSettlor.addressYesNo",
+          if (fullyMatched) None
+          else Some(controllers.individual.deceased.routes.AddressYesNoController.onPageLoad().url)
+        ),
+        bound.yesNoQuestion(
+          LivedInTheUkYesNoPage,
+          "deceasedSettlor.livedInTheUkYesNo",
+          if (fullyMatched) None
+          else Some(controllers.individual.deceased.routes.LivedInTheUkYesNoController.onPageLoad().url)
+        ),
+        bound.addressQuestion(
+          UkAddressPage,
+          "deceasedSettlor.ukAddress",
+          if (fullyMatched) None else Some(controllers.individual.deceased.routes.UkAddressController.onPageLoad().url)
+        ),
+        bound.addressQuestion(
+          NonUkAddressPage,
+          "deceasedSettlor.nonUkAddress",
+          if (fullyMatched) None
+          else Some(controllers.individual.deceased.routes.NonUkAddressController.onPageLoad().url)
+        ),
+        bound.additionalSettlorsQuestion(
+          AdditionalSettlorsYesNoPage,
+          "deceasedSettlor.additionalSettlorsYesNo",
+          Some(controllers.individual.deceased.routes.AdditionalSettlorsYesNoController.onPageLoad().url),
+          hasAdditionalSettlors
+        )
       ).flatten
     }
 
     AnswerSection(headingKey = None, rows = answerRows)
   }
+
 }

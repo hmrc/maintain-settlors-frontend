@@ -38,8 +38,12 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
   private val index = 0
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(IndexPage, index).success.value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(IndexPage, index)
+    .success
+    .value
 
   private lazy val passportOrIdCardDetailsRoute: String =
     routes.PassportOrIdCardDetailsController.onPageLoad(mode).url
@@ -47,7 +51,8 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
   private lazy val checkDetailsRoute =
     controllers.individual.living.amend.routes.CheckDetailsController.renderFromUserAnswers(index).url
 
-  private val validData: CombinedPassportOrIdCard = CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
+  private val validData: CombinedPassportOrIdCard =
+    CombinedPassportOrIdCard("country", "number", LocalDate.parse("2020-02-03"))
 
   override def beforeEach(): Unit = {
     reset(playbackRepository)
@@ -95,12 +100,12 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
       val request = FakeRequest(POST, passportOrIdCardDetailsRoute)
         .withFormUrlEncodedBody(
-          "country" -> validData.countryOfIssue,
-          "number" -> validData.number,
-          "expiryDate.day" -> validData.expirationDate.getDayOfMonth.toString,
+          "country"          -> validData.countryOfIssue,
+          "number"           -> validData.number,
+          "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
           "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
-          "expiryDate.year" -> validData.expirationDate.getYear.toString,
-          "detailsType" -> validData.detailsType.toString
+          "expiryDate.year"  -> validData.expirationDate.getYear.toString,
+          "detailsType"      -> validData.detailsType.toString
         )
 
       val result = route(application, request).value
@@ -144,4 +149,5 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
       application.stop()
     }
   }
+
 }

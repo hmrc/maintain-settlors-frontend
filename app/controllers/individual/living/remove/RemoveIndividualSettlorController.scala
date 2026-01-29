@@ -31,66 +31,65 @@ import views.html.individual.living.remove.RemoveIndividualSettlorView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveIndividualSettlorController @Inject()(
-                                                    override val messagesApi: MessagesApi,
-                                                    standardActionSets: StandardActionSets,
-                                                    trustService: TrustService,
-                                                    formProvider: RemoveIndexFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: RemoveIndividualSettlorView,
-                                                    errorHandler: ErrorHandler
-                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RemoveIndividualSettlorController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  trustService: TrustService,
+  formProvider: RemoveIndexFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveIndividualSettlorView,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "removeIndividualSettlorYesNo"
 
   private val form = formProvider.apply(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      trustService.getIndividualSettlor(request.userAnswers.identifier, index).map {
-        settlor =>
-          if (settlor.provisional) {
-            Ok(view(form, index, settlor.name.displayName))
-          } else {
-            Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
-          }
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error getting individual settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
-
-          Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error getting individual settlor $index from trusts service ${e.getMessage}")
-
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trustService.getIndividualSettlor(request.userAnswers.identifier, index).map { settlor =>
+      if (settlor.provisional) {
+        Ok(view(form, index, settlor.name.displayName))
+      } else {
+        Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
       }
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error getting individual settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
+
+        Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
+      case e                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error getting individual settlor $index from trusts service ${e.getMessage}"
+        )
+
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
 
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trustService.getIndividualSettlor(request.userAnswers.identifier, index).map {
-            settlor =>
-              BadRequest(view(formWithErrors, index, settlor.name.displayName))
-          }
-        },
-        value => {
-
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
+          trustService.getIndividualSettlor(request.userAnswers.identifier, index).map { settlor =>
+            BadRequest(view(formWithErrors, index, settlor.name.displayName))
+          },
+        value =>
           if (value) {
 
-            trustService.removeSettlor(request.userAnswers.identifier, RemoveSettlor(SettlorType.IndividualSettlor, index)).map(_ =>
-              Redirect(controllers.routes.AddASettlorController.onPageLoad())
-            )
+            trustService
+              .removeSettlor(request.userAnswers.identifier, RemoveSettlor(SettlorType.IndividualSettlor, index))
+              .map(_ => Redirect(controllers.routes.AddASettlorController.onPageLoad()))
           } else {
             Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
           }
-        }
       )
   }
+
 }

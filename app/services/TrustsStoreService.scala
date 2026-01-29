@@ -24,11 +24,12 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustsStoreService @Inject()(trustsStoreConnector: TrustStoreConnector) {
+class TrustsStoreService @Inject() (trustsStoreConnector: TrustStoreConnector) {
 
-  def updateTaskStatus(identifier: String, taskStatus: TaskStatus)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def updateTaskStatus(identifier: String, taskStatus: TaskStatus)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] =
     trustsStoreConnector.updateTaskStatus(identifier, taskStatus)
-  }
 
 }

@@ -29,8 +29,14 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
-class ActiveSessionRepositorySpec extends AnyWordSpec with Matchers
-  with ScalaFutures with OptionValues with MongoSupport with MongoSuite with BeforeAndAfterEach {
+class ActiveSessionRepositorySpec
+    extends AnyWordSpec
+    with Matchers
+    with ScalaFutures
+    with OptionValues
+    with MongoSupport
+    with MongoSuite
+    with BeforeAndAfterEach {
 
   override def beforeEach(): Unit =
     Await.result(repository.collection.deleteMany(BsonDocument()).toFuture(), Duration.Inf)
@@ -67,7 +73,7 @@ class ActiveSessionRepositorySpec extends AnyWordSpec with Matchers
 
       repository.set(session).futureValue
 
-      repository.get(internalId).futureValue.value.utr mustBe "utr"
+      repository.get(internalId).futureValue.value.utr        mustBe "utr"
       repository.get(internalId).futureValue.value.internalId mustBe internalId
 
       // update
@@ -76,8 +82,9 @@ class ActiveSessionRepositorySpec extends AnyWordSpec with Matchers
 
       repository.set(session2).futureValue
 
-      repository.get(internalId).futureValue.value.utr mustBe "utr2"
+      repository.get(internalId).futureValue.value.utr        mustBe "utr2"
       repository.get(internalId).futureValue.value.internalId mustBe internalId
     }
   }
+
 }

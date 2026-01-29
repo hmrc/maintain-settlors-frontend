@@ -31,4 +31,5 @@ class MentalCapacityYesNoPageSpec extends PageBehaviours {
     beRemovable[YesNoDontKnow](MentalCapacityYesNoPage)
 
   }
+
 }

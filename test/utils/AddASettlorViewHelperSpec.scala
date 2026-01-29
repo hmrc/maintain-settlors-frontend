@@ -31,7 +31,7 @@ class AddASettlorViewHelperSpec extends SpecBase {
 
   private val index = 0
 
-  private val name = Name(firstName = "Joe", middleName = None, lastName = "Bloggs")
+  private val name        = Name(firstName = "Joe", middleName = None, lastName = "Bloggs")
   private val companyName = "Name"
 
   private val deceasedSettlor = DeceasedSettlor(
@@ -90,8 +90,11 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = name.displayName,
                   typeLabel = "Individual settlor",
-                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
-                  removeUrl = Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url)
+                  changeUrl =
+                    controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
+                  removeUrl = Some(
+                    controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url
+                  )
                 )
               )
             )
@@ -110,7 +113,8 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = name.displayName,
                   typeLabel = "Individual settlor",
-                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
+                  changeUrl =
+                    controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
                   removeUrl = None
                 )
               )
@@ -134,7 +138,8 @@ class AddASettlorViewHelperSpec extends SpecBase {
                   name = companyName,
                   typeLabel = "Business settlor",
                   changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url,
-                  removeUrl = Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
+                  removeUrl =
+                    Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
                 )
               )
             )
@@ -205,7 +210,8 @@ class AddASettlorViewHelperSpec extends SpecBase {
                     name = companyName,
                     typeLabel = "Business settlor",
                     changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRedirect(index).url,
-                    removeUrl = Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
+                    removeUrl =
+                      Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
                   )
                 ),
                 complete = Nil
@@ -253,8 +259,11 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = name.displayName,
                   typeLabel = "Individual settlor",
-                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
-                  removeUrl = Some(controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url)
+                  changeUrl =
+                    controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
+                  removeUrl = Some(
+                    controllers.individual.living.remove.routes.RemoveIndividualSettlorController.onPageLoad(index).url
+                  )
                 )
               )
             )
@@ -273,7 +282,8 @@ class AddASettlorViewHelperSpec extends SpecBase {
                 AddRow(
                   name = name.displayName,
                   typeLabel = "Individual settlor",
-                  changeUrl = controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
+                  changeUrl =
+                    controllers.individual.living.amend.routes.CheckDetailsController.extractAndRender(index).url,
                   removeUrl = None
                 )
               )
@@ -287,7 +297,9 @@ class AddASettlorViewHelperSpec extends SpecBase {
             "provisional" in {
 
               val result = viewHelper.rows(
-                settlors = Settlors(settlorCompany = List(businessSettlor(true).copy(companyType = Some(Trading), companyTime = Some(true)))),
+                settlors = Settlors(settlorCompany =
+                  List(businessSettlor(true).copy(companyType = Some(Trading), companyTime = Some(true)))
+                ),
                 migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable,
                 trustType = Some(EmployeeRelated)
               )
@@ -299,7 +311,8 @@ class AddASettlorViewHelperSpec extends SpecBase {
                     name = companyName,
                     typeLabel = "Business settlor",
                     changeUrl = controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url,
-                    removeUrl = Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
+                    removeUrl =
+                      Some(controllers.business.remove.routes.RemoveBusinessSettlorController.onPageLoad(index).url)
                   )
                 )
               )
@@ -308,7 +321,9 @@ class AddASettlorViewHelperSpec extends SpecBase {
             "not provisional" in {
 
               val result = viewHelper.rows(
-                settlors = Settlors(settlorCompany = List(businessSettlor(false).copy(companyType = Some(Trading), companyTime = Some(true)))),
+                settlors = Settlors(settlorCompany =
+                  List(businessSettlor(false).copy(companyType = Some(Trading), companyTime = Some(true)))
+                ),
                 migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable,
                 trustType = Some(EmployeeRelated)
               )
@@ -350,4 +365,5 @@ class AddASettlorViewHelperSpec extends SpecBase {
       }
     }
   }
+
 }

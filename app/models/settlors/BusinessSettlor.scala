@@ -23,40 +23,41 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-final case class BusinessSettlor(name: String,
-                                 companyType: Option[CompanyType],
-                                 companyTime: Option[Boolean],
-                                 utr: Option[String],
-                                 countryOfResidence: Option[String] = None,
-                                 address: Option[Address],
-                                 entityStart: LocalDate,
-                                 provisional: Boolean) extends Settlor {
+final case class BusinessSettlor(
+  name: String,
+  companyType: Option[CompanyType],
+  companyTime: Option[Boolean],
+  utr: Option[String],
+  countryOfResidence: Option[String] = None,
+  address: Option[Address],
+  entityStart: LocalDate,
+  provisional: Boolean
+) extends Settlor {
 
-  override val startDate: Option[LocalDate] = Some(entityStart)
-  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean = {
+  override val startDate: Option[LocalDate]                                                                        = Some(entityStart)
+
+  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean =
     if (migratingFromNonTaxableToTaxable) {
       trustType match {
         case Some(EmployeeRelated) => companyType.isDefined && companyTime.isDefined
-        case _ => true
+        case _                     => true
       }
     } else {
       true
     }
-  }
+
 }
 
 object BusinessSettlor extends SettlorReads {
 
-  implicit val reads: Reads[BusinessSettlor] = (
-    (__ \ Symbol("name")).read[String] and
-      (__ \ Symbol("companyType")).readNullable[CompanyType] and
-      (__ \ Symbol("companyTime")).readNullable[Boolean] and
-      __.lazyRead(readNullableAtSubPath[String](__ \ Symbol("identification") \  Symbol("utr"))) and
-      (__ \ Symbol("countryOfResidence")).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
-      (__ \ "entityStart").read[LocalDate] and
-      (__ \ "provisional").readWithDefault(false))
-    .tupled.map {
+  implicit val reads: Reads[BusinessSettlor] = ((__ \ Symbol("name")).read[String] and
+    (__ \ Symbol("companyType")).readNullable[CompanyType] and
+    (__ \ Symbol("companyTime")).readNullable[Boolean] and
+    __.lazyRead(readNullableAtSubPath[String](__ \ Symbol("identification") \ Symbol("utr"))) and
+    (__ \ Symbol("countryOfResidence")).readNullable[String] and
+    __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
+    (__ \ "entityStart").read[LocalDate] and
+    (__ \ "provisional").readWithDefault(false)).tupled.map {
     case (name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional) =>
       BusinessSettlor(name, companyType, companyTime, identifier, countryOfResidence, address, entityStart, provisional)
   }
@@ -70,6 +71,6 @@ object BusinessSettlor extends SettlorReads {
       (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
-    ).apply(unlift(BusinessSettlor.unapply))
+  ).apply(unlift(BusinessSettlor.unapply))
 
 }

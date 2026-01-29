@@ -25,58 +25,51 @@ import java.time.LocalDate
 trait Constraints {
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
-    Constraint {
-      input =>
-        constraints
-          .map(_.apply(input))
-          .find(_ != Valid)
-          .getOrElse(Valid)
+    Constraint { input =>
+      constraints
+        .map(_.apply(input))
+        .find(_ != Valid)
+        .getOrElse(Valid)
     }
 
   protected def minimumValue[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
+    Constraint { input =>
+      import ev._
 
-        import ev._
-
-        if (input >= minimum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum)
-        }
+      if (input >= minimum) {
+        Valid
+      } else {
+        Invalid(errorKey, minimum)
+      }
     }
 
   protected def maximumValue[A](maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
+    Constraint { input =>
+      import ev._
 
-        import ev._
-
-        if (input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, maximum)
-        }
+      if (input <= maximum) {
+        Valid
+      } else {
+        Invalid(errorKey, maximum)
+      }
     }
 
   protected def inRange[A](minimum: A, maximum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] =
-    Constraint {
-      input =>
+    Constraint { input =>
+      import ev._
 
-        import ev._
-
-        if (input >= minimum && input <= maximum) {
-          Valid
-        } else {
-          Invalid(errorKey, minimum, maximum)
-        }
+      if (input >= minimum && input <= maximum) {
+        Valid
+      } else {
+        Invalid(errorKey, minimum, maximum)
+      }
     }
 
   protected def regexp(regex: String, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.matches(regex) =>
         Valid
-      case _ =>
+      case _                         =>
         Invalid(errorKey, regex)
     }
 
@@ -84,7 +77,7 @@ trait Constraints {
     Constraint {
       case str if str.length <= maximum =>
         Valid
-      case _ =>
+      case _                            =>
         Invalid(errorKey, maximum)
     }
 
@@ -92,7 +85,7 @@ trait Constraints {
     Constraint {
       case str if str.length >= minimum =>
         Valid
-      case _ =>
+      case _                            =>
         Invalid(errorKey, minimum)
     }
 
@@ -100,7 +93,7 @@ trait Constraints {
     Constraint {
       case date if date.isAfter(maximum) =>
         Invalid(errorKey, args: _*)
-      case _ =>
+      case _                             =>
         Valid
     }
 
@@ -108,7 +101,7 @@ trait Constraints {
     Constraint {
       case date if date.isBefore(minimum) =>
         Invalid(errorKey, args: _*)
-      case _ =>
+      case _                              =>
         Valid
     }
 
@@ -116,7 +109,7 @@ trait Constraints {
     Constraint {
       case set if set.nonEmpty =>
         Valid
-      case _ =>
+      case _                   =>
         Invalid(errorKey)
     }
 
@@ -124,7 +117,7 @@ trait Constraints {
     Constraint {
       case str if str.trim.nonEmpty =>
         Valid
-      case _ =>
+      case _                        =>
         Invalid(errorKey, value)
     }
 
@@ -132,24 +125,27 @@ trait Constraints {
     Constraint {
       case str if Nino.isValid(str) =>
         Valid
-      case _ =>
+      case _                        =>
         Invalid(errorKey, value)
     }
 
-  protected def uniqueUtr(trustIdentifier: String, utrs: List[String], notUniqueKey: String, sameAsTrustUtrKey: String): Constraint[String] =
-    Constraint {
-      utr =>
-        if (utr == trustIdentifier) {
-          Invalid(sameAsTrustUtrKey)
-        } else {
-          if (utrs.contains(utr)) Invalid(notUniqueKey) else Valid
-        }
+  protected def uniqueUtr(
+    trustIdentifier: String,
+    utrs: List[String],
+    notUniqueKey: String,
+    sameAsTrustUtrKey: String
+  ): Constraint[String] =
+    Constraint { utr =>
+      if (utr == trustIdentifier) {
+        Invalid(sameAsTrustUtrKey)
+      } else {
+        if (utrs.contains(utr)) Invalid(notUniqueKey) else Valid
+      }
     }
 
   protected def uniqueNino(ninos: List[String], notUniqueKey: String): Constraint[String] =
-    Constraint {
-      nino =>
-        if (ninos.map(formatNino).contains(formatNino(nino))) Invalid(notUniqueKey) else Valid
+    Constraint { nino =>
+      if (ninos.map(formatNino).contains(formatNino(nino))) Invalid(notUniqueKey) else Valid
     }
 
 }

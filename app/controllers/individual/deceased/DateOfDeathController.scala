@@ -35,59 +35,56 @@ import views.html.individual.deceased.DateOfDeathView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DateOfDeathController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: PlaybackRepository,
-                                       @DeceasedSettlor navigator: Navigator,
-                                       standardActionSets: StandardActionSets,
-                                       nameAction: NameRequiredAction,
-                                       formProvider: DateOfDeathFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: DateOfDeathView,
-                                       trustsConnector : TrustConnector,
-                                       appConfig: FrontendAppConfig
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DateOfDeathController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @DeceasedSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: DateOfDeathFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: DateOfDeathView,
+  trustsConnector: TrustConnector,
+  appConfig: FrontendAppConfig
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def form(trustStartDate: LocalDate, minDate: (LocalDate, String)) =
     formProvider.withConfig("deceasedSettlor.dateOfDeath", trustStartDate, minDate)
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
-
       trustsConnector.getTrustDetails(request.userAnswers.identifier) map { details =>
-          val preparedForm = request.userAnswers.get(DateOfDeathPage) match {
-            case None => form(details.startDate, minDate)
-            case Some(value) => form(details.startDate, minDate).fill(value)
-          }
+        val preparedForm = request.userAnswers.get(DateOfDeathPage) match {
+          case None        => form(details.startDate, minDate)
+          case Some(value) => form(details.startDate, minDate).fill(value)
+        }
 
-          Ok(view(preparedForm, request.settlorName))
+        Ok(view(preparedForm, request.settlorName))
       }
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      trustsConnector.getTrustDetails(request.userAnswers.identifier) flatMap { details =>
-        form(details.startDate, minDate).bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    trustsConnector.getTrustDetails(request.userAnswers.identifier) flatMap { details =>
+      form(details.startDate, minDate)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathPage, value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield {
-              Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
-            }
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DateOfDeathPage, updatedAnswers))
         )
-      }
+    }
   }
 
-  private def minDate(implicit request: SettlorNameRequest[AnyContent]): (LocalDate, String) = {
+  private def minDate(implicit request: SettlorNameRequest[AnyContent]): (LocalDate, String) =
     request.userAnswers.get(DateOfBirthPage) match {
       case Some(dateOfBirth) =>
         (dateOfBirth, "beforeDateOfBirth")
-      case None =>
+      case None              =>
         (appConfig.minDate, "past")
     }
-  }
+
 }

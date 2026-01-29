@@ -31,18 +31,31 @@ class CountryOfResidenceYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(CountryOfResidencePage, "FR").success.value
-        .set(CountryOfResidenceInTheUkYesNoPage, false).success.value
-        .set(CountryOfResidencePage, "FR").success.value
-        .set(AddressYesNoPage, false).success.value
-        .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
-        .set(LiveInTheUkYesNoPage, false).success.value
+        .set(CountryOfResidencePage, "FR")
+        .success
+        .value
+        .set(CountryOfResidenceInTheUkYesNoPage, false)
+        .success
+        .value
+        .set(CountryOfResidencePage, "FR")
+        .success
+        .value
+        .set(AddressYesNoPage, false)
+        .success
+        .value
+        .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode"))
+        .success
+        .value
+        .set(LiveInTheUkYesNoPage, false)
+        .success
+        .value
 
       val result = userAnswers.set(CountryOfResidenceYesNoPage, false).success.value
 
       result.get(CountryOfResidenceInTheUkYesNoPage) mustBe None
-      result.get(CountryOfResidencePage) mustBe None
-      result.get(AddressYesNoPage) mustBe Some(false)
+      result.get(CountryOfResidencePage)             mustBe None
+      result.get(AddressYesNoPage)                   mustBe Some(false)
     }
   }
+
 }

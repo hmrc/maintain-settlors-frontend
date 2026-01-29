@@ -43,16 +43,20 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val validAnswer: LocalDate = LocalDate.parse("2000-02-03")
+  val validAnswer: LocalDate   = LocalDate.parse("2000-02-03")
   val invalidAnswer: LocalDate = LocalDate.parse("2020-02-03")
-  val name: Name = Name("FirstName", None, "LastName")
-  val index: Int = 0
+  val name: Name               = Name("FirstName", None, "LastName")
+  val index: Int               = 0
 
   lazy val dateOfBirthRoute: String = routes.DateOfBirthController.onPageLoad().url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(DateOfDeathPage, dateOfDeath).success.value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(DateOfDeathPage, dateOfDeath)
+    .success
+    .value
 
   def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfBirthRoute)
@@ -86,8 +90,12 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DateOfBirthPage, validAnswer).success.value
-        .set(NamePage, name).success.value
+        .set(DateOfBirthPage, validAnswer)
+        .success
+        .value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -159,11 +167,13 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
             "value.year"  -> invalidAnswer.getYear.toString
           )
 
-      val boundForm = form.bind(Map(
-        "value.day"   -> invalidAnswer.getDayOfMonth.toString,
-        "value.month" -> invalidAnswer.getMonthValue.toString,
-        "value.year"  -> invalidAnswer.getYear.toString
-      ))
+      val boundForm = form.bind(
+        Map(
+          "value.day"   -> invalidAnswer.getDayOfMonth.toString,
+          "value.month" -> invalidAnswer.getMonthValue.toString,
+          "value.year"  -> invalidAnswer.getYear.toString
+        )
+      )
 
       val view = application.injector.instanceOf[DateOfBirthView]
 
@@ -202,4 +212,5 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

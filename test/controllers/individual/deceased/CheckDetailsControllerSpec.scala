@@ -45,17 +45,17 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
-  private lazy val checkDetailsRoute = routes.CheckDetailsController.extractAndRender().url
+  private lazy val checkDetailsRoute  = routes.CheckDetailsController.extractAndRender().url
   private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit().url
 
-  private lazy val onwardRoute = controllers.routes.AddASettlorController.onPageLoad().url
+  private lazy val onwardRoute   = controllers.routes.AddASettlorController.onPageLoad().url
   private lazy val finishedRoute = appConfig.maintainATrustOverview
 
-  private val name = Name("First", None, "Last")
+  private val name        = Name("First", None, "Last")
   private val dateOfDeath = LocalDate.parse("2018-02-03")
   private val dateOfBirth = LocalDate.parse("2010-02-03")
-  private val nino = "AA123456A"
-  private val startDate = LocalDate.parse("2019-03-09")
+  private val nino        = "AA123456A"
+  private val startDate   = LocalDate.parse("2019-03-09")
 
   private val individualSettlor = IndividualSettlor(
     name = Name(
@@ -73,21 +73,41 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     provisional = false
   )
 
-  private def userAnswers(bpMatchStatus: BpMatchStatus = FullyMatched,
-                          isDateOfDeathRecorded: Boolean = true,
-                          addAdditionalSettlors: Boolean = false): UserAnswers = {
+  private def userAnswers(
+    bpMatchStatus: BpMatchStatus = FullyMatched,
+    isDateOfDeathRecorded: Boolean = true,
+    addAdditionalSettlors: Boolean = false
+  ): UserAnswers =
 
-    emptyUserAnswers.copy(isDateOfDeathRecorded = isDateOfDeathRecorded)
-      .set(BpMatchStatusPage, bpMatchStatus).success.value
-      .set(NamePage, name).success.value
-      .set(DateOfDeathYesNoPage, true).success.value
-      .set(DateOfDeathPage, dateOfDeath).success.value
-      .set(DateOfBirthYesNoPage, true).success.value
-      .set(DateOfBirthPage, dateOfBirth).success.value
-      .set(NationalInsuranceNumberYesNoPage, true).success.value
-      .set(NationalInsuranceNumberPage, nino).success.value
-      .set(AdditionalSettlorsYesNoPage, addAdditionalSettlors).success.value
-  }
+    emptyUserAnswers
+      .copy(isDateOfDeathRecorded = isDateOfDeathRecorded)
+      .set(BpMatchStatusPage, bpMatchStatus)
+      .success
+      .value
+      .set(NamePage, name)
+      .success
+      .value
+      .set(DateOfDeathYesNoPage, true)
+      .success
+      .value
+      .set(DateOfDeathPage, dateOfDeath)
+      .success
+      .value
+      .set(DateOfBirthYesNoPage, true)
+      .success
+      .value
+      .set(DateOfBirthPage, dateOfBirth)
+      .success
+      .value
+      .set(NationalInsuranceNumberYesNoPage, true)
+      .success
+      .value
+      .set(NationalInsuranceNumberPage, nino)
+      .success
+      .value
+      .set(AdditionalSettlorsYesNoPage, addAdditionalSettlors)
+      .success
+      .value
 
   private def deceasedSettlor(matchStatus: BpMatchStatus = FullyMatched) = DeceasedSettlor(
     bpMatchStatus = Some(matchStatus),
@@ -112,7 +132,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val ua = userAnswers(matchStatus)
 
-          val mockService : TrustService = mock[TrustService]
+          val mockService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(ua))
             .overrides(
@@ -127,8 +147,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
-          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val view          = application.injector.instanceOf[CheckDetailsView]
+          val printHelper   = application.injector.instanceOf[DeceasedSettlorPrintHelper]
           val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = true)
 
           status(result) mustEqual OK
@@ -148,7 +168,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val ua = userAnswers(matchStatus, isDateOfDeathRecorded = false)
 
-          val mockService : TrustService = mock[TrustService]
+          val mockService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(ua))
             .overrides(
@@ -163,8 +183,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
-          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val view          = application.injector.instanceOf[CheckDetailsView]
+          val printHelper   = application.injector.instanceOf[DeceasedSettlorPrintHelper]
           val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = true)
 
           status(result) mustEqual OK
@@ -184,7 +204,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val ua = userAnswers(matchStatus)
 
-          val mockService : TrustService = mock[TrustService]
+          val mockService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(ua))
             .overrides(
@@ -199,8 +219,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
-          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val view          = application.injector.instanceOf[CheckDetailsView]
+          val printHelper   = application.injector.instanceOf[DeceasedSettlorPrintHelper]
           val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = true)
 
           status(result) mustEqual OK
@@ -223,7 +243,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val ua = userAnswers(matchStatus)
 
-          val mockService : TrustService = mock[TrustService]
+          val mockService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(ua))
             .overrides(
@@ -238,8 +258,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
-          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val view          = application.injector.instanceOf[CheckDetailsView]
+          val printHelper   = application.injector.instanceOf[DeceasedSettlorPrintHelper]
           val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = false)
 
           status(result) mustEqual OK
@@ -259,7 +279,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val ua = userAnswers(matchStatus, isDateOfDeathRecorded = false)
 
-          val mockService : TrustService = mock[TrustService]
+          val mockService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(ua))
             .overrides(
@@ -274,8 +294,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
-          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val view          = application.injector.instanceOf[CheckDetailsView]
+          val printHelper   = application.injector.instanceOf[DeceasedSettlorPrintHelper]
           val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = false)
 
           status(result) mustEqual OK
@@ -295,7 +315,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val ua = userAnswers(matchStatus)
 
-          val mockService : TrustService = mock[TrustService]
+          val mockService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(ua))
             .overrides(
@@ -310,8 +330,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[CheckDetailsView]
-          val printHelper = application.injector.instanceOf[DeceasedSettlorPrintHelper]
+          val view          = application.injector.instanceOf[CheckDetailsView]
+          val printHelper   = application.injector.instanceOf[DeceasedSettlorPrintHelper]
           val answerSection = printHelper(ua, name.displayName, hasAdditionalSettlors = false)
 
           status(result) mustEqual OK
@@ -330,7 +350,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     "redirect to the 'add a settlor' page when submitted if there are other settlors" in {
 
       val mockTrustConnector = mock[TrustConnector]
-      val mockTrustService = mock[TrustService]
+      val mockTrustService   = mock[TrustService]
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers()), affinityGroup = Agent)
@@ -338,8 +358,10 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .overrides(bind[TrustService].toInstance(mockTrustService))
           .build()
 
-      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor()))))
+      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustService.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(Settlors(List(individualSettlor), Nil, Some(deceasedSettlor()))))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -355,7 +377,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     "redirect to the 'add a settlor' page when submitted if there are no other settlors but user selected yes to Are there any additional settlors for the trust?" in {
 
       val mockTrustConnector = mock[TrustConnector]
-      val mockTrustService = mock[TrustService]
+      val mockTrustService   = mock[TrustService]
 
       val application =
         applicationBuilder(userAnswers = Some(userAnswers(addAdditionalSettlors = true)), affinityGroup = Agent)
@@ -363,8 +385,10 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .overrides(bind[TrustService].toInstance(mockTrustService))
           .build()
 
-      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor()))))
+      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustService.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor()))))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -379,8 +403,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
     "redirect to 'maintain a trust overview' when submitted if there are no other settlors" in {
 
-      val mockTrustConnector = mock[TrustConnector]
-      val mockTrustService = mock[TrustService]
+      val mockTrustConnector      = mock[TrustConnector]
+      val mockTrustService        = mock[TrustService]
       val mockTrustStoreConnector = mock[TrustStoreConnector]
 
       val application =
@@ -390,9 +414,12 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .overrides(bind[TrustStoreConnector].toInstance(mockTrustStoreConnector))
           .build()
 
-      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustService.getSettlors(any())(any(), any())).thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor()))))
-      when(mockTrustStoreConnector.updateTaskStatus(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendDeceasedSettlor(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustService.getSettlors(any())(any(), any()))
+        .thenReturn(Future.successful(Settlors(Nil, Nil, Some(deceasedSettlor()))))
+      when(mockTrustStoreConnector.updateTaskStatus(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -407,4 +434,5 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       application.stop()
     }
   }
+
 }

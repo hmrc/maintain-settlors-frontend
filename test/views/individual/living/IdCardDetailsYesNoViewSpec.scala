@@ -26,8 +26,8 @@ import views.html.individual.living.IdCardDetailsYesNoView
 class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "livingSettlor.idCardDetailsYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
-  val mode: Mode = NormalMode
+  val name: Name       = Name("First", Some("Middle"), "Last")
+  val mode: Mode       = NormalMode
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -46,4 +46,5 @@ class IdCardDetailsYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

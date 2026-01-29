@@ -28,10 +28,10 @@ import java.time.LocalDate
 
 class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  val name: Name = Name("First", None, "Last")
-  val date: LocalDate = LocalDate.parse("1967-02-03")
+  val name: Name             = Name("First", None, "Last")
+  val date: LocalDate        = LocalDate.parse("1967-02-03")
   val dateOfDeath: LocalDate = LocalDate.parse("1957-02-03")
-  val address: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postcode")
+  val address: UkAddress     = UkAddress("Line 1", "Line 2", None, None, "postcode")
 
   val extractor = new DeceasedSettlorExtractor()
 
@@ -53,13 +53,13 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     val result = extractor(emptyUserAnswers, individual, None, hasAdditionalSettlors = Some(false)).get
 
     result.get(BpMatchStatusPage) mustNot be(defined)
-    result.get(NamePage).get mustBe name
-    result.get(DateOfDeathYesNoPage).get mustBe true
-    result.get(DateOfDeathPage).get mustBe dateOfDeath
-    result.get(DateOfBirthYesNoPage).get mustBe true
-    result.get(DateOfBirthPage).get mustBe date
+    result.get(NamePage).get                         mustBe name
+    result.get(DateOfDeathYesNoPage).get             mustBe true
+    result.get(DateOfDeathPage).get                  mustBe dateOfDeath
+    result.get(DateOfBirthYesNoPage).get             mustBe true
+    result.get(DateOfBirthPage).get                  mustBe date
     result.get(NationalInsuranceNumberYesNoPage).get mustBe true
-    result.get(NationalInsuranceNumberPage).get mustBe "nino"
+    result.get(NationalInsuranceNumberPage).get      mustBe "nino"
     result.get(AddressYesNoPage) mustNot be(defined)
     result.get(LivedInTheUkYesNoPage) mustNot be(defined)
     result.get(UkAddressPage) mustNot be(defined)
@@ -82,16 +82,16 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
     val result = extractor(emptyUserAnswers, individual, None, hasAdditionalSettlors = Some(false)).get
 
     result.get(BpMatchStatusPage) mustNot be(defined)
-    result.get(NamePage).get mustBe name
-    result.get(DateOfDeathYesNoPage).get mustBe true
-    result.get(DateOfDeathPage).get mustBe dateOfDeath
-    result.get(DateOfBirthYesNoPage).get mustBe true
-    result.get(DateOfBirthPage).get mustBe date
+    result.get(NamePage).get                         mustBe name
+    result.get(DateOfDeathYesNoPage).get             mustBe true
+    result.get(DateOfDeathPage).get                  mustBe dateOfDeath
+    result.get(DateOfBirthYesNoPage).get             mustBe true
+    result.get(DateOfBirthPage).get                  mustBe date
     result.get(NationalInsuranceNumberYesNoPage).get mustBe false
     result.get(NationalInsuranceNumberPage) mustNot be(defined)
-    result.get(AddressYesNoPage).get mustBe true
-    result.get(LivedInTheUkYesNoPage).get mustBe true
-    result.get(UkAddressPage).get mustBe address
+    result.get(AddressYesNoPage).get                 mustBe true
+    result.get(LivedInTheUkYesNoPage).get            mustBe true
+    result.get(UkAddressPage).get                    mustBe address
     result.get(NonUkAddressPage) mustNot be(defined)
   }
 
@@ -110,13 +110,13 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
 
     val result = extractor(emptyUserAnswers, individual, None, hasAdditionalSettlors = Some(false)).get
 
-    result.get(BpMatchStatusPage).get mustBe FullyMatched
-    result.get(NamePage).get mustBe name
-    result.get(DateOfBirthYesNoPage).get mustBe false
+    result.get(BpMatchStatusPage).get                mustBe FullyMatched
+    result.get(NamePage).get                         mustBe name
+    result.get(DateOfBirthYesNoPage).get             mustBe false
     result.get(DateOfBirthPage) mustNot be(defined)
     result.get(NationalInsuranceNumberYesNoPage).get mustBe false
     result.get(NationalInsuranceNumberPage) mustNot be(defined)
-    result.get(AddressYesNoPage).get mustBe false
+    result.get(AddressYesNoPage).get                 mustBe false
     result.get(LivedInTheUkYesNoPage) mustNot be(defined)
     result.get(UkAddressPage) mustNot be(defined)
     result.get(NonUkAddressPage) mustNot be(defined)
@@ -208,10 +208,11 @@ class DeceasedSettlorExtractorSpec extends SpecBase with ScalaCheckPropertyCheck
       address = None
     )
 
-    val result = extractor(emptyUserAnswers.copy(isTaxable = false), individual, None, hasAdditionalSettlors = Some(false)).get
+    val result =
+      extractor(emptyUserAnswers.copy(isTaxable = false), individual, None, hasAdditionalSettlors = Some(false)).get
 
     result.get(BpMatchStatusPage) mustNot be(defined)
-    result.get(NamePage).get mustBe name
+    result.get(NamePage).get             mustBe name
     result.get(DateOfDeathYesNoPage).get mustBe false
     result.get(DateOfDeathPage) mustNot be(defined)
     result.get(DateOfBirthYesNoPage).get mustBe false

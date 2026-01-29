@@ -31,4 +31,5 @@ class PageNotFoundViewSpec extends ViewBehaviours {
 
     behave like normalPage(applyView, "pageNotFound")
   }
+
 }

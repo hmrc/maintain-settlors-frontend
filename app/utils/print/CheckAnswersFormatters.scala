@@ -28,32 +28,28 @@ import java.time.LocalDate
 import javax.inject.Inject
 import scala.util.Try
 
-class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
-                                       countryOptions: CountryOptions) {
+class CheckAnswersFormatters @Inject() (languageUtils: LanguageUtils, countryOptions: CountryOptions) {
 
-  def formatDate(date: LocalDate)(implicit messages: Messages): Html = {
+  def formatDate(date: LocalDate)(implicit messages: Messages): Html =
     escape(languageUtils.Dates.formatDate(date))
-  }
 
-  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
+  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html =
     if (answer) {
       escape(messages("site.yes"))
     } else {
       escape(messages("site.no"))
     }
-  }
 
   def formatNino(nino: String): Html = {
     val formatted = Try(Nino(nino).formatted).getOrElse(nino)
     escape(formatted)
   }
 
-  def formatAddress(address: Address)(implicit messages: Messages): Html = {
+  def formatAddress(address: Address)(implicit messages: Messages): Html =
     address match {
-      case a: UkAddress => formatUkAddress(a)
+      case a: UkAddress    => formatUkAddress(a)
       case a: NonUkAddress => formatNonUkAddress(a)
     }
-  }
 
   private def formatUkAddress(address: UkAddress): Html = {
     val lines =
@@ -101,12 +97,10 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
-  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
+  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html =
     escape(messages(s"$key.$answer"))
-  }
 
-  private def breakLines(lines: Seq[Html]): Html = {
+  private def breakLines(lines: Seq[Html]): Html =
     Html(lines.mkString("<br />"))
-  }
 
 }

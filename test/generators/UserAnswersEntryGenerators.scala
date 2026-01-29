@@ -31,4 +31,5 @@ trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
         value <- arbitrary[Name].map(Json.toJson(_))
       } yield (page, value)
     }
+
 }

@@ -32,11 +32,21 @@ class Module extends AbstractModule {
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
     bind(classOf[AuthenticationService]).to(classOf[AuthenticationServiceImpl]).asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[LivingSettlor]).to(classOf[IndividualSettlorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[LivingSettlor])
+      .to(classOf[IndividualSettlorNavigator])
+      .asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[DeceasedSettlor]).to(classOf[DeceasedSettlorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[DeceasedSettlor])
+      .to(classOf[DeceasedSettlorNavigator])
+      .asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[BusinessSettlor]).to(classOf[BusinessSettlorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[BusinessSettlor])
+      .to(classOf[BusinessSettlorNavigator])
+      .asEagerSingleton()
 
   }
+
 }

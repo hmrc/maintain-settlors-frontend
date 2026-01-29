@@ -42,12 +42,14 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
   private def form = formProvider.withPrefix("livingSettlor")
 
   def onwardRoute: Call = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  val name: Name        = Name("FirstName", None, "LastName")
 
   val mode: Mode = NormalMode
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad(mode).url
 
@@ -78,8 +80,12 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, name).success.value
-        .set(IdCardDetailsPage, validData).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(IdCardDetailsPage, validData)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -102,14 +108,13 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].qualifiedWith(classOf[LivingSettlor]).toInstance(fakeNavigator))
-
           .build()
 
       val request =
         FakeRequest(POST, idCardDetailsRoute)
           .withFormUrlEncodedBody(
-            "country" -> "country",
-            "number" -> "123456",
+            "country"          -> "country",
+            "number"           -> "123456",
             "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
             "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
             "expiryDate.year"  -> validData.expirationDate.getYear.toString
@@ -165,8 +170,8 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       val request =
         FakeRequest(POST, idCardDetailsRoute)
           .withFormUrlEncodedBody(
-            "country" -> "country",
-            "number" -> "123456",
+            "country"          -> "country",
+            "number"           -> "123456",
             "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
             "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
             "expiryDate.year"  -> validData.expirationDate.getYear.toString
@@ -181,4 +186,5 @@ class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

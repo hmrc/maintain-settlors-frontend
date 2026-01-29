@@ -20,7 +20,12 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-case class TrustDetails(startDate: LocalDate, typeOfTrust: Option[TypeOfTrust], deedOfVariation: Option[DeedOfVariation], trustTaxable: Option[Boolean]) {
+case class TrustDetails(
+  startDate: LocalDate,
+  typeOfTrust: Option[TypeOfTrust],
+  deedOfVariation: Option[DeedOfVariation],
+  trustTaxable: Option[Boolean]
+) {
 
   def isTaxable: Boolean = trustTaxable.getOrElse(true)
 }

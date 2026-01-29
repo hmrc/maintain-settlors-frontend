@@ -34,8 +34,12 @@ class PassportDetailsYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
-        .set(IdCardDetailsYesNoPage, true).success.value
-        .set(IdCardDetailsPage, IdCard("FR", "num", LocalDate.parse("2020-01-01"))).success.value
+        .set(IdCardDetailsYesNoPage, true)
+        .success
+        .value
+        .set(IdCardDetailsPage, IdCard("FR", "num", LocalDate.parse("2020-01-01")))
+        .success
+        .value
 
       val result = userAnswers.set(PassportDetailsYesNoPage, true).success.value
 
@@ -45,11 +49,14 @@ class PassportDetailsYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(PassportDetailsPage, Passport("FR", "num", LocalDate.parse("2020-01-01"))).success.value
+        .set(PassportDetailsPage, Passport("FR", "num", LocalDate.parse("2020-01-01")))
+        .success
+        .value
 
       val result = userAnswers.set(PassportDetailsYesNoPage, false).success.value
 
       result.get(PassportDetailsPage) mustNot be(defined)
     }
   }
+
 }

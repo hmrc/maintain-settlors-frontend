@@ -31,44 +31,40 @@ import views.html.individual.deceased.DateOfDeathYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DateOfDeathYesNoController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            playbackRepository: PlaybackRepository,
-                                            @DeceasedSettlor navigator: Navigator,
-                                            standardActionSets: StandardActionSets,
-                                            nameAction: NameRequiredAction,
-                                            formProvider: YesNoFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: DateOfDeathYesNoView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DateOfDeathYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  @DeceasedSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: DateOfDeathYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("deceasedSettlor.dateOfDeathYesNo")
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(DateOfDeathYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(DateOfDeathYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.settlorName))
+    Ok(view(preparedForm, request.settlorName))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
-
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfDeathYesNoPage, value))
-            _ <- playbackRepository.set(updatedAnswers)
-          } yield {
-            Redirect(navigator.nextPage(DateOfDeathYesNoPage, updatedAnswers))
-          }
+            _              <- playbackRepository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(DateOfDeathYesNoPage, updatedAnswers))
       )
   }
+
 }

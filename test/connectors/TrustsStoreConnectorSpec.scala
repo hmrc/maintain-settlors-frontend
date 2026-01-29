@@ -23,10 +23,7 @@ import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class TrustsStoreConnectorSpec extends SpecBase
-  with ScalaFutures
-  with IntegrationPatience
-  with WireMockHelper {
+class TrustsStoreConnectorSpec extends SpecBase with ScalaFutures with IntegrationPatience with WireMockHelper {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -41,9 +38,10 @@ class TrustsStoreConnectorSpec extends SpecBase
           .configure(
             Seq(
               "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                        -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustStoreConnector]
 
@@ -54,9 +52,8 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         val futureResult = connector.updateTaskStatus("123456789", Completed)
 
-        whenReady(futureResult) {
-          r =>
-            r.status mustBe 200
+        whenReady(futureResult) { r =>
+          r.status mustBe 200
         }
 
         application.stop()
@@ -67,9 +64,10 @@ class TrustsStoreConnectorSpec extends SpecBase
           .configure(
             Seq(
               "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                        -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustStoreConnector]
 

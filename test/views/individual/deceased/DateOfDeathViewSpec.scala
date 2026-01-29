@@ -28,9 +28,10 @@ import java.time.LocalDate
 class DateOfDeathViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "deceasedSettlor.dateOfDeath"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
-  override val form: Form[LocalDate] = new DateOfDeathFormProvider(frontendAppConfig).withConfig(messageKeyPrefix, LocalDate.now)
+  override val form: Form[LocalDate] =
+    new DateOfDeathFormProvider(frontendAppConfig).withConfig(messageKeyPrefix, LocalDate.now)
 
   "DateOfDeath view" must {
 
@@ -38,7 +39,7 @@ class DateOfDeathViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.displayName)(fakeRequest, messages)
-    
+
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))
@@ -56,4 +57,5 @@ class DateOfDeathViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

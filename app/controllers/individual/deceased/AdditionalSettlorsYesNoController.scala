@@ -30,36 +30,33 @@ import views.html.individual.deceased.AdditionalSettlorsYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalSettlorsYesNoController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: PlaybackRepository,
-                                        @DeceasedSettlor navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: YesNoFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: AdditionalSettlorsYesNoView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AdditionalSettlorsYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @DeceasedSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AdditionalSettlorsYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("deceasedSettlor.additionalSettlorsYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(AdditionalSettlorsYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(AdditionalSettlorsYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm))
+    Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AdditionalSettlorsYesNoPage, value))
@@ -67,4 +64,5 @@ class AdditionalSettlorsYesNoController @Inject()(
           } yield Redirect(navigator.nextPage(AdditionalSettlorsYesNoPage, updatedAnswers))
       )
   }
+
 }

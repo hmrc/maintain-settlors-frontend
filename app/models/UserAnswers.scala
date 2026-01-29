@@ -25,42 +25,41 @@ import queries.{Gettable, Settable}
 import java.time.{LocalDate, LocalDateTime}
 import scala.util.{Failure, Success, Try}
 
-final case class UserAnswers(internalId: String,
-                             identifier: String,
-                             sessionId: String,
-                             newId: String,
-                             whenTrustSetup: LocalDate,
-                             trustType: Option[TypeOfTrust],
-                             deedOfVariation: Option[DeedOfVariation],
-                             isDateOfDeathRecorded: Boolean,
-                             data: JsObject = Json.obj(),
-                             updatedAt: LocalDateTime = LocalDateTime.now,
-                             isTaxable: Boolean,
-                             isUnderlyingData5mld: Boolean,
-                             migratingFromNonTaxableToTaxable: Boolean) {
+final case class UserAnswers(
+  internalId: String,
+  identifier: String,
+  sessionId: String,
+  newId: String,
+  whenTrustSetup: LocalDate,
+  trustType: Option[TypeOfTrust],
+  deedOfVariation: Option[DeedOfVariation],
+  isDateOfDeathRecorded: Boolean,
+  data: JsObject = Json.obj(),
+  updatedAt: LocalDateTime = LocalDateTime.now,
+  isTaxable: Boolean,
+  isUnderlyingData5mld: Boolean,
+  migratingFromNonTaxableToTaxable: Boolean
+) {
 
   private val logger: Logger = Logger(getClass)
 
-  def cleanup : Try[UserAnswers] = {
+  def cleanup: Try[UserAnswers] =
     this
       .deleteAtPath(pages.individual.living.basePath)
       .flatMap(_.deleteAtPath(pages.business.basePath))
       .flatMap(_.remove(AddNowPage))
-  }
 
-  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
+  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)
-      case JsError(_) => None
+      case JsError(_)          => None
     }
-  }
 
-  def set[A](page: Settable[A], value: Option[A])(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: Settable[A], value: Option[A])(implicit writes: Writes[A]): Try[UserAnswers] =
     value match {
       case Some(v) => setValue(page, v)
-      case None => page.cleanup(value, this)
+      case None    => page.cleanup(value, this)
     }
-  }
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = setValue(page, value)
 
@@ -68,16 +67,15 @@ final case class UserAnswers(internalId: String,
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
-      case JsError(errors) =>
+      case JsError(errors)       =>
         val errorPaths = errors.collectFirst { case (path, e) => s"$path $e" }
         logger.warn(s"Unable to set path ${page.path} due to errors $errorPaths")
         Failure(JsResultException(errors))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        page.cleanup(Some(value), updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(Some(value), updatedAnswers)
     }
   }
 
@@ -86,23 +84,25 @@ final case class UserAnswers(internalId: String,
     val updatedData = data.removeObject(query.path) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
-      case JsError(_) =>
+      case JsError(_)            =>
         Success(data)
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy(data = d)
-        query.cleanup(None, updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      query.cleanup(None, updatedAnswers)
     }
   }
 
-  def deleteAtPath(path: JsPath): Try[UserAnswers] = {
-    data.removeObject(path).map(obj => copy(data = obj)).fold(
-      _ => Success(this),
-      result => Success(result)
-    )
-  }
+  def deleteAtPath(path: JsPath): Try[UserAnswers] =
+    data
+      .removeObject(path)
+      .map(obj => copy(data = obj))
+      .fold(
+        _ => Success(this),
+        result => Success(result)
+      )
+
 }
 
 object UserAnswers {
@@ -121,7 +121,7 @@ object UserAnswers {
       (__ \ "isTaxable").readWithDefault[Boolean](true) and
       (__ \ "isUnderlyingData5mld").readWithDefault[Boolean](false) and
       (__ \ "migratingFromNonTaxableToTaxable").readWithDefault[Boolean](false)
-    )(UserAnswers.apply _)
+  )(UserAnswers.apply _)
 
   implicit lazy val writes: Writes[UserAnswers] = (
     (__ \ "internalId").write[String] and
@@ -137,5 +137,6 @@ object UserAnswers {
       (__ \ "isTaxable").write[Boolean] and
       (__ \ "isUnderlyingData5mld").write[Boolean] and
       (__ \ "migratingFromNonTaxableToTaxable").write[Boolean]
-    )(unlift(UserAnswers.unapply))
+  )(unlift(UserAnswers.unapply))
+
 }

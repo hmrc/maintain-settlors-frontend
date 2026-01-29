@@ -31,37 +31,34 @@ import views.html.individual.deceased.UkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UkAddressController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     sessionRepository: PlaybackRepository,
-                                     @DeceasedSettlor navigator: Navigator,
-                                     standardActionSets: StandardActionSets,
-                                     nameAction: NameRequiredAction,
-                                     formProvider: UkAddressFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: UkAddressView
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UkAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @DeceasedSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: UkAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UkAddressView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(UkAddressPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(UkAddressPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.settlorName))
+    Ok(view(preparedForm, request.settlorName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(UkAddressPage, value))
@@ -69,4 +66,5 @@ class UkAddressController @Inject()(
           } yield Redirect(navigator.nextPage(UkAddressPage, updatedAnswers))
       )
   }
+
 }

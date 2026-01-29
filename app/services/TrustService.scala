@@ -25,55 +25,68 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustServiceImpl @Inject()(connector: TrustConnector) extends TrustService {
+class TrustServiceImpl @Inject() (connector: TrustConnector) extends TrustService {
 
-  override def getSettlors(utr: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Settlors] =
+  override def getSettlors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] =
     connector.getSettlors(utr)
 
-  override def getIndividualSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualSettlor] =
+  override def getIndividualSettlor(utr: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[IndividualSettlor] =
     getSettlors(utr).map(_.settlor(index))
 
-  override def getDeceasedSettlor(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] =
+  override def getDeceasedSettlor(
+    utr: String
+  )(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] =
     connector.getSettlors(utr).map(_.deceased)
 
-  override def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor] =
+  override def getBusinessSettlor(utr: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[BusinessSettlor] =
     getSettlors(utr).map(_.settlorCompany(index))
 
-  override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+  override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] =
     connector.removeSettlor(utr, settlor)
 
-  override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-    getSettlors(identifier).map(_.settlorCompany
-      .zipWithIndex
-      .filterNot(x => index.contains(x._2))
-      .flatMap(_._1.utr)
+  override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]] =
+    getSettlors(identifier).map(
+      _.settlorCompany.zipWithIndex
+        .filterNot(x => index.contains(x._2))
+        .flatMap(_._1.utr)
     )
 
-  override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
-                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+  override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]] =
     getSettlors(identifier) map { all =>
-
       val deceasedSettlorNino = if (index.isDefined || adding) {
         all.deceased
           .flatMap(_.identification)
-          .collect {
-            case NationalInsuranceNumber(nino) => nino
+          .collect { case NationalInsuranceNumber(nino) =>
+            nino
           }
       } else {
         None
       }
 
-      val livingSettlorNinos = all.settlor
-        .zipWithIndex
+      val livingSettlorNinos = all.settlor.zipWithIndex
         .filterNot(x => index.contains(x._2))
         .flatMap(_._1.identification)
-        .collect {
-          case NationalInsuranceNumber(nino) => nino
+        .collect { case NationalInsuranceNumber(nino) =>
+          nino
         }
 
       deceasedSettlorNino.toList ++ livingSettlorNinos
     }
-  }
 
 }
 
@@ -82,16 +95,31 @@ trait TrustService {
 
   def getSettlors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors]
 
-  def getIndividualSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualSettlor]
+  def getIndividualSettlor(utr: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[IndividualSettlor]
 
   def getDeceasedSettlor(utr: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]]
 
-  def getBusinessSettlor(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor]
+  def getBusinessSettlor(utr: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[BusinessSettlor]
 
-  def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+  def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse]
 
-  def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getBusinessUtrs(identifier: String, index: Option[Int])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]]
 
-  def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
-                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]]
+
 }

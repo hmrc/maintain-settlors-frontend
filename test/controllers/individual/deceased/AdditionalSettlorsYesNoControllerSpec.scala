@@ -37,7 +37,7 @@ class AdditionalSettlorsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("deceasedSettlor.additionalSettlorsYesNo")
 
   lazy val additionalSettlorsYesNoControllerRoute: String = routes.AdditionalSettlorsYesNoController.onPageLoad().url
@@ -83,7 +83,6 @@ class AdditionalSettlorsYesNoControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "redirect to the next page when valid data is submitted" in {
-
 
       when(playbackRepository.set(any())) thenReturn Future.successful(true)
 
@@ -161,4 +160,5 @@ class AdditionalSettlorsYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

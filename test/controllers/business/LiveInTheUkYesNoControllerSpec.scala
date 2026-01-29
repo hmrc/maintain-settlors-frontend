@@ -38,13 +38,14 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("businessSettlor.liveInTheUkYesNo")
-  val name = "Name"
-
+  val name                = "Name"
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   lazy val liveInTheUkYesNoControllerRoute: String = routes.LiveInTheUkYesNoController.onPageLoad(NormalMode).url
 
@@ -164,4 +165,5 @@ class LiveInTheUkYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

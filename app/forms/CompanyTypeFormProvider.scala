@@ -27,4 +27,5 @@ class CompanyTypeFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[CompanyType]("businessSettlor.companyType.error.required")
     )
+
 }

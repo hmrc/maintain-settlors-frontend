@@ -26,7 +26,7 @@ import views.html.individual.living.CountryOfNationalityUkYesNoView
 class CountryOfNationalityUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "livingSettlor.countryOfNationalityUkYesNo"
-  val name: Name = Name("First", None, "Last")
+  val name: Name       = Name("First", None, "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -45,4 +45,5 @@ class CountryOfNationalityUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

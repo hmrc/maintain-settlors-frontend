@@ -32,24 +32,24 @@ import views.html.business.LiveInTheUkYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LiveInTheUkYesNoController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            playbackRepository: PlaybackRepository,
-                                            @BusinessSettlor navigator: Navigator,
-                                            standardActionSets: StandardActionSets,
-                                            nameAction: NameRequiredAction,
-                                            formProvider: YesNoFormProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: LiveInTheUkYesNoView
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class LiveInTheUkYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  playbackRepository: PlaybackRepository,
+  @BusinessSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: LiveInTheUkYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("businessSettlor.liveInTheUkYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(LiveInTheUkYesNoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -58,16 +58,16 @@ class LiveInTheUkYesNoController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName, mode))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPage, value))
-            _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.settlorName, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(LiveInTheUkYesNoPage, value))
+              _              <- playbackRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(LiveInTheUkYesNoPage, mode, updatedAnswers))
+        )
   }
+
 }

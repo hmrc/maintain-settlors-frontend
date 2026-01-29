@@ -32,14 +32,14 @@ class SettlorNavigator {
 
     routes.filter(_._1.size < MAX) match {
       case (_, x) :: Nil => x
-      case _ => controllers.routes.AddNowController.onPageLoad()
+      case _             => controllers.routes.AddNowController.onPageLoad()
     }
   }
 
-  def addSettlorNowRoute(`type`: SettlorType): Call = {
+  def addSettlorNowRoute(`type`: SettlorType): Call =
     `type` match {
       case IndividualSettlor => controllers.individual.living.routes.NameController.onPageLoad(NormalMode)
-      case BusinessSettlor => controllers.business.routes.NameController.onPageLoad(NormalMode)
+      case BusinessSettlor   => controllers.business.routes.NameController.onPageLoad(NormalMode)
     }
-  }
+
 }

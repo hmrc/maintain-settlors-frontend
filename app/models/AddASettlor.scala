@@ -26,13 +26,13 @@ object AddASettlor extends Enumerable.Implicits {
   case object YesLater extends WithName("add-them-later") with AddASettlor
   case object NoComplete extends WithName("no-complete") with AddASettlor
 
-  val values: List[AddASettlor] = List(YesNow, YesLater, NoComplete) filterNot { _ == YesLater}
+  val values: List[AddASettlor] = List(YesNow, YesLater, NoComplete) filterNot { _ == YesLater }
 
-  val options: List[RadioOption] = values.map {
-    value =>
-      RadioOption("addASettlor", value.toString)
+  val options: List[RadioOption] = values.map { value =>
+    RadioOption("addASettlor", value.toString)
   }
 
   implicit val enumerable: Enumerable[AddASettlor] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }

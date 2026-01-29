@@ -33,47 +33,47 @@ import views.html.individual.deceased.NationalInsuranceNumberView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NationalInsuranceNumberController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   sessionRepository: PlaybackRepository,
-                                                   @DeceasedSettlor navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   formProvider: NationalInsuranceNumberFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: NationalInsuranceNumberView,
-                                                   trustsService: TrustService
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NationalInsuranceNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @DeceasedSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: NationalInsuranceNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NationalInsuranceNumberView,
+  trustsService: TrustService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  private def form(ninos: List[String]): Form[String] = formProvider.apply("deceasedSettlor.nationalInsuranceNumber", ninos)
+  private def form(ninos: List[String]): Form[String] =
+    formProvider.apply("deceasedSettlor.nationalInsuranceNumber", ninos)
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-
+  def onPageLoad(): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
       trustsService.getIndividualNinos(request.userAnswers.identifier, None, adding = false) map { ninos =>
         val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
-          case None => form(ninos)
+          case None        => form(ninos)
           case Some(value) => form(ninos).fill(value)
         }
 
         Ok(view(preparedForm, request.settlorName))
       }
-  }
+    }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-
-      trustsService.getIndividualNinos(request.userAnswers.identifier, None, adding = false) flatMap { ninos =>
-        form(ninos).bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+    trustsService.getIndividualNinos(request.userAnswers.identifier, None, adding = false) flatMap { ninos =>
+      form(ninos)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
-              _ <- sessionRepository.set(updatedAnswers)
+              _              <- sessionRepository.set(updatedAnswers)
             } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, updatedAnswers))
         )
-      }
+    }
   }
+
 }

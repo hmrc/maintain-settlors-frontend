@@ -38,8 +38,8 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new NameFormProvider()
-  val form: Form[Name] = formProvider.withPrefix("livingSettlor.name")
+  val formProvider      = new NameFormProvider()
+  val form: Form[Name]  = formProvider.withPrefix("livingSettlor.name")
   val trusteeName: Name = Name("FirstName", None, "LastName")
 
   lazy val nameRoute: String = routes.NameController.onPageLoad(NormalMode).url
@@ -65,7 +65,7 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val ua = emptyUserAnswers.set(NamePage, Name("FirstName", None, "LastName"))
+      val ua          = emptyUserAnswers.set(NamePage, Name("FirstName", None, "LastName"))
       val application = applicationBuilder(userAnswers = Some(ua.success.value)).build()
 
       val request = FakeRequest(GET, nameRoute)
@@ -92,7 +92,6 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
             bind[Navigator].qualifiedWith(classOf[LivingSettlor]).toInstance(new FakeNavigator(onwardRoute))
           )
           .build()
-
 
       val request =
         FakeRequest(POST, nameRoute)
@@ -160,4 +159,5 @@ class NameControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

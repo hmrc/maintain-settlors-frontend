@@ -26,7 +26,7 @@ import views.html.business.LiveInTheUkYesNoView
 class LiveInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "businessSettlor.liveInTheUkYesNo"
-  val name = "Name"
+  val name             = "Name"
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -45,4 +45,5 @@ class LiveInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

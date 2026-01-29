@@ -32,45 +32,44 @@ import views.html.business.StartDateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class StartDateController @Inject()(
-                                     playbackRepository: PlaybackRepository,
-                                     @BusinessSettlor navigator: Navigator,
-                                     standardActionSets: StandardActionSets,
-                                     nameAction: NameRequiredAction,
-                                     formProvider: DateAddedToTrustFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: StartDateView
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class StartDateController @Inject() (
+  playbackRepository: PlaybackRepository,
+  @BusinessSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: DateAddedToTrustFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: StartDateView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val prefix: String = "businessSettlor.startDate"
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction) { implicit request =>
+    val form = formProvider.withPrefixAndTrustStartDate(prefix, request.userAnswers.whenTrustSetup)
 
-      val form = formProvider.withPrefixAndTrustStartDate(prefix, request.userAnswers.whenTrustSetup)
+    val preparedForm = request.userAnswers.get(StartDatePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(StartDatePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.settlorName))
+    Ok(view(preparedForm, request.settlorName))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForUtr andThen nameAction).async {
     implicit request =>
-
       val form = formProvider.withPrefixAndTrustStartDate(prefix, request.userAnswers.whenTrustSetup)
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
-            _              <- playbackRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage, NormalMode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
+              _              <- playbackRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(StartDatePage, NormalMode, updatedAnswers))
+        )
   }
+
 }

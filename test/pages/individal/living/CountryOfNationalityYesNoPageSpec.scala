@@ -17,7 +17,9 @@
 package pages.individal.living
 
 import pages.behaviours.PageBehaviours
-import pages.individual.living.{CountryOfNationalityPage, CountryOfNationalityUkYesNoPage, CountryOfNationalityYesNoPage}
+import pages.individual.living.{
+  CountryOfNationalityPage, CountryOfNationalityUkYesNoPage, CountryOfNationalityYesNoPage
+}
 
 class CountryOfNationalityYesNoPageSpec extends PageBehaviours {
 
@@ -31,8 +33,12 @@ class CountryOfNationalityYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(CountryOfNationalityUkYesNoPage, false).success.value
-        .set(CountryOfNationalityPage, "FR").success.value
+        .set(CountryOfNationalityUkYesNoPage, false)
+        .success
+        .value
+        .set(CountryOfNationalityPage, "FR")
+        .success
+        .value
 
       val result = userAnswers.set(CountryOfNationalityYesNoPage, false).success.value
 
@@ -40,4 +46,5 @@ class CountryOfNationalityYesNoPageSpec extends PageBehaviours {
       result.get(CountryOfNationalityPage) mustNot be(defined)
     }
   }
+
 }

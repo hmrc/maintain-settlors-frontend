@@ -26,7 +26,7 @@ import views.html.individual.deceased.LivedInTheUkYesNoView
 class LiveInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "deceasedSettlor.livedInTheUkYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -45,4 +45,5 @@ class LiveInTheUkYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

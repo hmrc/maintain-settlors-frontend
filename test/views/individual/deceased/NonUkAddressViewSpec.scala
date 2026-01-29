@@ -28,7 +28,7 @@ import views.html.individual.deceased.NonUkAddressView
 class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
   val messageKeyPrefix = "deceasedSettlor.nonUkAddress"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   override val form: Form[NonUkAddress] = new NonUkAddressFormProvider().apply()
 
@@ -53,4 +53,5 @@ class NonUkAddressViewSpec extends NonUkAddressViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

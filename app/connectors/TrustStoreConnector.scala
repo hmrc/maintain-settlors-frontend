@@ -26,12 +26,14 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
+class TrustStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
   private val baseUrl: String = s"${config.trustsStoreUrl}/trusts-store"
 
-  def updateTaskStatus(identifier: String, taskStatus: TaskStatus)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def updateTaskStatus(identifier: String, taskStatus: TaskStatus)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] = {
     val url: String = s"$baseUrl/maintain/tasks/update-settlors/$identifier"
     http.post(url"$url").withBody(Json.toJson(taskStatus)).execute[HttpResponse]
   }

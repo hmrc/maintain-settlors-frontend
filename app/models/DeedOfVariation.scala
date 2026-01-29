@@ -20,7 +20,8 @@ sealed trait DeedOfVariation
 
 object DeedOfVariation extends Enumerable.Implicits {
 
-  case object PreviouslyAbsoluteInterestUnderWill extends WithName("Previously there was only an absolute interest under the will") with DeedOfVariation
+  case object PreviouslyAbsoluteInterestUnderWill
+      extends WithName("Previously there was only an absolute interest under the will") with DeedOfVariation
 
   case object ReplacedWillTrust extends WithName("Replaced the will trust") with DeedOfVariation
 
@@ -34,4 +35,5 @@ object DeedOfVariation extends Enumerable.Implicits {
 
   implicit val enumerable: Enumerable[DeedOfVariation] =
     Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+
 }

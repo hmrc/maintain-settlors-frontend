@@ -29,7 +29,7 @@ trait Mocked extends MockitoSugar {
 
   when(playbackRepository.set(any())).thenReturn(Future.successful(true))
 
-  val mockSessionRepository : ActiveSessionRepository = mock[ActiveSessionRepository]
+  val mockSessionRepository: ActiveSessionRepository = mock[ActiveSessionRepository]
 
   when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 

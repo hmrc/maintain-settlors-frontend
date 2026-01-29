@@ -34,9 +34,9 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
   this: TestSuite =>
 
   final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val WELSH   = "cy"
 
-  lazy val draftId = "id"
+  lazy val draftId        = "id"
   lazy val userInternalId = "internalId"
 
   def emptyUserAnswers: UserAnswers = UserAnswers(
@@ -57,9 +57,11 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   val fakeNavigator = new FakeNavigator()
 
-  protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
-                                   affinityGroup: AffinityGroup = AffinityGroup.Organisation,
-                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment])): GuiceApplicationBuilder =
+  protected def applicationBuilder(
+    userAnswers: Option[models.UserAnswers] = None,
+    affinityGroup: AffinityGroup = AffinityGroup.Organisation,
+    enrolments: Enrolments = Enrolments(Set.empty[Enrolment])
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].toInstance(new FakeIdentifierAction(bodyParsers, affinityGroup)),
@@ -69,6 +71,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
         bind[PlaybackRepository].toInstance(playbackRepository),
         bind[ActiveSessionRepository].toInstance(mockSessionRepository)
       )
+
 }
 
 trait SpecBase extends PlaySpec with SpecBaseHelpers

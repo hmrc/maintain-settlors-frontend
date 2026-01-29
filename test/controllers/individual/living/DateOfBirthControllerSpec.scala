@@ -42,14 +42,13 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute: Call = Call("GET", "/foo")
 
   val validAnswer: LocalDate = LocalDate.now(ZoneOffset.UTC)
-  val trusteeName = "FirstName LastName"
-  val name: Name = Name("FirstName", None, "LastName")
-  val index: Int = 0
+  val trusteeName            = "FirstName LastName"
+  val name: Name             = Name("FirstName", None, "LastName")
+  val index: Int             = 0
 
   lazy val dateOfBirthRoute: String = routes.DateOfBirthController.onPageLoad(NormalMode).url
 
-  val userAnswersWithName: UserAnswers = emptyUserAnswers.set(NamePage, name)
-    .success.value
+  val userAnswersWithName: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfBirthRoute)
@@ -83,8 +82,12 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DateOfBirthPage, validAnswer).success.value
-        .set(NamePage, name).success.value
+        .set(DateOfBirthPage, validAnswer)
+        .success
+        .value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -167,4 +170,5 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

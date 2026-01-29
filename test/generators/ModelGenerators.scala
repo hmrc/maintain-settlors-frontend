@@ -26,9 +26,9 @@ trait ModelGenerators {
   implicit lazy val arbitraryName: Arbitrary[Name] =
     Arbitrary {
       for {
-        firstName <- arbitrary[String]
+        firstName  <- arbitrary[String]
         middleName <- arbitrary[Option[String]]
-        lastName <- arbitrary[String]
+        lastName   <- arbitrary[String]
       } yield Name(firstName, middleName, lastName)
     }
 
