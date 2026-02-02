@@ -70,27 +70,27 @@ class TrustConnectorSpec
   private val trustsUrl: String   = "/trusts"
   private val settlorsUrl: String = s"$trustsUrl/settlors"
 
-  private def getTrustDetailsUrl(identifier: String)                         = s"$trustsUrl/trust-details/$identifier/transformed"
-  private def getSettlorsUrl(identifier: String)                             = s"$settlorsUrl/$identifier/transformed"
+  private def getTrustDetailsUrl(identifier: String) = s"$trustsUrl/trust-details/$identifier/transformed"
+  private def getSettlorsUrl(identifier: String)     = s"$settlorsUrl/$identifier/transformed"
 
   private def getIsDeceasedSettlorDateOfDeathRecordedUrl(identifier: String) =
     s"$settlorsUrl/$identifier/transformed/deceased-settlor-death-recorded"
 
-  private def addIndividualSettlorUrl(identifier: String)                    = s"$settlorsUrl/add-individual/$identifier"
+  private def addIndividualSettlorUrl(identifier: String) = s"$settlorsUrl/add-individual/$identifier"
 
-  private def amendIndividualSettlorUrl(identifier: String, index: Int)      =
+  private def amendIndividualSettlorUrl(identifier: String, index: Int) =
     s"$settlorsUrl/amend-individual/$identifier/$index"
 
-  private def addBusinessSettlorUrl(identifier: String)                      = s"$settlorsUrl/add-business/$identifier"
+  private def addBusinessSettlorUrl(identifier: String) = s"$settlorsUrl/add-business/$identifier"
 
-  private def amendBusinessSettlorUrl(identifier: String, index: Int)        =
+  private def amendBusinessSettlorUrl(identifier: String, index: Int) =
     s"$settlorsUrl/amend-business/$identifier/$index"
 
-  private def amendDeceasedSettlorUrl(identifier: String)                    = s"$settlorsUrl/amend-deceased/$identifier"
-  private def removeSettlorUrl(identifier: String)                           = s"$settlorsUrl/$identifier/remove"
-  private def isTrust5mldUrl(identifier: String)                             = s"$trustsUrl/$identifier/is-trust-5mld"
+  private def amendDeceasedSettlorUrl(identifier: String) = s"$settlorsUrl/amend-deceased/$identifier"
+  private def removeSettlorUrl(identifier: String)        = s"$settlorsUrl/$identifier/remove"
+  private def isTrust5mldUrl(identifier: String)          = s"$trustsUrl/$identifier/is-trust-5mld"
 
-  private def getTrustMigrationFlagUrl(identifier: String)                   =
+  private def getTrustMigrationFlagUrl(identifier: String) =
     s"$trustsUrl/$identifier/taxable-migration/migrating-to-taxable"
 
   private val individual = IndividualSettlor(

@@ -34,7 +34,7 @@ final case class IndividualSettlor(
   provisional: Boolean
 ) extends Settlor {
 
-  override val startDate: Option[LocalDate]                                                                        = Some(entityStart)
+  override val startDate: Option[LocalDate] = Some(entityStart)
 
   override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean =
     true

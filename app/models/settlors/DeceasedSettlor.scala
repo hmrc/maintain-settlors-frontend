@@ -33,7 +33,7 @@ final case class DeceasedSettlor(
   address: Option[Address]
 ) extends Settlor {
 
-  override val startDate: Option[LocalDate]                                                                        = None
+  override val startDate: Option[LocalDate] = None
 
   override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean =
     true
