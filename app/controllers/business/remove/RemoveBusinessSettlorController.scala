@@ -31,66 +31,65 @@ import views.html.business.remove.RemoveBusinessSettlorView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveBusinessSettlorController @Inject()(
-                                                    override val messagesApi: MessagesApi,
-                                                    standardActionSets: StandardActionSets,
-                                                    trustService: TrustService,
-                                                    formProvider: RemoveIndexFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: RemoveBusinessSettlorView,
-                                                    errorHandler: ErrorHandler
-                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RemoveBusinessSettlorController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  trustService: TrustService,
+  formProvider: RemoveIndexFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveBusinessSettlorView,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "removeBusinessSettlorYesNo"
 
   private val form = formProvider.apply(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      trustService.getBusinessSettlor(request.userAnswers.identifier, index).map {
-        settlor =>
-          if (settlor.provisional) {
-            Ok(view(form, index, settlor.name))
-          } else {
-            Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
-          }
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error getting business settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
-
-          Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error getting business settlor $index from trusts service ${e.getMessage}")
-
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trustService.getBusinessSettlor(request.userAnswers.identifier, index).map { settlor =>
+      if (settlor.provisional) {
+        Ok(view(form, index, settlor.name))
+      } else {
+        Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
       }
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error getting business settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
+
+        Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
+      case e                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error getting business settlor $index from trusts service ${e.getMessage}"
+        )
+
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
 
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trustService.getBusinessSettlor(request.userAnswers.identifier, index).map {
-            settlor =>
-              BadRequest(view(formWithErrors, index, settlor.name))
-          }
-        },
-        value => {
-
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
+          trustService.getBusinessSettlor(request.userAnswers.identifier, index).map { settlor =>
+            BadRequest(view(formWithErrors, index, settlor.name))
+          },
+        value =>
           if (value) {
 
-            trustService.removeSettlor(request.userAnswers.identifier, RemoveSettlor(SettlorType.BusinessSettlor, index)).map(_ =>
-              Redirect(controllers.routes.AddASettlorController.onPageLoad())
-            )
+            trustService
+              .removeSettlor(request.userAnswers.identifier, RemoveSettlor(SettlorType.BusinessSettlor, index))
+              .map(_ => Redirect(controllers.routes.AddASettlorController.onPageLoad()))
           } else {
             Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
           }
-        }
       )
   }
+
 }

@@ -27,4 +27,5 @@ class AddSettlorTypeFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[SettlorType]("addNow.error.required")
     )
+
 }

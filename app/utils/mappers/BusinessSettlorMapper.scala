@@ -36,14 +36,14 @@ class BusinessSettlorMapper extends SettlorMapper[BusinessSettlor] {
       readAddress and
       StartDatePage.path.read[LocalDate] and
       Reads(_ => JsSuccess(true))
-    )(BusinessSettlor.apply _)
+  )(BusinessSettlor.apply _)
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = CountryOfResidenceYesNoPage
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
 }

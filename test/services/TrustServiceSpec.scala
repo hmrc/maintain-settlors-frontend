@@ -42,7 +42,11 @@ class TrustServiceSpec extends AnyFreeSpec with MockitoSugar with Matchers with 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   val individualSettlor: IndividualSettlor = IndividualSettlor(
-    name = Name(firstName = "1234567890 QwErTyUiOp ,.(/)&'- name", middleName = None, lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"),
+    name = Name(
+      firstName = "1234567890 QwErTyUiOp ,.(/)&'- name",
+      middleName = None,
+      lastName = "1234567890 QwErTyUiOp ,.(/)&'- name"
+    ),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     countryOfNationality = None,
     countryOfResidence = None,
@@ -73,7 +77,7 @@ class TrustServiceSpec extends AnyFreeSpec with MockitoSugar with Matchers with 
     entityStart = LocalDate.of(2017, 2, 28),
     provisional = false
   )
-  
+
   val identifier: String = "1234567890"
 
   "Trust service" - {
@@ -81,9 +85,11 @@ class TrustServiceSpec extends AnyFreeSpec with MockitoSugar with Matchers with 
     "get settlors" in {
 
       when(mockConnector.getSettlors(any())(any(), any()))
-        .thenReturn(Future.successful(
-          Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))
-        ))
+        .thenReturn(
+          Future.successful(
+            Settlors(List(individualSettlor), List(businessSettlor), Some(deceasedSettlor))
+          )
+        )
 
       val result = service.getSettlors(identifier)
 
@@ -114,18 +120,14 @@ class TrustServiceSpec extends AnyFreeSpec with MockitoSugar with Matchers with 
 
     "remove settlor" in {
 
-      when(mockConnector.removeSettlor(any(),any())(any(), any()))
+      when(mockConnector.removeSettlor(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val individualSettlor: RemoveSettlor = RemoveSettlor(SettlorType.IndividualSettlor,
-        index = 0,
-        endDate = LocalDate.now()
-      )
+      val individualSettlor: RemoveSettlor =
+        RemoveSettlor(SettlorType.IndividualSettlor, index = 0, endDate = LocalDate.now())
 
-      val businessSettlor: RemoveSettlor = RemoveSettlor(SettlorType.BusinessSettlor,
-        index = 0,
-        endDate = LocalDate.now()
-      )
+      val businessSettlor: RemoveSettlor =
+        RemoveSettlor(SettlorType.BusinessSettlor, index = 0, endDate = LocalDate.now())
 
       whenReady(service.removeSettlor(identifier, individualSettlor)) { r =>
         r.status mustBe 200
@@ -245,7 +247,9 @@ class TrustServiceSpec extends AnyFreeSpec with MockitoSugar with Matchers with 
         "when there are individuals but they have another form of identification" in {
 
           val individuals = List(
-            individualSettlor.copy(identification = Some(CombinedPassportOrIdCard("FR", "num", LocalDate.parse("2000-01-01"))))
+            individualSettlor.copy(identification =
+              Some(CombinedPassportOrIdCard("FR", "num", LocalDate.parse("2000-01-01")))
+            )
           )
 
           when(mockConnector.getSettlors(any())(any(), any()))
@@ -296,7 +300,15 @@ class TrustServiceSpec extends AnyFreeSpec with MockitoSugar with Matchers with 
           )
 
           when(mockConnector.getSettlors(any())(any(), any()))
-            .thenReturn(Future.successful(Settlors(inidividuals, Nil, Some(deceasedSettlor.copy(identification = Some(NationalInsuranceNumber("nino1")))))))
+            .thenReturn(
+              Future.successful(
+                Settlors(
+                  inidividuals,
+                  Nil,
+                  Some(deceasedSettlor.copy(identification = Some(NationalInsuranceNumber("nino1"))))
+                )
+              )
+            )
 
           val result = Await.result(service.getIndividualNinos(identifier, None, adding = false), Duration.Inf)
 

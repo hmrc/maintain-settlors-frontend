@@ -39,14 +39,14 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
 
   val messagesPrefix = "removeIndividualSettlorYesNo"
 
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val name : Name = Name("First", None, "Last")
+  lazy val name: Name = Name("First", None, "Last")
 
   val mockConnector: TrustConnector = mock[TrustConnector]
 
-  def individualSettlor(id: Int, provisional : Boolean): IndividualSettlor = IndividualSettlor(
+  def individualSettlor(id: Int, provisional: Boolean): IndividualSettlor = IndividualSettlor(
     name = name,
     dateOfBirth = None,
     countryOfNationality = None,
@@ -170,7 +170,9 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
 
       val index = 0
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveIndividualSettlorController.onSubmit(index).url)
@@ -268,4 +270,5 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
 
     application.stop()
   }
+
 }

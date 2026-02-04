@@ -20,7 +20,6 @@ import models.UkAddress
 import pages.behaviours.PageBehaviours
 import pages.individual.deceased.{AddressYesNoPage, LivedInTheUkYesNoPage, UkAddressPage}
 
-
 class LivedInTheUkYesNoPageSpec extends PageBehaviours {
 
   "LivedInTheUkYesNoPage" must {
@@ -33,7 +32,9 @@ class LivedInTheUkYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when NO selected" in {
       val userAnswers = emptyUserAnswers
-        .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")).success.value
+        .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode"))
+        .success
+        .value
         .set(LivedInTheUkYesNoPage, true)
         .flatMap(_.set(AddressYesNoPage, false))
 
@@ -41,4 +42,5 @@ class LivedInTheUkYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(LivedInTheUkYesNoPage) mustNot be(defined)
     }
   }
+
 }

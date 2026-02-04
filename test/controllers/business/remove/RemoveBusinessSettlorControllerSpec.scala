@@ -38,14 +38,14 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
 
   val messagesPrefix = "removeBusinessSettlorYesNo"
 
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val name : String = "Name"
+  lazy val name: String = "Name"
 
   val mockConnector: TrustConnector = mock[TrustConnector]
 
-  def businessSettlor(id: Int, provisional : Boolean): BusinessSettlor = BusinessSettlor(
+  def businessSettlor(id: Int, provisional: Boolean): BusinessSettlor = BusinessSettlor(
     name = name,
     companyType = None,
     companyTime = None,
@@ -167,7 +167,9 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
 
       val index = 0
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveBusinessSettlorController.onSubmit(index).url)
@@ -265,4 +267,5 @@ class RemoveBusinessSettlorControllerSpec extends SpecBase with ScalaCheckProper
       application.stop()
     }
   }
+
 }

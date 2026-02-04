@@ -36,11 +36,11 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new CountryFormProvider()
+  val formProvider       = new CountryFormProvider()
   val form: Form[String] = formProvider.withPrefix("businessSettlor.countryOfResidence")
-  val name: String = "BusinessSettlor"
+  val name: String       = "BusinessSettlor"
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  val baseAnswers: UserAnswers        = emptyUserAnswers.set(NamePage, name).success.value
   lazy val countryOfResidence: String = routes.CountryOfResidenceController.onPageLoad(NormalMode).url
 
   "CountryOfResidence Controller" must {
@@ -68,7 +68,9 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(CountryOfResidencePage, "Spain").success.value
+        .set(CountryOfResidencePage, "Spain")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -166,5 +168,5 @@ class CountryOfResidenceControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
-}
 
+}

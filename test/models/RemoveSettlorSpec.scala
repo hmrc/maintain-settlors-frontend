@@ -31,8 +31,7 @@ class RemoveSettlorSpec extends SpecBase {
 
         val model = RemoveSettlor(SettlorType.IndividualSettlor, 0, LocalDate.parse("2010-10-10"))
 
-        Json.toJson(model)(RemoveSettlor.writes) mustBe Json.parse(
-          """
+        Json.toJson(model)(RemoveSettlor.writes) mustBe Json.parse("""
             |{
             | "type": "settlor",
             | "index": 0,

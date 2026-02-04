@@ -17,7 +17,9 @@
 package pages.individal.living
 
 import pages.behaviours.PageBehaviours
-import pages.individual.living.{CountryOfNationalityPage, CountryOfNationalityUkYesNoPage, CountryOfNationalityYesNoPage}
+import pages.individual.living.{
+  CountryOfNationalityPage, CountryOfNationalityUkYesNoPage, CountryOfNationalityYesNoPage
+}
 
 class CountryOfNationalityUkYesNoPageSpec extends PageBehaviours {
 
@@ -31,11 +33,14 @@ class CountryOfNationalityUkYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = emptyUserAnswers
-        .set(CountryOfNationalityPage, "FR").success.value
+        .set(CountryOfNationalityPage, "FR")
+        .success
+        .value
 
       val result = userAnswers.set(CountryOfNationalityUkYesNoPage, true).success.value
 
       result.get(CountryOfNationalityPage) mustNot be(defined)
     }
   }
+
 }

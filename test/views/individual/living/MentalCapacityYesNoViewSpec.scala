@@ -27,7 +27,7 @@ import views.html.individual.living.MentalCapacityYesNoView
 class MentalCapacityYesNoViewSpec extends OptionsViewBehaviours {
 
   val messageKeyPrefix = "livingSettlor.mentalCapacityYesNo"
-  val name: Name = Name("First", None, "Last")
+  val name: Name       = Name("First", None, "Last")
 
   val form: Form[YesNoDontKnow] = new YesNoDontKnowFormProvider().withPrefix(messageKeyPrefix)
 
@@ -44,7 +44,16 @@ class MentalCapacityYesNoViewSpec extends OptionsViewBehaviours {
       RadioOption(id = "value-dontKnow", value = YesNoDontKnow.DontKnow.toString, messageKey = "site.dontKnow")
     )
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName,"p1", "bulletpoint1", "bulletpoint2", "bulletpoint3", "bulletpoint4")
+    behave like dynamicTitlePage(
+      applyView(form),
+      messageKeyPrefix,
+      name.displayName,
+      "p1",
+      "bulletpoint1",
+      "bulletpoint2",
+      "bulletpoint3",
+      "bulletpoint4"
+    )
 
     behave like pageWithBackLink(applyView(form))
 
@@ -52,4 +61,5 @@ class MentalCapacityYesNoViewSpec extends OptionsViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

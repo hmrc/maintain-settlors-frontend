@@ -27,7 +27,8 @@ class DateOfDeathFormProviderSpec extends DateBehaviours with FakeTrustsApp {
   private val min = frontendAppConfig.minDate
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  val form: Form[LocalDate] = new DateOfDeathFormProvider(frontendAppConfig).withConfig("deceasedSettlor.dateOfDeath", max)
+  val form: Form[LocalDate] =
+    new DateOfDeathFormProvider(frontendAppConfig).withConfig("deceasedSettlor.dateOfDeath", max)
 
   ".value" should {
 
@@ -40,15 +41,20 @@ class DateOfDeathFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
     behave like mandatoryDateField(form, "value", "deceasedSettlor.dateOfDeath.error.required.all")
 
-    behave like dateFieldWithMax(form, "value",
+    behave like dateFieldWithMax(
+      form,
+      "value",
       max = max,
       FormError("value", "deceasedSettlor.dateOfDeath.error.future", List("day", "month", "year"))
     )
 
-    behave like dateFieldWithMin(form, "value",
+    behave like dateFieldWithMin(
+      form,
+      "value",
       min = min,
       FormError("value", "deceasedSettlor.dateOfDeath.error.past", List("day", "month", "year"))
     )
 
   }
+
 }

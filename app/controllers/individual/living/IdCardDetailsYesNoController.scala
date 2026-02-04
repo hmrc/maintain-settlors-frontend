@@ -33,42 +33,42 @@ import views.html.individual.living.IdCardDetailsYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IdCardDetailsYesNoController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              sessionRepository: PlaybackRepository,
-                                              @LivingSettlor navigator: Navigator,
-                                              standardActionSets: StandardActionSets,
-                                              nameAction: NameRequiredAction,
-                                              formProvider: YesNoFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: IdCardDetailsYesNoView
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IdCardDetailsYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @LivingSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IdCardDetailsYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("livingSettlor.idCardDetailsYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(IdCardDetailsYesNoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, request.settlorName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.settlorName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsYesNoPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.settlorName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IdCardDetailsYesNoPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IdCardDetailsYesNoPage, mode, updatedAnswers))
-      )
-  }
 }

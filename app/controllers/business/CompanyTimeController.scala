@@ -31,36 +31,33 @@ import views.html.business.CompanyTimeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyTimeController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: PlaybackRepository,
-                                        @BusinessSettlor navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        formProvider: YesNoFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CompanyTimeView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CompanyTimeController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @BusinessSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: CompanyTimeView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("businessSettlor.companyTimeYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(CompanyTimePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(CompanyTimePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(CompanyTimePage, value))
@@ -68,4 +65,5 @@ class CompanyTimeController @Inject()(
           } yield Redirect(navigator.nextPage(CompanyTimePage, mode, updatedAnswers))
       )
   }
+
 }

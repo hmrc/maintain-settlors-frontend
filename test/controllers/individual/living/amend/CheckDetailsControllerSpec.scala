@@ -38,21 +38,31 @@ import scala.concurrent.Future
 
 class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private val index: Int = 0
-  private lazy val getFromBackendRoute: String = routes.CheckDetailsController.extractAndRender(index).url
+  private val index: Int                           = 0
+  private lazy val getFromBackendRoute: String     = routes.CheckDetailsController.extractAndRender(index).url
   private lazy val getFromUserAnswersRoute: String = routes.CheckDetailsController.renderFromUserAnswers(index).url
-  private lazy val submitRoute: String = routes.CheckDetailsController.onSubmit(index).url
-  private lazy val onwardRoute: String = controllers.routes.AddASettlorController.onPageLoad().url
+  private lazy val submitRoute: String             = routes.CheckDetailsController.onSubmit(index).url
+  private lazy val onwardRoute: String             = controllers.routes.AddASettlorController.onPageLoad().url
 
-  private val name: Name = Name("First", None, "Last")
+  private val name: Name      = Name("First", None, "Last")
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private val userAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(DateOfBirthYesNoPage, false).success.value
-    .set(NationalInsuranceNumberYesNoPage, false).success.value
-    .set(AddressYesNoPage, false).success.value
-    .set(StartDatePage, date).success.value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(DateOfBirthYesNoPage, false)
+    .success
+    .value
+    .set(NationalInsuranceNumberYesNoPage, false)
+    .success
+    .value
+    .set(AddressYesNoPage, false)
+    .success
+    .value
+    .set(StartDatePage, date)
+    .success
+    .value
 
   private val provisional: Boolean = false
 
@@ -65,7 +75,11 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         val mockTrustService: TrustService = mock[TrustService]
 
         when(mockTrustService.getIndividualSettlor(any(), any())(any(), any()))
-          .thenReturn(Future.successful(IndividualSettlor(name, None, None, None, None, None, None, date, provisional = provisional)))
+          .thenReturn(
+            Future.successful(
+              IndividualSettlor(name, None, None, None, None, None, None, date, provisional = provisional)
+            )
+          )
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrustService].toInstance(mockTrustService))
@@ -75,8 +89,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CheckDetailsView]
-        val printHelper = application.injector.instanceOf[IndividualSettlorPrintHelper]
+        val view          = application.injector.instanceOf[CheckDetailsView]
+        val printHelper   = application.injector.instanceOf[IndividualSettlorPrintHelper]
         val answerSection = printHelper(userAnswers, provisional, name.displayName)
 
         status(result) mustEqual OK
@@ -93,8 +107,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CheckDetailsView]
-        val printHelper = application.injector.instanceOf[IndividualSettlorPrintHelper]
+        val view          = application.injector.instanceOf[CheckDetailsView]
+        val printHelper   = application.injector.instanceOf[IndividualSettlorPrintHelper]
         val answerSection = printHelper(userAnswers, adding = false, name.displayName)
 
         status(result) mustEqual OK
@@ -139,4 +153,5 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       application.stop()
     }
   }
+
 }

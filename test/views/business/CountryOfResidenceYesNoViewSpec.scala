@@ -25,8 +25,8 @@ import views.html.business.CountryOfResidenceYesNoView
 
 class CountryOfResidenceYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "businessSettlor.countryOfResidenceYesNo"
-  val name = "Name"
+  val messageKeyPrefix    = "businessSettlor.countryOfResidenceYesNo"
+  val name                = "Name"
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "CountryOfResidenceYesNoView view" must {
@@ -42,4 +42,5 @@ class CountryOfResidenceYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name))
   }
+
 }

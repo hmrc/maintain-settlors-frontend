@@ -27,30 +27,32 @@ import scala.util.{Success, Try}
 
 trait SettlorExtractor[T <: Settlor] {
 
-  def apply(answers: UserAnswers,
-            settlor: T,
-            index: Option[Int] = None,
-            hasAdditionalSettlors: Option[Boolean] = None): Try[UserAnswers] = {
-    answers.deleteAtPath(basePath)
+  def apply(
+    answers: UserAnswers,
+    settlor: T,
+    index: Option[Int] = None,
+    hasAdditionalSettlors: Option[Boolean] = None
+  ): Try[UserAnswers] =
+    answers
+      .deleteAtPath(basePath)
       .flatMap(answers => extractIfDefined(settlor.startDate, startDatePage, answers))
       .flatMap(answers => extractIfDefined(index, indexPage, answers))
-  }
 
   def namePage: QuestionPage[String] = new EmptyPage[String]
 
   def utrPage: QuestionPage[String] = new EmptyPage[String]
 
-  def countryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def countryOfNationalityYesNoPage: QuestionPage[Boolean]   = new EmptyPage[Boolean]
   def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def countryOfNationalityPage: QuestionPage[String] = new EmptyPage[String]
+  def countryOfNationalityPage: QuestionPage[String]         = new EmptyPage[String]
 
-  def countryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
+  def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = new EmptyPage[Boolean]
   def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def countryOfResidencePage: QuestionPage[String] = new EmptyPage[String]
+  def countryOfResidencePage: QuestionPage[String]         = new EmptyPage[String]
 
-  def addressYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukAddressYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukAddressPage: QuestionPage[UkAddress] = new EmptyPage[UkAddress]
+  def addressYesNoPage: QuestionPage[Boolean]      = new EmptyPage[Boolean]
+  def ukAddressYesNoPage: QuestionPage[Boolean]    = new EmptyPage[Boolean]
+  def ukAddressPage: QuestionPage[UkAddress]       = new EmptyPage[UkAddress]
   def nonUkAddressPage: QuestionPage[NonUkAddress] = new EmptyPage[NonUkAddress]
 
   def startDatePage: QuestionPage[LocalDate] = new EmptyPage[LocalDate]
@@ -59,7 +61,7 @@ trait SettlorExtractor[T <: Settlor] {
 
   def basePath: JsPath
 
-  def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  def extractCountryOfNationality(countryOfNationality: Option[String], answers: UserAnswers): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = countryOfNationality,
       answers = answers,
@@ -67,9 +69,8 @@ trait SettlorExtractor[T <: Settlor] {
       ukYesNoPage = ukCountryOfNationalityYesNoPage,
       page = countryOfNationalityPage
     )
-  }
 
-  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = countryOfResidence,
       answers = answers,
@@ -77,70 +78,76 @@ trait SettlorExtractor[T <: Settlor] {
       ukYesNoPage = ukCountryOfResidenceYesNoPage,
       page = countryOfResidencePage
     )
-  }
 
-  def extractCountryOfResidenceOrNationality(country: Option[String],
-                                             answers: UserAnswers,
-                                             yesNoPage: QuestionPage[Boolean],
-                                             ukYesNoPage: QuestionPage[Boolean],
-                                             page: QuestionPage[String]): Try[UserAnswers] = {
+  def extractCountryOfResidenceOrNationality(
+    country: Option[String],
+    answers: UserAnswers,
+    yesNoPage: QuestionPage[Boolean],
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Try[UserAnswers] =
     if (answers.isUnderlyingData5mld) {
       country match {
-        case Some(GB) =>
-          answers.set(yesNoPage, true)
+        case Some(GB)      =>
+          answers
+            .set(yesNoPage, true)
             .flatMap(_.set(ukYesNoPage, true))
             .flatMap(_.set(page, GB))
         case Some(country) =>
-          answers.set(yesNoPage, true)
+          answers
+            .set(yesNoPage, true)
             .flatMap(_.set(ukYesNoPage, false))
             .flatMap(_.set(page, country))
-        case None =>
+        case None          =>
           answers.set(yesNoPage, false)
       }
     } else {
       Success(answers)
     }
-  }
 
-  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] =
     if (answers.isTaxable) {
       address match {
-        case Some(uk: UkAddress) => answers
-          .set(addressYesNoPage, true)
-          .flatMap(_.set(ukAddressYesNoPage, true))
-          .flatMap(_.set(ukAddressPage, uk))
-        case Some(nonUk: NonUkAddress) => answers
-          .set(addressYesNoPage, true)
-          .flatMap(_.set(ukAddressYesNoPage, false))
-          .flatMap(_.set(nonUkAddressPage, nonUk))
-        case _ => answers
-          .set(addressYesNoPage, false)
+        case Some(uk: UkAddress)       =>
+          answers
+            .set(addressYesNoPage, true)
+            .flatMap(_.set(ukAddressYesNoPage, true))
+            .flatMap(_.set(ukAddressPage, uk))
+        case Some(nonUk: NonUkAddress) =>
+          answers
+            .set(addressYesNoPage, true)
+            .flatMap(_.set(ukAddressYesNoPage, false))
+            .flatMap(_.set(nonUkAddressPage, nonUk))
+        case _                         =>
+          answers
+            .set(addressYesNoPage, false)
       }
     } else {
       Success(answers)
     }
-  }
 
-  def extractIfDefined[A](value: Option[A], page: QuestionPage[A], answers: UserAnswers)
-                         (implicit writes: Writes[A]): Try[UserAnswers] = {
+  def extractIfDefined[A](value: Option[A], page: QuestionPage[A], answers: UserAnswers)(implicit
+    writes: Writes[A]
+  ): Try[UserAnswers] =
     value match {
       case Some(v) => answers.set(page, v)
-      case None => Success(answers)
+      case None    => Success(answers)
     }
-  }
 
-  def extractConditionalAnswer[A](optionalValue: Option[A],
-                                  answers: UserAnswers,
-                                  yesNoPage: QuestionPage[Boolean],
-                                  page: QuestionPage[A])
-                                 (implicit writes: Writes[A]): Try[UserAnswers] = {
+  def extractConditionalAnswer[A](
+    optionalValue: Option[A],
+    answers: UserAnswers,
+    yesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[A]
+  )(implicit writes: Writes[A]): Try[UserAnswers] =
     optionalValue match {
-      case Some(value) => answers
-        .set(yesNoPage, true)
-        .flatMap(_.set(page, value))
-      case None => answers
-        .set(yesNoPage, false)
+      case Some(value) =>
+        answers
+          .set(yesNoPage, true)
+          .flatMap(_.set(page, value))
+      case None        =>
+        answers
+          .set(yesNoPage, false)
     }
-  }
 
 }

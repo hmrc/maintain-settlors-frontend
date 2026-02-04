@@ -74,7 +74,6 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
             |""".stripMargin
         )
 
-
         val expectedDeceasedSettlor = DeceasedSettlor(
           bpMatchStatus = Some(FailedToMatch),
           name = Name("Jim", None, "Bowen"),
@@ -82,7 +81,8 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
           dateOfDeath = Some(LocalDate.of(2018, 3, 14)),
           nationality = Some("GB"),
           countryOfResidence = Some("GB"),
-          identification = Some(CombinedPassportOrIdCard("GB", "987345987398457", LocalDate.of(2025, 5, 21), DetailsType.Combined)),
+          identification =
+            Some(CombinedPassportOrIdCard("GB", "987345987398457", LocalDate.of(2025, 5, 21), DetailsType.Combined)),
           address = Some(UkAddress("8 Gillison Close", "Melling", Some("Carnforth"), Some("Lancashire"), "LA6 2RD"))
         )
 
@@ -115,13 +115,14 @@ class DeceasedSettlorSpec extends AnyWordSpec with Matchers {
       "JSON has undefined optional fields" in {
         val result = jsonWithUndefinedOptionalFields.as[DeceasedSettlor]
 
-        result.startDate mustBe None
-        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None) mustBe true
-        result.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = None) mustBe true
-        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = Some(HeritageTrust)) mustBe true
+        result.startDate                                                                                  mustBe None
+        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None)                 mustBe true
+        result.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = None)                mustBe true
+        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = Some(HeritageTrust))  mustBe true
         result.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = Some(HeritageTrust)) mustBe true
       }
     }
 
   }
+
 }

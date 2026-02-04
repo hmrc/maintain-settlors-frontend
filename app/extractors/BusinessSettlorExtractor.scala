@@ -27,11 +27,14 @@ import scala.util.{Success, Try}
 
 class BusinessSettlorExtractor extends SettlorExtractor[BusinessSettlor] {
 
-  override def apply(answers: UserAnswers,
-                     business: BusinessSettlor,
-                     index: Option[Int],
-                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] =
-    super.apply(answers, business, index, hasAdditionalSettlors)
+  override def apply(
+    answers: UserAnswers,
+    business: BusinessSettlor,
+    index: Option[Int],
+    hasAdditionalSettlors: Option[Boolean]
+  ): Try[UserAnswers] =
+    super
+      .apply(answers, business, index, hasAdditionalSettlors)
       .flatMap(_.set(NamePage, business.name))
       .flatMap(answers => extractAddress(business.address, answers))
       .flatMap(answers => extractCountryOfResidence(business.countryOfResidence, answers))
@@ -39,21 +42,20 @@ class BusinessSettlorExtractor extends SettlorExtractor[BusinessSettlor] {
       .flatMap(_.set(CompanyTypePage, business.companyType))
       .flatMap(_.set(CompanyTimePage, business.companyTime))
 
-  private def extractUtr(utr: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractUtr(utr: Option[String], answers: UserAnswers): Try[UserAnswers] =
     if (answers.isTaxable) {
       extractConditionalAnswer(utr, answers, UtrYesNoPage, UtrPage)
     } else {
       Success(answers)
     }
-  }
 
-  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = CountryOfResidenceYesNoPage
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceInTheUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
-  override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def addressYesNoPage: QuestionPage[Boolean]      = AddressYesNoPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
   override def startDatePage: QuestionPage[LocalDate] = StartDatePage

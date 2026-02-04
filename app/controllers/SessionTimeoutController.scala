@@ -26,16 +26,20 @@ import utils.Session
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(val appConfig: FrontendAppConfig,
-                                         val config: Configuration,
-                                         val env: Environment,
-                                         mcc: MessagesControllerComponents) extends FrontendController(mcc) {
+class SessionTimeoutController @Inject() (
+  val appConfig: FrontendAppConfig,
+  val config: Configuration,
+  val env: Environment,
+  mcc: MessagesControllerComponents
+) extends FrontendController(mcc) {
 
   private val logger: Logger = Logger(getClass)
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
-    logger.info(s"[Session ID: ${Session.id(hc)}]" +
-      s" user requested to extend the time remaining to maintain settlors, user has not been signed out")
+    logger.info(
+      s"[Session ID: ${Session.id(hc)}]" +
+        s" user requested to extend the time remaining to maintain settlors, user has not been signed out"
+    )
     Future.successful(Ok.withSession(request.session))
   }
 

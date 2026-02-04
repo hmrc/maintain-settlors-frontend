@@ -40,84 +40,82 @@ import views.html.individual.deceased.CheckDetailsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        trustsService: TrustService,
-                                        trustsConnector: TrustConnector,
-                                        trustStoreConnector: TrustStoreConnector,
-                                        val appConfig: FrontendAppConfig,
-                                        playbackRepository: PlaybackRepository,
-                                        printHelper: DeceasedSettlorPrintHelper,
-                                        mapper: DeceasedSettlorMapper,
-                                        nameAction: NameRequiredAction,
-                                        extractor: DeceasedSettlorExtractor,
-                                        errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  trustsService: TrustService,
+  trustsConnector: TrustConnector,
+  trustStoreConnector: TrustStoreConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: DeceasedSettlorPrintHelper,
+  mapper: DeceasedSettlorMapper,
+  nameAction: NameRequiredAction,
+  extractor: DeceasedSettlorExtractor,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  private def render(userAnswers: UserAnswers,
-                     name: String,
-                     hasAdditionalSettlors: Boolean)(implicit request: Request[AnyContent]): Result = {
-    Ok(view(
-      answerSection = printHelper(userAnswers, name, hasAdditionalSettlors),
-      name = name,
-      is01MatchStatus = userAnswers.get(BpMatchStatusPage) match {
-        case Some(FullyMatched) => true
-        case _ => false
-      },
-      isDateOfDeathRecorded = userAnswers.isDateOfDeathRecorded
-    ))
+  private def render(userAnswers: UserAnswers, name: String, hasAdditionalSettlors: Boolean)(implicit
+    request: Request[AnyContent]
+  ): Result =
+    Ok(
+      view(
+        answerSection = printHelper(userAnswers, name, hasAdditionalSettlors),
+        name = name,
+        is01MatchStatus = userAnswers.get(BpMatchStatusPage) match {
+          case Some(FullyMatched) => true
+          case _                  => false
+        },
+        isDateOfDeathRecorded = userAnswers.isDateOfDeathRecorded
+      )
+    )
+
+  def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    trustsService.getSettlors(request.userAnswers.identifier) flatMap {
+      case settlors @ Settlors(_, _, Some(deceased)) =>
+        for {
+          extractedAnswers <-
+            Future.fromTry(extractor(request.userAnswers, deceased, None, Some(settlors.hasLivingSettlors)))
+          _                <- playbackRepository.set(extractedAnswers)
+        } yield render(extractedAnswers, deceased.name.displayName, settlors.hasLivingSettlors)
+      case Settlors(_, _, None)                      =>
+        throw new Exception("Deceased Settlor Information not found")
+    }
   }
 
-  def extractAndRender(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-      trustsService.getSettlors(request.userAnswers.identifier) flatMap {
-        case settlors @ Settlors(_, _, Some(deceased)) =>
-          for {
-            extractedAnswers <- Future.fromTry(extractor(request.userAnswers, deceased, None, Some(settlors.hasLivingSettlors)))
-            _ <- playbackRepository.set(extractedAnswers)
-          } yield {
-            render(extractedAnswers, deceased.name.displayName, settlors.hasLivingSettlors)
-          }
-        case Settlors(_, _, None) =>
-          throw new Exception("Deceased Settlor Information not found")
-      }
-  }
-
-  def renderFromUserAnswers(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
+  def renderFromUserAnswers(): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
       trustsService.getSettlors(request.userAnswers.identifier).map { settlors =>
         render(request.userAnswers, request.settlorName, settlors.hasLivingSettlors)
       }
-  }
+    }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      (for {
-        deceasedSettlor <- Future.fromTry(mapper(request.userAnswers))
-        _ <- trustsConnector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor)
-        settlors <- trustsService.getSettlors(request.userAnswers.identifier)
-        isTaskComplete = !settlors.hasLivingSettlors && request.userAnswers.get(AdditionalSettlorsYesNoPage).contains(false)
-        _ <- {
-          if (isTaskComplete) {
-            trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
-          } else {
-            Future.successful(())
-          }
-        }
-      } yield {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    (for {
+      deceasedSettlor <- Future.fromTry(mapper(request.userAnswers))
+      _               <- trustsConnector.amendDeceasedSettlor(request.userAnswers.identifier, deceasedSettlor)
+      settlors        <- trustsService.getSettlors(request.userAnswers.identifier)
+      isTaskComplete   =
+        !settlors.hasLivingSettlors && request.userAnswers.get(AdditionalSettlorsYesNoPage).contains(false)
+      _               <- {
         if (isTaskComplete) {
-          Redirect(appConfig.maintainATrustOverview)
+          trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
         } else {
-          Redirect(controllers.routes.AddASettlorController.onPageLoad())
+          Future.successful(())
         }
-      }).recoverWith {
-        case e =>
-          logger.error(e.getMessage)
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
       }
+    } yield
+      if (isTaskComplete) {
+        Redirect(appConfig.maintainATrustOverview)
+      } else {
+        Redirect(controllers.routes.AddASettlorController.onPageLoad())
+      }).recoverWith { case e =>
+      logger.error(e.getMessage)
+      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
+
 }

@@ -37,52 +37,51 @@ class IndividualSettlorMapper extends SettlorMapper[IndividualSettlor] {
       readMentalCapacity and
       StartDatePage.path.read[LocalDate] and
       Reads(_ => JsSuccess(true))
-    )(IndividualSettlor.apply _)
+  )(IndividualSettlor.apply _)
 
-  private def readIdentification: Reads[Option[IndividualIdentification]] = {
+  private def readIdentification: Reads[Option[IndividualIdentification]] =
     NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap[Option[IndividualIdentification]] {
-      case Some(true) => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
+      case Some(true)  => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
       case Some(false) => readPassportOrIdCard
-      case _ => Reads(_ => JsSuccess(None))
+      case _           => Reads(_ => JsSuccess(None))
     }
-  }
 
   private def readPassportOrIdCard: Reads[Option[IndividualIdentification]] = {
     val identification = for {
-      hasNino <- NationalInsuranceNumberYesNoPage.path.readWithDefault(false)
-      hasAddress <- AddressYesNoPage.path.readWithDefault(false)
-      hasPassport <- PassportDetailsYesNoPage.path.readWithDefault(false)
-      hasIdCard <- IdCardDetailsYesNoPage.path.readWithDefault(false)
+      hasNino             <- NationalInsuranceNumberYesNoPage.path.readWithDefault(false)
+      hasAddress          <- AddressYesNoPage.path.readWithDefault(false)
+      hasPassport         <- PassportDetailsYesNoPage.path.readWithDefault(false)
+      hasIdCard           <- IdCardDetailsYesNoPage.path.readWithDefault(false)
       hasPassportOrIdCard <- PassportOrIdCardDetailsYesNoPage.path.readWithDefault(false)
     } yield (hasNino, hasAddress, hasPassport, hasIdCard, hasPassportOrIdCard)
 
     identification.flatMap[Option[IndividualIdentification]] {
-      case (false, true, true, false, _) => PassportDetailsPage.path.read[Passport].map(x => x.asCombined).map(Some(_))
-      case (false, true, false, true, _) => IdCardDetailsPage.path.read[IdCard].map(x => x.asCombined).map(Some(_))
-      case (false, true, false, false, true) => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
-      case _ => Reads(_ => JsSuccess(None))
+      case (false, true, true, false, _)     => PassportDetailsPage.path.read[Passport].map(x => x.asCombined).map(Some(_))
+      case (false, true, false, true, _)     => IdCardDetailsPage.path.read[IdCard].map(x => x.asCombined).map(Some(_))
+      case (false, true, false, false, true) =>
+        PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
+      case _                                 => Reads(_ => JsSuccess(None))
     }
   }
 
-  private def readMentalCapacity: Reads[Option[YesNoDontKnow]] = {
+  private def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
     MentalCapacityYesNoPage.path
       .readNullable[YesNoDontKnow]
       .flatMap[Option[YesNoDontKnow]] {
         case Some(value) => Reads(_ => JsSuccess(Some(value)))
-        case _ => Reads(_ => JsSuccess(None))
+        case _           => Reads(_ => JsSuccess(None))
       }
-  }
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
-  override def countryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityYesNoPage
+  override def countryOfNationalityYesNoPage: QuestionPage[Boolean]   = CountryOfNationalityYesNoPage
   override def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityUkYesNoPage
-  override def countryOfNationalityPage: QuestionPage[String] = CountryOfNationalityPage
+  override def countryOfNationalityPage: QuestionPage[String]         = CountryOfNationalityPage
 
-  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = CountryOfResidenceYesNoPage
   override def ukCountryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
 
 }

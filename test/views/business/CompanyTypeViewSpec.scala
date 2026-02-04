@@ -25,10 +25,10 @@ import views.html.business.CompanyTypeView
 
 class CompanyTypeViewSpec extends OptionsViewBehaviours {
 
-  val messageKeyPrefix = "businessSettlor.companyType"
-  val name = "Name"
+  val messageKeyPrefix        = "businessSettlor.companyType"
+  val name                    = "Name"
   val form: Form[CompanyType] = new CompanyTypeFormProvider()()
-  val view: CompanyTypeView = viewFor[CompanyTypeView](Some(emptyUserAnswers))
+  val view: CompanyTypeView   = viewFor[CompanyTypeView](Some(emptyUserAnswers))
 
   "CompanyType view" must {
 

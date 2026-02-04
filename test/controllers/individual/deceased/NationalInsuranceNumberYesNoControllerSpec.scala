@@ -35,12 +35,14 @@ import scala.concurrent.Future
 
 class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumberYesNo")
-  val name: Name = Name("FirstName", None, "LastName")
+  val name: Name          = Name("FirstName", None, "LastName")
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   lazy val nationalInsuranceNumberYesNoRoute: String = routes.NationalInsuranceNumberYesNoController.onPageLoad().url
 
@@ -159,4 +161,5 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       application.stop()
     }
   }
+
 }

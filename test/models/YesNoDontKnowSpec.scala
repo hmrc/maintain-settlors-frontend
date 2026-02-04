@@ -18,7 +18,7 @@ package models
 
 import base.SpecBase
 
-class YesNoDontKnowSpec extends SpecBase{
+class YesNoDontKnowSpec extends SpecBase {
 
   "YesNoDontKnow" when {
     ".fromBoolean" should {

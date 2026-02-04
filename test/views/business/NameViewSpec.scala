@@ -26,7 +26,7 @@ import views.html.business.NameView
 class NameViewSpec extends QuestionViewBehaviours[String] {
 
   val messageKeyPrefix = "businessSettlor.name"
-  val name = "Name"
+  val name             = "Name"
 
   override val form: Form[String] = new StringFormProvider().withPrefix(messageKeyPrefix, 105)
 
@@ -53,4 +53,5 @@ class NameViewSpec extends QuestionViewBehaviours[String] {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

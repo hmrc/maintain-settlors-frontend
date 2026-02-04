@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("deceasedSettlor.dateOfDeathYesNo")
 
   lazy val dateOfDeathYesNoRoute: String = routes.DateOfDeathYesNoController.onPageLoad().url
@@ -43,7 +43,9 @@ class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
   val name: Name = Name("New", None, "Settlor")
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   "DateOfDeathYesNoPage Controller" must {
 
@@ -161,4 +163,5 @@ class DateOfDeathYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

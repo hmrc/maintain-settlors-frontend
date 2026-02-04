@@ -36,17 +36,16 @@ class DeceasedSettlorMapper extends SettlorMapper[DeceasedSettlor] {
       CountryOfResidencePage.path.readNullable[String] and
       readIdentification and
       readAddress
-    )(DeceasedSettlor.apply _)
+  )(DeceasedSettlor.apply _)
 
-  private def readIdentification: Reads[Option[IndividualIdentification]] = {
+  private def readIdentification: Reads[Option[IndividualIdentification]] =
     NationalInsuranceNumberYesNoPage.path.readNullable[Boolean].flatMap[Option[IndividualIdentification]] {
       case Some(true) => NationalInsuranceNumberPage.path.read[String].map(nino => Some(NationalInsuranceNumber(nino)))
-      case _ => Reads(_ => JsSuccess(None))
+      case _          => Reads(_ => JsSuccess(None))
     }
-  }
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = LivedInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = LivedInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
 
 }

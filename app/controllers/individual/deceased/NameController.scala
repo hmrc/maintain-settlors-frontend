@@ -32,39 +32,38 @@ import views.html.individual.deceased.NameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameController @Inject()(
-                                val controllerComponents: MessagesControllerComponents,
-                                standardActionSets: StandardActionSets,
-                                formProvider: NameFormProvider,
-                                playbackRepository: PlaybackRepository,
-                                view: NameView,
-                                @DeceasedSettlor navigator: Navigator
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NameController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  standardActionSets: StandardActionSets,
+  formProvider: NameFormProvider,
+  playbackRepository: PlaybackRepository,
+  view: NameView,
+  @DeceasedSettlor navigator: Navigator
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form: Form[Name] = formProvider.withPrefix("deceasedSettlor.name")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr { implicit request =>
+    val preparedForm = request.userAnswers.get(NamePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(NamePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm))
+    Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors))),
-        value => {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
-            _ <- playbackRepository.set(updatedAnswers)
+            _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(NamePage, updatedAnswers))
-        }
       )
   }
+
 }

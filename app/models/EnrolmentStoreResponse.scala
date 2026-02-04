@@ -49,28 +49,29 @@ object EnrolmentStoreResponse {
         logger.debug(s"Response status received from ES0 api: ${response.status}")
 
         response.status match {
-          case OK =>
+          case OK                  =>
             response.json.as[EnrolmentStore] match {
               case EnrolmentStore(Seq(), _) =>
                 logger.info(s"UTR has not been claimed")
                 NotClaimed
-              case _ =>
+              case _                        =>
                 logger.info(s"UTR has already been claimed")
                 AlreadyClaimed
             }
-          case NO_CONTENT =>
+          case NO_CONTENT          =>
             logger.info(s"UTR is not claimed or delegated")
             NotClaimed
           case SERVICE_UNAVAILABLE =>
             ServiceUnavailable
-          case FORBIDDEN =>
+          case FORBIDDEN           =>
             Forbidden
-          case BAD_REQUEST =>
+          case BAD_REQUEST         =>
             BadRequest
-          case _ =>
+          case _                   =>
             logger.info(s"Unexpected response from EnrolmentStore")
             ServerError
         }
       }
     }
+
 }

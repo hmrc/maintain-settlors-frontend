@@ -37,8 +37,8 @@ import scala.concurrent.Future
 
 class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateAddedToTrustFormProvider()
-  private val date: LocalDate = LocalDate.parse("2019-02-03")
+  val formProvider                  = new DateAddedToTrustFormProvider()
+  private val date: LocalDate       = LocalDate.parse("2019-02-03")
   private def form: Form[LocalDate] = formProvider.withPrefixAndTrustStartDate("businessSettlor.startDate", date)
 
   def onwardRoute: Call = Call("GET", "/foo")
@@ -50,7 +50,9 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
   val name = "Name"
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, startDateRoute)
@@ -84,7 +86,9 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(StartDatePage, validAnswer).success.value
+        .set(StartDatePage, validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -167,4 +171,5 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

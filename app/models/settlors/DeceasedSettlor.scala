@@ -22,31 +22,34 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-final case class DeceasedSettlor(bpMatchStatus: Option[BpMatchStatus],
-                                 name: Name,
-                                 dateOfBirth: Option[LocalDate],
-                                 dateOfDeath: Option[LocalDate],
-                                 nationality: Option[String],
-                                 countryOfResidence: Option[String],
-                                 identification: Option[IndividualIdentification],
-                                 address: Option[Address]) extends Settlor {
+final case class DeceasedSettlor(
+  bpMatchStatus: Option[BpMatchStatus],
+  name: Name,
+  dateOfBirth: Option[LocalDate],
+  dateOfDeath: Option[LocalDate],
+  nationality: Option[String],
+  countryOfResidence: Option[String],
+  identification: Option[IndividualIdentification],
+  address: Option[Address]
+) extends Settlor {
 
   override val startDate: Option[LocalDate] = None
-  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean = true
+
+  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean =
+    true
+
 }
 
 object DeceasedSettlor extends SettlorReads {
 
-  implicit val reads: Reads[DeceasedSettlor] = (
-    (__ \ Symbol("bpMatchStatus")).readNullable[BpMatchStatus] and
-      (__ \ Symbol("name")).read[Name] and
-      (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
-      (__ \ Symbol("dateOfDeath")).readNullable[LocalDate] and
-      (__ \ Symbol("nationality")).readNullable[String] and
-      (__ \ Symbol("countryOfResidence")).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))))
-    .tupled.map{
+  implicit val reads: Reads[DeceasedSettlor] = ((__ \ Symbol("bpMatchStatus")).readNullable[BpMatchStatus] and
+    (__ \ Symbol("name")).read[Name] and
+    (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
+    (__ \ Symbol("dateOfDeath")).readNullable[LocalDate] and
+    (__ \ Symbol("nationality")).readNullable[String] and
+    (__ \ Symbol("countryOfResidence")).readNullable[String] and
+    __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
+    __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address")))).tupled.map {
     case (bpMatchStatus, name, dob, dod, nationality, countryOfResidence, nino, identification) =>
       DeceasedSettlor(bpMatchStatus, name, dob, dod, nationality, countryOfResidence, nino, identification)
   }
@@ -60,15 +63,17 @@ object DeceasedSettlor extends SettlorReads {
       (__ \ Symbol("countryOfResidence")).writeNullable[String] and
       (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
       (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address]
-    ).apply(settlor => (
-    None, // bpMatchStatus shouldn't be written to the backend
-    settlor.name,
-    settlor.dateOfBirth,
-    settlor.dateOfDeath,
-    settlor.nationality,
-    settlor.countryOfResidence,
-    settlor.identification,
-    settlor.address
-  ))
+  ).apply(settlor =>
+    (
+      None, // bpMatchStatus shouldn't be written to the backend
+      settlor.name,
+      settlor.dateOfBirth,
+      settlor.dateOfDeath,
+      settlor.nationality,
+      settlor.countryOfResidence,
+      settlor.identification,
+      settlor.address
+    )
+  )
 
 }

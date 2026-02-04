@@ -58,7 +58,10 @@ class MaxedOutSettlorsViewSpec extends OptionsViewBehaviours with TabularDataVie
           val doc = asDocument(view)
 
           assertContainsText(doc, s"You cannot enter another settlor as you have entered a maximum of $max.")
-          assertContainsText(doc, "Check the settlors you have added. If you have further settlors to add, write to HMRC with their details.")
+          assertContainsText(
+            doc,
+            "Check the settlors you have added. If you have further settlors to add, write to HMRC with their details."
+          )
         }
 
         behave like pageWithWarning(applyView(migrating))
@@ -92,7 +95,10 @@ class MaxedOutSettlorsViewSpec extends OptionsViewBehaviours with TabularDataVie
           val doc = asDocument(view)
 
           assertContainsText(doc, s"You cannot enter another settlor as you have entered a maximum of $max.")
-          assertContainsText(doc, "Check the settlors you have added. If you have further settlors to add, write to HMRC with their details.")
+          assertContainsText(
+            doc,
+            "Check the settlors you have added. If you have further settlors to add, write to HMRC with their details."
+          )
         }
       }
     }

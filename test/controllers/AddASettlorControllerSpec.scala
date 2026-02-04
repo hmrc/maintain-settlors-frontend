@@ -42,12 +42,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
 
-  lazy val getRoute: String = controllers.routes.AddASettlorController.onPageLoad().url
-  lazy val submitRoute: String = controllers.routes.AddASettlorController.submit().url
+  lazy val getRoute: String            = controllers.routes.AddASettlorController.onPageLoad().url
+  lazy val submitRoute: String         = controllers.routes.AddASettlorController.submit().url
   lazy val submitCompleteRoute: String = controllers.routes.AddASettlorController.submitComplete().url
 
   val mockStoreConnector: TrustStoreConnector = mock[TrustStoreConnector]
-  val mockViewHelper: AddASettlorViewHelper = mock[AddASettlorViewHelper]
+  val mockViewHelper: AddASettlorViewHelper   = mock[AddASettlorViewHelper]
   when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, Nil))
 
   val addTrusteeForm = new AddASettlorFormProvider()()
@@ -62,6 +62,7 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
     identification = None,
     address = None
   )
+
   private val individualSettlor = IndividualSettlor(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
     dateOfBirth = None,
@@ -99,26 +100,38 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
   class FakeService(data: Settlors) extends TrustService {
 
-    override def getSettlors(utr: String)
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] = Future.successful(data)
+    override def getSettlors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Settlors] =
+      Future.successful(data)
 
-    override def getIndividualSettlor(utr: String, index: Int)
-                                     (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualSettlor] = ???
+    override def getIndividualSettlor(utr: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[IndividualSettlor] = ???
 
-    override def getBusinessSettlor(utr: String, index: Int)
-                                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessSettlor] = ???
+    override def getBusinessSettlor(utr: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[BusinessSettlor] = ???
 
-    override def removeSettlor(utr: String, settlor: RemoveSettlor)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = ???
+    override def removeSettlor(utr: String, settlor: RemoveSettlor)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[HttpResponse] = ???
 
-    override def getDeceasedSettlor(utr: String)
-                                   (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] = ???
+    override def getDeceasedSettlor(
+      utr: String
+    )(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[DeceasedSettlor]] = ???
 
-    override def getBusinessUtrs(identifier: String, index: Option[Int])
-                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = ???
+    override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] = ???
 
-    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = ???
+    override def getIndividualNinos(identifier: String, index: Option[Int], adding: Boolean)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] = ???
+
   }
 
   override def beforeEach(): Unit = {
@@ -178,10 +191,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
         def runTest(migrating: Boolean) = {
           val fakeService = new FakeService(settlors)
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
-            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
-            .build()
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+              .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+              .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+              .build()
 
           val request = FakeRequest(GET, getRoute)
 
@@ -194,7 +208,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
           contentAsString(result) mustEqual
             view(
               addTrusteeForm,
-              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Some(
+                "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+              ),
               Nil,
               Nil,
               "The trust has 3 settlors",
@@ -205,13 +221,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
           application.stop()
         }
 
-        "migrating" in {
+        "migrating" in
           runTest(true)
-        }
 
-        "not migrating" in {
+        "not migrating" in
           runTest(false)
-        }
       }
 
       // need to persist deceased answers as user could click back from add-to page to deceased CYA updated-details page
@@ -223,9 +237,15 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
           val fakeService = new FakeService(settlors)
 
           val userAnswers = emptyUserAnswers
-            .set(pages.individual.living.NamePage, Name("Joe", None, "Bloggs")).success.value
-            .set(pages.business.NamePage, "Amazon").success.value
-            .set(pages.individual.deceased.NamePage, Name("Joe", None, "Bloggs")).success.value
+            .set(pages.individual.living.NamePage, Name("Joe", None, "Bloggs"))
+            .success
+            .value
+            .set(pages.business.NamePage, "Amazon")
+            .success
+            .value
+            .set(pages.individual.deceased.NamePage, Name("Joe", None, "Bloggs"))
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(bind(classOf[TrustService]).toInstance(fakeService))
@@ -252,16 +272,23 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
           val fakeService = new FakeService(settlors)
 
           val userAnswers = emptyUserAnswers
-            .set(pages.individual.living.NamePage, Name("Joe", None, "Bloggs")).success.value
-            .set(pages.business.NamePage, "Amazon").success.value
-            .set(pages.individual.deceased.NamePage, Name("Joe", None, "Bloggs")).success.value
+            .set(pages.individual.living.NamePage, Name("Joe", None, "Bloggs"))
+            .success
+            .value
+            .set(pages.business.NamePage, "Amazon")
+            .success
+            .value
+            .set(pages.individual.deceased.NamePage, Name("Joe", None, "Bloggs"))
+            .success
+            .value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers))
             .overrides(
               bind(classOf[TrustService]).toInstance(fakeService),
               bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector),
               bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper)
-            ).build()
+            )
+            .build()
 
           val request = FakeRequest(POST, submitRoute)
             .withFormUrlEncodedBody(("value", AddASettlor.YesNow.toString))
@@ -289,7 +316,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustStoreConnector]).toInstance(mockStoreConnector),
             bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, submitRoute)
           .withFormUrlEncodedBody(("value", AddASettlor.NoComplete.toString))
@@ -310,10 +338,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
         def runTest(migrating: Boolean) = {
           val fakeService = new FakeService(settlors)
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
-            .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-            .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
-            .build()
+          val application =
+            applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+              .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+              .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
+              .build()
 
           val request = FakeRequest(POST, submitRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
@@ -329,7 +358,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
           contentAsString(result) mustEqual
             view(
               boundForm,
-              Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+              Some(
+                "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+              ),
               Nil,
               Nil,
               "The trust has 3 settlors",
@@ -340,13 +371,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
           application.stop()
         }
 
-        "migrating" in {
+        "migrating" in
           runTest(true)
-        }
 
-        "not migrating" in {
+        "not migrating" in
           runTest(false)
-        }
       }
     }
 
@@ -360,8 +389,8 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
           def runTest(migrating: Boolean) = {
             val settlors = Settlors(
-              List.fill((MAX / 2F).ceil.toInt)(individualSettlor),
-              List.fill((MAX / 2F).floor.toInt)(businessSettlor),
+              List.fill((MAX / 2f).ceil.toInt)(individualSettlor),
+              List.fill((MAX / 2f).floor.toInt)(businessSettlor),
               None
             )
 
@@ -369,7 +398,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> true)
@@ -387,7 +418,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             content mustEqual
               view(
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 MAX,
@@ -400,13 +433,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "return correct view when individuals are maxed out" when {
@@ -422,7 +453,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> true)
@@ -440,7 +473,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             content mustEqual
               view(
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 MAX,
@@ -453,13 +488,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "return correct view when businesses are maxed out" when {
@@ -475,7 +508,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> true)
@@ -493,7 +528,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             content mustEqual
               view(
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 MAX,
@@ -506,21 +543,19 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "return OK and the correct view for a GET when there is also a will settlor" when {
 
           def runTest(migrating: Boolean) = {
             val settlors = Settlors(
-              List.fill((MAX / 2F).ceil.toInt)(individualSettlor),
-              List.fill((MAX / 2F).floor.toInt)(businessSettlor),
+              List.fill((MAX / 2f).ceil.toInt)(individualSettlor),
+              List.fill((MAX / 2f).floor.toInt)(businessSettlor),
               Some(deceasedSettlor)
             )
 
@@ -530,7 +565,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> true)
@@ -548,7 +585,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             content mustEqual
               view(
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 MAX + 1,
@@ -561,13 +600,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "redirect to add to page and set settlors to complete when user clicks continue" in {
@@ -614,7 +651,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> false)
@@ -632,7 +671,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             content mustEqual
               view(
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 MAX * 2,
@@ -645,13 +686,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "return correct view when individuals are maxed out" when {
@@ -669,7 +708,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> false)
@@ -688,7 +729,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             content mustEqual
               view(
                 addTrusteeForm,
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 "The trust has 25 settlors",
@@ -697,18 +740,18 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
               )(request, messages).toString
 
             content must include("You cannot add another individual as you have entered a maximum of 25.")
-            content must include("If you have further settlors to add within this type, write to HMRC with their details.")
+            content must include(
+              "If you have further settlors to add within this type, write to HMRC with their details."
+            )
 
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "return correct view when businesses are maxed out" when {
@@ -726,7 +769,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> false)
@@ -745,7 +790,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             content mustEqual
               view(
                 addTrusteeForm,
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 "The trust has 25 settlors",
@@ -754,18 +801,18 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
               )(request, messages).toString
 
             content must include("You cannot add another business as you have entered a maximum of 25.")
-            content must include("If you have further settlors to add within this type, write to HMRC with their details.")
+            content must include(
+              "If you have further settlors to add within this type, write to HMRC with their details."
+            )
 
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "return OK and the correct view for a GET when there is also a will settlor" when {
@@ -783,7 +830,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             when(mockViewHelper.rows(any(), any(), any())(any())).thenReturn(AddToRows(Nil, completedRows))
 
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating)))
+            val application = applicationBuilder(userAnswers =
+              Some(emptyUserAnswers.copy(migratingFromNonTaxableToTaxable = migrating))
+            )
               .overrides(bind(classOf[TrustService]).toInstance(fakeService))
               .overrides(bind(classOf[AddASettlorViewHelper]).toInstance(mockViewHelper))
               .configure("microservice.services.features.count-max-as-combined" -> false)
@@ -801,7 +850,9 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
 
             content mustEqual
               view(
-                Some("This is a will trust. If the trust does not have a will settlor, you will need to change your answers."),
+                Some(
+                  "This is a will trust. If the trust does not have a will settlor, you will need to change your answers."
+                ),
                 Nil,
                 completedRows,
                 (MAX * 2) + 1,
@@ -814,13 +865,11 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
             application.stop()
           }
 
-          "migrating" in {
+          "migrating" in
             runTest(true)
-          }
 
-          "not migrating" in {
+          "not migrating" in
             runTest(false)
-          }
         }
 
         "redirect to add to page and set settlors to complete when user clicks continue" in {
@@ -851,4 +900,5 @@ class AddASettlorControllerSpec extends SpecBase with ScalaFutures with BeforeAn
       }
     }
   }
+
 }

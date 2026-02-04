@@ -31,8 +31,7 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
     "deserialise from backend JSON" when {
 
       "there is a UK address" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             |  "lineNo": "1",
             |  "name": "Nelson Ltd ",
@@ -60,21 +59,22 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
           companyTime = None,
           utr = Some("12345678"),
           countryOfResidence = None,
-          address = Some(UkAddress(
-            line1 = "Suite 10",
-            line2 = "Wealthy Arena",
-            line3 = Some("Trafagar Square"),
-            line4 = Some("London"),
-            postcode = "SE2 2HB"
-          )),
+          address = Some(
+            UkAddress(
+              line1 = "Suite 10",
+              line2 = "Wealthy Arena",
+              line3 = Some("Trafagar Square"),
+              line4 = Some("London"),
+              postcode = "SE2 2HB"
+            )
+          ),
           entityStart = LocalDate.of(2017, 2, 28),
           provisional = false
         )
       }
 
       "there is a non-UK address" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             |  "lineNo": "1",
             |  "name": "Nelson Ltd ",
@@ -99,20 +99,21 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
           companyTime = None,
           utr = None,
           countryOfResidence = None,
-          address = Some(NonUkAddress(
-            line1 = "Suite 10",
-            line2 = "Wealthy Arena",
-            line3 = Some("Paris"),
-            country = "FR"
-          )),
+          address = Some(
+            NonUkAddress(
+              line1 = "Suite 10",
+              line2 = "Wealthy Arena",
+              line3 = Some("Paris"),
+              country = "FR"
+            )
+          ),
           entityStart = LocalDate.of(2017, 2, 28),
           provisional = false
         )
       }
 
       "there is a companyTime and Type" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             |  "lineNo": "1",
             |  "name": "Nelson Ltd ",
@@ -140,8 +141,7 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
       }
 
       "there is a country of residence" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             |  "lineNo": "1",
             |  "name": "Nelson Ltd ",
@@ -185,51 +185,54 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
       "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
         "and companyType and companyTime are not defined" in {
 
-        val result = testSettlor.hasRequiredData(
-          migratingFromNonTaxableToTaxable = true,
-          Some(EmployeeRelated)
-        )
-
-        result mustBe false
-      }
-
-      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
-        "companyType is Investment and companyTime is not defined" in {
-
-        val result = testSettlor.copy(companyType = Some(Investment))
-          .hasRequiredData(
+          val result = testSettlor.hasRequiredData(
             migratingFromNonTaxableToTaxable = true,
             Some(EmployeeRelated)
           )
 
-        result mustBe false
-      }
+          result mustBe false
+        }
+
+      "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
+        "companyType is Investment and companyTime is not defined" in {
+
+          val result = testSettlor
+            .copy(companyType = Some(Investment))
+            .hasRequiredData(
+              migratingFromNonTaxableToTaxable = true,
+              Some(EmployeeRelated)
+            )
+
+          result mustBe false
+        }
 
       "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
         "companyType is not defined, and companyTime is true" in {
 
-        val result =
-          testSettlor.copy(companyTime = Some(true))
-            .hasRequiredData(
-              migratingFromNonTaxableToTaxable = true,
-              Some(EmployeeRelated)
-            )
+          val result =
+            testSettlor
+              .copy(companyTime = Some(true))
+              .hasRequiredData(
+                migratingFromNonTaxableToTaxable = true,
+                Some(EmployeeRelated)
+              )
 
-        result mustBe false
-      }
+          result mustBe false
+        }
 
       "migratingFromNonTaxableToTaxable is true, trust type is EmployeeRelated, " +
         "companyType is Investment, and companyTime is true" in {
 
-        val result =
-          testSettlor.copy(companyType = Some(Investment), companyTime = Some(true))
-            .hasRequiredData(
-              migratingFromNonTaxableToTaxable = true,
-              Some(EmployeeRelated)
-            )
+          val result =
+            testSettlor
+              .copy(companyType = Some(Investment), companyTime = Some(true))
+              .hasRequiredData(
+                migratingFromNonTaxableToTaxable = true,
+                Some(EmployeeRelated)
+              )
 
-        result mustBe true
-      }
+          result mustBe true
+        }
 
       "migratingFromNonTaxableToTaxable is true and trust type is undefined" in {
         val result = testSettlor.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None)
@@ -242,4 +245,5 @@ class BusinessSettlorSpec extends AnyWordSpec with Matchers {
       }
     }
   }
+
 }

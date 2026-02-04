@@ -41,12 +41,14 @@ class AddASettlorViewSpec extends OptionsViewBehaviours with TabularDataViewBeha
 
   val view: AddASettlorView = viewFor[AddASettlorView](Some(emptyUserAnswers))
 
-  def applyConfiguration(form: Form[_],
-                         inProgressRows: Seq[AddRow],
-                         completeRows: Seq[AddRow],
-                         count: Int,
-                         maxedOut: List[String],
-                         migrating: Boolean): HtmlFormat.Appendable = {
+  def applyConfiguration(
+    form: Form[_],
+    inProgressRows: Seq[AddRow],
+    completeRows: Seq[AddRow],
+    count: Int,
+    maxedOut: List[String],
+    migrating: Boolean
+  ): HtmlFormat.Appendable = {
     val title = if (count > 1) s"The trust has $count settlors" else "Add a settlor"
     view.apply(form, None, inProgressRows, completeRows, title, maxedOut, migrating)(fakeRequest, messages)
   }
@@ -129,7 +131,8 @@ class AddASettlorViewSpec extends OptionsViewBehaviours with TabularDataViewBeha
 
       "there is one maxed out type" must {
 
-        val viewWithData = applyConfiguration(form, Nil, completeSettlors, 25, List("whatTypeOfSettlor.individual"), migrating)
+        val viewWithData =
+          applyConfiguration(form, Nil, completeSettlors, 25, List("whatTypeOfSettlor.individual"), migrating)
 
         behave like dynamicTitlePage(viewWithData, "addASettlor.count", "25")
 
@@ -142,7 +145,10 @@ class AddASettlorViewSpec extends OptionsViewBehaviours with TabularDataViewBeha
         "render content" in {
           val doc = asDocument(viewWithData)
           assertContainsText(doc, "You cannot add another individual as you have entered a maximum of 25.")
-          assertContainsText(doc, "Check the settlors you have added. If you have further settlors to add within this type, write to HMRC with their details.")
+          assertContainsText(
+            doc,
+            "Check the settlors you have added. If you have further settlors to add within this type, write to HMRC with their details."
+          )
         }
 
         behave like pageWithWarning(applyView(form))
@@ -204,7 +210,8 @@ class AddASettlorViewSpec extends OptionsViewBehaviours with TabularDataViewBeha
 
       "there is one maxed out type" must {
 
-        val viewWithData = applyConfiguration(form, Nil, completeSettlors, 25, List("whatTypeOfSettlor.individual"), migrating)
+        val viewWithData =
+          applyConfiguration(form, Nil, completeSettlors, 25, List("whatTypeOfSettlor.individual"), migrating)
 
         behave like dynamicTitlePage(viewWithData, "addASettlor.count", "25")
 
@@ -217,7 +224,10 @@ class AddASettlorViewSpec extends OptionsViewBehaviours with TabularDataViewBeha
         "render content" in {
           val doc = asDocument(viewWithData)
           assertContainsText(doc, "You cannot add another individual as you have entered a maximum of 25.")
-          assertContainsText(doc, "Check the settlors you have added. If you have further settlors to add within this type, write to HMRC with their details.")
+          assertContainsText(
+            doc,
+            "Check the settlors you have added. If you have further settlors to add within this type, write to HMRC with their details."
+          )
         }
       }
     }

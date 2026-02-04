@@ -26,7 +26,7 @@ import views.html.individual.living.DateOfBirthYesNoView
 class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "livingSettlor.dateOfBirthYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -45,4 +45,5 @@ class DateOfBirthYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

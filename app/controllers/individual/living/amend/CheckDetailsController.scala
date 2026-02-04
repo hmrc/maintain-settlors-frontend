@@ -36,42 +36,37 @@ import views.html.individual.living.amend.CheckDetailsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        service: TrustService,
-                                        connector: TrustConnector,
-                                        val appConfig: FrontendAppConfig,
-                                        playbackRepository: PlaybackRepository,
-                                        printHelper: IndividualSettlorPrintHelper,
-                                        mapper: IndividualSettlorMapper,
-                                        nameAction: NameRequiredAction,
-                                        extractor: IndividualSettlorExtractor,
-                                        errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  service: TrustService,
+  connector: TrustConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: IndividualSettlorPrintHelper,
+  mapper: IndividualSettlorMapper,
+  nameAction: NameRequiredAction,
+  extractor: IndividualSettlorExtractor,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  private def render(userAnswers: UserAnswers,
-                     index: Int,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result = {
+  private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: Request[AnyContent]
+  ): Result = {
     val section: AnswerSection = printHelper(userAnswers, adding = false, name)
     Ok(view(section, index))
   }
 
-  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      service.getIndividualSettlor(request.userAnswers.identifier, index) flatMap {
-        settlor =>
-          for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, Some(index)))
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-            render(extractedF, index, settlor.name.displayName)
-          }
-      }
+  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    service.getIndividualSettlor(request.userAnswers.identifier, index) flatMap { settlor =>
+      for {
+        extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, Some(index)))
+        _          <- playbackRepository.set(extractedF)
+      } yield render(extractedF, index, settlor.name.displayName)
+    }
   }
 
   def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
@@ -79,18 +74,14 @@ class CheckDetailsController @Inject()(
       render(request.userAnswers, index, request.settlorName)
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
-
-      (for {
-        individual <- Future.fromTry(mapper(request.userAnswers))
-        _ <- connector.amendIndividualSettlor(request.userAnswers.identifier, index, individual)
-      } yield {
-        Redirect(controllers.routes.AddASettlorController.onPageLoad())
-      }).recoverWith {
-        case e =>
-          logger.error(e.getMessage)
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    (for {
+      individual <- Future.fromTry(mapper(request.userAnswers))
+      _          <- connector.amendIndividualSettlor(request.userAnswers.identifier, index, individual)
+    } yield Redirect(controllers.routes.AddASettlorController.onPageLoad())).recoverWith { case e =>
+      logger.error(e.getMessage)
+      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
+
 }

@@ -26,7 +26,7 @@ import views.html.individual.living.AddressYesNoView
 class AddressYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "livingSettlor.addressYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -45,4 +45,5 @@ class AddressYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

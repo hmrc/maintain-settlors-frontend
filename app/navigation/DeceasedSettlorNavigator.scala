@@ -25,7 +25,7 @@ import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class DeceasedSettlorNavigator @Inject()() extends Navigator {
+class DeceasedSettlorNavigator @Inject() () extends Navigator {
 
   override def nextPage(page: Page, userAnswers: UserAnswers): Call =
     routes(page)(userAnswers)
@@ -34,53 +34,69 @@ class DeceasedSettlorNavigator @Inject()() extends Navigator {
     routes(page)(userAnswers)
 
   private val simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => _ => rts.DateOfDeathYesNoController.onPageLoad()
-    case DateOfDeathPage => ua => matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad())
-    case DateOfBirthPage => ua => redirectToNinoQuestionsIfTaxable(ua)
+    case NamePage                                                       => _ => rts.DateOfDeathYesNoController.onPageLoad()
+    case DateOfDeathPage                                                => ua => matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad())
+    case DateOfBirthPage                                                => ua => redirectToNinoQuestionsIfTaxable(ua)
     case NationalInsuranceNumberPage | UkAddressPage | NonUkAddressPage => ua => additionalSettlorsNav(ua)
-    case AdditionalSettlorsYesNoPage => _ => rts.CheckDetailsController.renderFromUserAnswers()
+    case AdditionalSettlorsYesNoPage                                    => _ => rts.CheckDetailsController.renderFromUserAnswers()
   }
 
   private val yesNoNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case DateOfDeathYesNoPage => ua =>
-      yesNoNav(ua, DateOfDeathYesNoPage, rts.DateOfDeathController.onPageLoad(), matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad()))
-    case DateOfBirthYesNoPage => ua =>
-      yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), redirectToNinoQuestionsIfTaxable(ua))
-    case NationalInsuranceNumberYesNoPage => ua =>
-      yesNoNav(ua, NationalInsuranceNumberYesNoPage, rts.NationalInsuranceNumberController.onPageLoad(), rts.AddressYesNoController.onPageLoad())
-    case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), additionalSettlorsNav(ua))
-    case LivedInTheUkYesNoPage => ua =>
-      yesNoNav(ua, LivedInTheUkYesNoPage, rts.UkAddressController.onPageLoad(), rts.NonUkAddressController.onPageLoad())
+    case DateOfDeathYesNoPage             =>
+      ua =>
+        yesNoNav(
+          ua,
+          DateOfDeathYesNoPage,
+          rts.DateOfDeathController.onPageLoad(),
+          matchStatusNav(ua, rts.DateOfBirthYesNoController.onPageLoad())
+        )
+    case DateOfBirthYesNoPage             =>
+      ua =>
+        yesNoNav(ua, DateOfBirthYesNoPage, rts.DateOfBirthController.onPageLoad(), redirectToNinoQuestionsIfTaxable(ua))
+    case NationalInsuranceNumberYesNoPage =>
+      ua =>
+        yesNoNav(
+          ua,
+          NationalInsuranceNumberYesNoPage,
+          rts.NationalInsuranceNumberController.onPageLoad(),
+          rts.AddressYesNoController.onPageLoad()
+        )
+    case AddressYesNoPage                 =>
+      ua => yesNoNav(ua, AddressYesNoPage, rts.LivedInTheUkYesNoController.onPageLoad(), additionalSettlorsNav(ua))
+    case LivedInTheUkYesNoPage            =>
+      ua =>
+        yesNoNav(
+          ua,
+          LivedInTheUkYesNoPage,
+          rts.UkAddressController.onPageLoad(),
+          rts.NonUkAddressController.onPageLoad()
+        )
   }
 
-  private def redirectToNinoQuestionsIfTaxable(ua: UserAnswers): Call = {
+  private def redirectToNinoQuestionsIfTaxable(ua: UserAnswers): Call =
     if (ua.isTaxable) {
       rts.NationalInsuranceNumberYesNoController.onPageLoad()
     } else {
       additionalSettlorsNav(ua)
     }
-  }
 
-  private def matchStatusNav(ua: UserAnswers, nextCall: Call): Call = {
+  private def matchStatusNav(ua: UserAnswers, nextCall: Call): Call =
     ua.get(BpMatchStatusPage) match {
       case Some(FullyMatched) =>
         additionalSettlorsNav(ua)
-      case Some(_) =>
+      case Some(_)            =>
         nextCall
-      case _ =>
+      case _                  =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }
-  }
 
-  private def additionalSettlorsNav(ua: UserAnswers): Call = {
+  private def additionalSettlorsNav(ua: UserAnswers): Call =
     ua.get(AdditionalSettlorsYesNoPage) match {
       case Some(_) =>
         rts.AdditionalSettlorsYesNoController.onPageLoad()
-      case _ =>
+      case _       =>
         rts.CheckDetailsController.renderFromUserAnswers()
     }
-  }
 
   val routes: PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation orElse

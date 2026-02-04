@@ -27,11 +27,11 @@ import java.time.LocalDate
 
 class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
-  val messageKeyPrefix = "livingSettlor.startDate"
-  val date: LocalDate = LocalDate.parse("2019-02-03")
+  val messageKeyPrefix      = "livingSettlor.startDate"
+  val date: LocalDate       = LocalDate.parse("2019-02-03")
   val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate(messageKeyPrefix, date)
-  val view: StartDateView = viewFor[StartDateView](Some(emptyUserAnswers))
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val view: StartDateView   = viewFor[StartDateView](Some(emptyUserAnswers))
+  val name: Name            = Name("First", Some("Middle"), "Last")
 
   "StartDate view" must {
 

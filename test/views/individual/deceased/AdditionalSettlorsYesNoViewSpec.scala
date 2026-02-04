@@ -43,4 +43,5 @@ class AdditionalSettlorsYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

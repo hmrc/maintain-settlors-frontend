@@ -33,36 +33,35 @@ import views.html.business.CountryOfResidenceYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountryOfResidenceYesNoController @Inject()(
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   sessionRepository: PlaybackRepository,
-                                                   @BusinessSettlor navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   formProvider: YesNoFormProvider,
-                                                   view: CountryOfResidenceYesNoView
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CountryOfResidenceYesNoController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  sessionRepository: PlaybackRepository,
+  @BusinessSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  view: CountryOfResidenceYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("businessSettlor.countryOfResidenceYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-      implicit request =>
+    implicit request =>
+      val preparedForm = request.userAnswers.get(CountryOfResidenceYesNoPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
 
-        val preparedForm = request.userAnswers.get(CountryOfResidenceYesNoPage) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+      Ok(view(preparedForm, mode, request.settlorName))
+  }
 
-        Ok(view(preparedForm, mode, request.settlorName))
-    }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-      implicit request =>
-
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, mode, request.settlorName))),
-
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, request.settlorName))),
           value =>
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(CountryOfResidenceYesNoPage, value))
@@ -70,4 +69,5 @@ class CountryOfResidenceYesNoController @Inject()(
             } yield Redirect(navigator.nextPage(CountryOfResidenceYesNoPage, mode, updatedAnswers))
         )
     }
+
 }

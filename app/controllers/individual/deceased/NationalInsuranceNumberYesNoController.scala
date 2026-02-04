@@ -31,37 +31,34 @@ import views.html.individual.deceased.NationalInsuranceNumberYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NationalInsuranceNumberYesNoController @Inject()(
-                                                        override val messagesApi: MessagesApi,
-                                                        sessionRepository: PlaybackRepository,
-                                                        @DeceasedSettlor navigator: Navigator,
-                                                        standardActionSets: StandardActionSets,
-                                                        nameAction: NameRequiredAction,
-                                                        formProvider: YesNoFormProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        view: NationalInsuranceNumberYesNoView
-                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NationalInsuranceNumberYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @DeceasedSettlor navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NationalInsuranceNumberYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("deceasedSettlor.nationalInsuranceNumberYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) { implicit request =>
+    val preparedForm = request.userAnswers.get(NationalInsuranceNumberYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(NationalInsuranceNumberYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, request.settlorName))
+    Ok(view(preparedForm, request.settlorName))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.settlorName))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberYesNoPage, value))
@@ -69,4 +66,5 @@ class NationalInsuranceNumberYesNoController @Inject()(
           } yield Redirect(navigator.nextPage(NationalInsuranceNumberYesNoPage, updatedAnswers))
       )
   }
+
 }

@@ -37,48 +37,50 @@ import views.html.{AddASettlorView, MaxedOutSettlorsView}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddASettlorController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val appConfig: FrontendAppConfig,
-                                       trustStoreConnector: TrustStoreConnector,
-                                       trustService: TrustService,
-                                       addAnotherFormProvider: AddASettlorFormProvider,
-                                       repository: PlaybackRepository,
-                                       addAnotherView: AddASettlorView,
-                                       completeView: MaxedOutSettlorsView,
-                                       viewHelper: AddASettlorViewHelper,
-                                       navigator: SettlorNavigator
-                                     )(implicit ec: ExecutionContext, config: FrontendAppConfig) extends FrontendBaseController with I18nSupport {
+class AddASettlorController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  val appConfig: FrontendAppConfig,
+  trustStoreConnector: TrustStoreConnector,
+  trustService: TrustService,
+  addAnotherFormProvider: AddASettlorFormProvider,
+  repository: PlaybackRepository,
+  addAnotherView: AddASettlorView,
+  completeView: MaxedOutSettlorsView,
+  viewHelper: AddASettlorViewHelper,
+  navigator: SettlorNavigator
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
+    extends FrontendBaseController with I18nSupport {
 
   private val addAnotherForm: Form[AddASettlor] = addAnotherFormProvider()
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
+    for {
+      settlors       <- trustService.getSettlors(request.userAnswers.identifier)
+      updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+      _              <- repository.set(updatedAnswers)
+    } yield {
 
-      for {
-        settlors <- trustService.getSettlors(request.userAnswers.identifier)
-        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-        _ <- repository.set(updatedAnswers)
-      } yield {
+      val settlorRows = viewHelper.rows(
+        settlors = settlors,
+        migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable,
+        trustType = updatedAnswers.trustType
+      )
 
-        val settlorRows = viewHelper.rows(
-          settlors = settlors,
-          migratingFromNonTaxableToTaxable = migratingFromNonTaxableToTaxable,
-          trustType = updatedAnswers.trustType
-        )
-
-        if (settlors.nonMaxedOutOptions.isEmpty) {
-          Ok(completeView(
+      if (settlors.nonMaxedOutOptions.isEmpty) {
+        Ok(
+          completeView(
             trustDescription,
             inProgressSettlors = settlorRows.inProgress,
             completeSettlors = settlorRows.complete,
             size = settlors.size,
             migrating = migratingFromNonTaxableToTaxable
-          ))
-        } else {
-          Ok(addAnotherView(
+          )
+        )
+      } else {
+        Ok(
+          addAnotherView(
             form = addAnotherForm,
             trustDescription,
             inProgressSettlors = settlorRows.inProgress,
@@ -86,16 +88,17 @@ class AddASettlorController @Inject()(
             heading = settlors.addToHeading,
             maxedOut = settlors.maxedOutOptions.map(_.messageKey),
             migrating = migratingFromNonTaxableToTaxable
-          ))
-        }
+          )
+        )
       }
+    }
   }
 
-  def submit(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      trustService.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
-        addAnotherForm.bindFromRequest().fold(
+  def submit(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trustService.getSettlors(request.userAnswers.identifier).flatMap { settlors =>
+      addAnotherForm
+        .bindFromRequest()
+        .fold(
           (formWithErrors: Form[_]) => {
 
             val rows = viewHelper.rows(
@@ -104,23 +107,25 @@ class AddASettlorController @Inject()(
               trustType = request.userAnswers.trustType
             )
 
-            Future.successful(BadRequest(
-              addAnotherView(
-                formWithErrors,
-                trustDescription,
-                rows.inProgress,
-                rows.complete,
-                settlors.addToHeading,
-                maxedOut = settlors.maxedOutOptions.map(_.messageKey),
-                migrating = migratingFromNonTaxableToTaxable
+            Future.successful(
+              BadRequest(
+                addAnotherView(
+                  formWithErrors,
+                  trustDescription,
+                  rows.inProgress,
+                  rows.complete,
+                  settlors.addToHeading,
+                  maxedOut = settlors.maxedOutOptions.map(_.messageKey),
+                  migrating = migratingFromNonTaxableToTaxable
+                )
               )
-            ))
+            )
           },
           {
             case AddASettlor.YesNow =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                _ <- repository.set(updatedAnswers)
+                _              <- repository.set(updatedAnswers)
               } yield Redirect(navigator.addSettlorRoute(settlors))
 
             case AddASettlor.YesLater =>
@@ -130,29 +135,25 @@ class AddASettlorController @Inject()(
               submitComplete()(request)
           }
         )
-      }
+    }
   }
 
-  def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      for {
-        _ <- trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
-      } yield {
-        Redirect(appConfig.maintainATrustOverview)
-      }
+  def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    for {
+      _ <- trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
+    } yield Redirect(appConfig.maintainATrustOverview)
   }
 
   private def trustDescription(implicit request: DataRequest[AnyContent]): Option[String] = {
     def getDescription(trustType: TypeOfTrust) = {
       val description = (trustType, request.userAnswers.deedOfVariation) match {
-        case (TypeOfTrust.WillTrustOrIntestacyTrust, _) => "willTrust"
-        case (TypeOfTrust.IntervivosSettlementTrust, _) => "intervivosTrust"
+        case (TypeOfTrust.WillTrustOrIntestacyTrust, _)               => "willTrust"
+        case (TypeOfTrust.IntervivosSettlementTrust, _)               => "intervivosTrust"
         case (TypeOfTrust.DeedOfVariation, Some(AdditionToWillTrust)) => "deedOfVariationInAdditionToWill"
-        case (TypeOfTrust.DeedOfVariation, _) => "deedOfVariation"
-        case (TypeOfTrust.EmployeeRelated, _) => "employeeRelated"
-        case (TypeOfTrust.FlatManagementTrust, _) => "flatManagementTrust"
-        case (TypeOfTrust.HeritageTrust, _) => "heritageTrust"
+        case (TypeOfTrust.DeedOfVariation, _)                         => "deedOfVariation"
+        case (TypeOfTrust.EmployeeRelated, _)                         => "employeeRelated"
+        case (TypeOfTrust.FlatManagementTrust, _)                     => "flatManagementTrust"
+        case (TypeOfTrust.HeritageTrust, _)                           => "heritageTrust"
       }
       request.messages(messagesApi)(s"trustDescription.$description")
     }
@@ -160,8 +161,7 @@ class AddASettlorController @Inject()(
     request.userAnswers.trustType.map(getDescription)
   }
 
-  private def migratingFromNonTaxableToTaxable(implicit request: DataRequest[AnyContent]): Boolean = {
+  private def migratingFromNonTaxableToTaxable(implicit request: DataRequest[AnyContent]): Boolean =
     request.userAnswers.migratingFromNonTaxableToTaxable
-  }
 
 }

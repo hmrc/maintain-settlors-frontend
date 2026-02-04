@@ -75,13 +75,13 @@ class IndividualSettlorSpec extends AnyWordSpec with Matchers {
             |""".stripMargin
         )
 
-
         val expectedIndividualSettlor = IndividualSettlor(
           name = Name("Transit", None, "Morrison"),
           dateOfBirth = Some(LocalDate.of(1945, 8, 31)),
           countryOfNationality = Some("GB"),
           countryOfResidence = Some("GB"),
-          identification = Some(CombinedPassportOrIdCard("GB", "987345987398457", LocalDate.of(2025, 5, 21), DetailsType.Combined)),
+          identification =
+            Some(CombinedPassportOrIdCard("GB", "987345987398457", LocalDate.of(2025, 5, 21), DetailsType.Combined)),
           address = Some(UkAddress("125 Hyndford Street", "Belfast", None, None, "BT5 5EN")),
           mentalCapacityYesNo = Some(YesNoDontKnow.Yes),
           entityStart = LocalDate.of(2021, 4, 21),
@@ -118,13 +118,14 @@ class IndividualSettlorSpec extends AnyWordSpec with Matchers {
       "JSON has undefined optional fields" in {
         val result = jsonWithUndefinedOptionalFields.as[IndividualSettlor]
 
-        result.startDate mustBe Some(LocalDate.of(2021, 4, 21))
-        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None) mustBe true
-        result.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = None) mustBe true
-        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = Some(HeritageTrust)) mustBe true
+        result.startDate                                                                                  mustBe Some(LocalDate.of(2021, 4, 21))
+        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = None)                 mustBe true
+        result.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = None)                mustBe true
+        result.hasRequiredData(migratingFromNonTaxableToTaxable = true, trustType = Some(HeritageTrust))  mustBe true
         result.hasRequiredData(migratingFromNonTaxableToTaxable = false, trustType = Some(HeritageTrust)) mustBe true
       }
     }
 
   }
+
 }

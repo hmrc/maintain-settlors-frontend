@@ -45,18 +45,18 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
   private val index = 0
 
-  private lazy val checkDetailsRoute = routes.CheckDetailsController.extractAndRender(index).url
+  private lazy val checkDetailsRoute       = routes.CheckDetailsController.extractAndRender(index).url
   private lazy val checkCachedDetailsRoute = routes.CheckDetailsController.renderFromUserAnswers(index).url
-  private lazy val updateDetailsRoute = routes.CheckDetailsController.extractAndRedirect(index).url
-  private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
+  private lazy val updateDetailsRoute      = routes.CheckDetailsController.extractAndRedirect(index).url
+  private lazy val submitDetailsRoute      = routes.CheckDetailsController.onSubmit(index).url
 
   private lazy val onwardRoute = controllers.routes.AddASettlorController.onPageLoad().url
 
-  private val mockService: TrustService = mock[TrustService]
-  private val mockExtractor: BusinessSettlorExtractor = mock[BusinessSettlorExtractor]
+  private val mockService: TrustService                   = mock[TrustService]
+  private val mockExtractor: BusinessSettlorExtractor     = mock[BusinessSettlorExtractor]
   private val mockPrintHelper: BusinessSettlorPrintHelper = mock[BusinessSettlorPrintHelper]
-  private val mockMapper: BusinessSettlorMapper = mock[BusinessSettlorMapper]
-  private val mockTrustConnector: TrustConnector = mock[TrustConnector]
+  private val mockMapper: BusinessSettlorMapper           = mock[BusinessSettlorMapper]
+  private val mockTrustConnector: TrustConnector          = mock[TrustConnector]
 
   private val businessSettlor = BusinessSettlor(
     name = "Name",
@@ -99,7 +99,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           bind[TrustService].toInstance(mockService),
           bind[BusinessSettlorExtractor].toInstance(mockExtractor),
           bind[BusinessSettlorPrintHelper].toInstance(mockPrintHelper)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(GET, checkDetailsRoute)
 
@@ -118,7 +119,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
           bind[BusinessSettlorPrintHelper].toInstance(mockPrintHelper)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(GET, checkCachedDetailsRoute)
 
@@ -138,7 +140,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         .overrides(
           bind[TrustService].toInstance(mockService),
           bind[BusinessSettlorExtractor].toInstance(mockExtractor)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(GET, updateDetailsRoute)
 
@@ -156,7 +159,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
         .overrides(
           bind[BusinessSettlorMapper].toInstance(mockMapper),
           bind[TrustConnector].toInstance(mockTrustConnector)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -170,4 +174,5 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     }
 
   }
+
 }

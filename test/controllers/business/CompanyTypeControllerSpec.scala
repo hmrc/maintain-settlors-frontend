@@ -38,13 +38,15 @@ class CompanyTypeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new CompanyTypeFormProvider()
-  val form: Form[CompanyType] = formProvider()
-  val name = "Name"
+  val formProvider                             = new CompanyTypeFormProvider()
+  val form: Form[CompanyType]                  = formProvider()
+  val name                                     = "Name"
   val validAnswer: CompanyType.Investment.type = CompanyType.Investment
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage, name)
+    .success
+    .value
 
   lazy val companyTypeControllerRoute: String = routes.CompanyTypeController.onPageLoad(NormalMode).url
 
@@ -166,4 +168,5 @@ class CompanyTypeControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

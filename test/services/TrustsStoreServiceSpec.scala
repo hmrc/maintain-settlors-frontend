@@ -49,4 +49,5 @@ class TrustsStoreServiceSpec extends SpecBase {
       }
     }
   }
+
 }

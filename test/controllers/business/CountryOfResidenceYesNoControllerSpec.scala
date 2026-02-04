@@ -34,9 +34,9 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("businessSettlor.countryOfResidenceYesNo")
-  val name: String = "BusinessSettlor"
+  val name: String        = "BusinessSettlor"
 
   val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -65,7 +65,9 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(CountryOfResidenceYesNoPage, true).success.value
+        .set(CountryOfResidenceYesNoPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -159,5 +161,5 @@ class CountryOfResidenceYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
-}
 
+}

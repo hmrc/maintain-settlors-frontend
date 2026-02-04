@@ -26,19 +26,19 @@ import views.html.{ErrorTemplate, PageNotFoundView}
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-class ErrorHandlerSpec extends SpecBase{
+class ErrorHandlerSpec extends SpecBase {
 
-  private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private val errorTemplate: ErrorTemplate = app.injector.instanceOf[ErrorTemplate]
+  private val messageApi: MessagesApi        = app.injector.instanceOf[MessagesApi]
+  private val errorTemplate: ErrorTemplate   = app.injector.instanceOf[ErrorTemplate]
   private val notFoundView: PageNotFoundView = app.injector.instanceOf[PageNotFoundView]
-  val errorHandler: ErrorHandler = new ErrorHandler( messageApi,errorTemplate, notFoundView)
+  val errorHandler: ErrorHandler             = new ErrorHandler(messageApi, errorTemplate, notFoundView)
 
   "ErrorHandler" when {
     ".notFoundTemplate" should {
       "Return a not found template" in {
         implicit val request: RequestHeader = FakeRequest()
-        val resultFuture: Future[Html] = errorHandler.notFoundTemplate(request)
-        val result = Await.result(resultFuture,5.seconds)
+        val resultFuture: Future[Html]      = errorHandler.notFoundTemplate(request)
+        val result                          = Await.result(resultFuture, 5.seconds)
         result.body must include(messageApi("pageNotFound.p1")(Lang("en")))
       }
     }

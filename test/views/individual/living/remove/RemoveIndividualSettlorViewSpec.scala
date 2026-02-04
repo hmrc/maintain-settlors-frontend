@@ -25,10 +25,10 @@ import views.html.individual.living.remove.RemoveIndividualSettlorView
 
 class RemoveIndividualSettlorViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "removeIndividualSettlorYesNo"
+  val messageKeyPrefix    = "removeIndividualSettlorYesNo"
   val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
-  val name: Name = Name("First", None, "Last")
-  val index = 0
+  val name: Name          = Name("First", None, "Last")
+  val index               = 0
 
   "RemoveIndividualSettlor view" must {
 
@@ -43,4 +43,5 @@ class RemoveIndividualSettlorViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name.displayName))
   }
+
 }

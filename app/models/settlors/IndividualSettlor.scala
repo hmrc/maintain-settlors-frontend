@@ -22,35 +22,58 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-final case class IndividualSettlor(name: Name,
-                                   dateOfBirth: Option[LocalDate],
-                                   countryOfNationality: Option[String],
-                                   countryOfResidence: Option[String],
-                                   identification: Option[IndividualIdentification],
-                                   address: Option[Address],
-                                   mentalCapacityYesNo: Option[YesNoDontKnow],
-                                   entityStart: LocalDate,
-                                   provisional: Boolean) extends Settlor {
+final case class IndividualSettlor(
+  name: Name,
+  dateOfBirth: Option[LocalDate],
+  countryOfNationality: Option[String],
+  countryOfResidence: Option[String],
+  identification: Option[IndividualIdentification],
+  address: Option[Address],
+  mentalCapacityYesNo: Option[YesNoDontKnow],
+  entityStart: LocalDate,
+  provisional: Boolean
+) extends Settlor {
 
   override val startDate: Option[LocalDate] = Some(entityStart)
-  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean = true
+
+  override def hasRequiredData(migratingFromNonTaxableToTaxable: Boolean, trustType: Option[TypeOfTrust]): Boolean =
+    true
+
 }
 
 object IndividualSettlor extends SettlorReads {
 
-  implicit val reads: Reads[IndividualSettlor] = (
-    (__ \  Symbol("name")).read[Name] and
-      (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
-      (__ \ Symbol("nationality")).readNullable[String] and
-      (__ \ Symbol("countryOfResidence")).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
-      readMentalCapacity and
-      (__ \ "entityStart").read[LocalDate] and
-      (__ \ "provisional").readWithDefault(false))
-    .tupled.map{
-    case (name, dob, countryOfNationality, countryOfResidence, nino, identification, mentalCapacity, entityStart, provisional) =>
-      IndividualSettlor(name, dob, countryOfNationality, countryOfResidence, nino, identification, mentalCapacity, entityStart, provisional)
+  implicit val reads: Reads[IndividualSettlor] = ((__ \ Symbol("name")).read[Name] and
+    (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
+    (__ \ Symbol("nationality")).readNullable[String] and
+    (__ \ Symbol("countryOfResidence")).readNullable[String] and
+    __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
+    __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
+    readMentalCapacity and
+    (__ \ "entityStart").read[LocalDate] and
+    (__ \ "provisional").readWithDefault(false)).tupled.map {
+    case (
+          name,
+          dob,
+          countryOfNationality,
+          countryOfResidence,
+          nino,
+          identification,
+          mentalCapacity,
+          entityStart,
+          provisional
+        ) =>
+      IndividualSettlor(
+        name,
+        dob,
+        countryOfNationality,
+        countryOfResidence,
+        nino,
+        identification,
+        mentalCapacity,
+        entityStart,
+        provisional
+      )
   }
 
   implicit val writes: Writes[IndividualSettlor] = (
@@ -63,7 +86,7 @@ object IndividualSettlor extends SettlorReads {
       (__ \ Symbol("legallyIncapable")).writeNullable[YesNoDontKnow](writeMentalCapacity) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
-    ).apply(unlift(IndividualSettlor.unapply))
+  ).apply(unlift(IndividualSettlor.unapply))
 
   def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
     (__ \ Symbol("legallyIncapable")).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
@@ -72,8 +95,8 @@ object IndividualSettlor extends SettlorReads {
 
   private def writeMentalCapacity: Writes[YesNoDontKnow] = {
     case YesNoDontKnow.Yes => JsBoolean(false)
-    case YesNoDontKnow.No => JsBoolean(true)
-    case _ => JsNull
+    case YesNoDontKnow.No  => JsBoolean(true)
+    case _                 => JsNull
   }
 
 }

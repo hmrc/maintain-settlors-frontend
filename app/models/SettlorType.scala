@@ -29,12 +29,12 @@ object SettlorType extends Enumerable.Implicits {
   case object BusinessSettlor extends WithName("business") with SettlorType
 
   val values: List[SettlorType] = List(
-    IndividualSettlor, BusinessSettlor
+    IndividualSettlor,
+    BusinessSettlor
   )
 
-  val options: List[RadioOption] = values.map {
-    value =>
-      RadioOption(prefix, value.toString)
+  val options: List[RadioOption] = values.map { value =>
+    RadioOption(prefix, value.toString)
   }
 
   implicit val enumerable: Enumerable[SettlorType] =
@@ -42,6 +42,7 @@ object SettlorType extends Enumerable.Implicits {
 
   val writesToTrusts: Writes[SettlorType] = Writes {
     case IndividualSettlor => JsString("settlor")
-    case BusinessSettlor => JsString("settlorCompany")
+    case BusinessSettlor   => JsString("settlorCompany")
   }
+
 }

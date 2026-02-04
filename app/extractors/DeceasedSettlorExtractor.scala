@@ -26,11 +26,14 @@ import scala.util.{Success, Try}
 
 class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
 
-  override def apply(answers: UserAnswers,
-                     settlor: DeceasedSettlor,
-                     index: Option[Int],
-                     hasAdditionalSettlors: Option[Boolean]): Try[UserAnswers] =
-    super.apply(answers, settlor, index, hasAdditionalSettlors)
+  override def apply(
+    answers: UserAnswers,
+    settlor: DeceasedSettlor,
+    index: Option[Int],
+    hasAdditionalSettlors: Option[Boolean]
+  ): Try[UserAnswers] =
+    super
+      .apply(answers, settlor, index, hasAdditionalSettlors)
       .flatMap(answers => extractBpMatchStatus(settlor.bpMatchStatus, answers))
       .flatMap(_.set(NamePage, settlor.name))
       .flatMap(answers => extractDateOfBirth(settlor, answers))
@@ -41,19 +44,16 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       .flatMap(answers => extractIdentification(settlor, answers))
       .flatMap(answers => extractAdditionalSettlorsYesNo(hasAdditionalSettlors, answers))
 
-  private def extractBpMatchStatus(bpMatchStatus: Option[BpMatchStatus], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractBpMatchStatus(bpMatchStatus: Option[BpMatchStatus], answers: UserAnswers): Try[UserAnswers] =
     extractIfDefined(bpMatchStatus, BpMatchStatusPage, answers)
-  }
 
-  private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+  private def extractDateOfBirth(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] =
     extractConditionalAnswer(individual.dateOfBirth, answers, DateOfBirthYesNoPage, DateOfBirthPage)
-  }
 
-  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+  private def extractDateOfDeath(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] =
     extractConditionalAnswer(individual.dateOfDeath, answers, DateOfDeathYesNoPage, DateOfDeathPage)
-  }
 
-  def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+  def extractNationality(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = individual.nationality,
       answers = answers,
@@ -61,9 +61,8 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       ukYesNoPage = ukCountryOfNationalityYesNoPage,
       page = countryOfNationalityPage
     )
-  }
 
-  def extractCountryOfResidence(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+  def extractCountryOfResidence(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = individual.countryOfResidence,
       answers = answers,
@@ -71,30 +70,31 @@ class DeceasedSettlorExtractor extends SettlorExtractor[DeceasedSettlor] {
       ukYesNoPage = ukCountryOfResidenceYesNoPage,
       page = countryOfResidencePage
     )
-  }
 
-  private def extractIdentification(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] = {
+  private def extractIdentification(individual: DeceasedSettlor, answers: UserAnswers): Try[UserAnswers] =
     if (answers.isTaxable) {
       individual.identification match {
         case Some(NationalInsuranceNumber(nino)) =>
-          answers.set(NationalInsuranceNumberYesNoPage, true)
+          answers
+            .set(NationalInsuranceNumberYesNoPage, true)
             .flatMap(_.set(NationalInsuranceNumberPage, nino))
-        case _ =>
+        case _                                   =>
           answers.set(NationalInsuranceNumberYesNoPage, false)
       }
     } else {
       Success(answers)
     }
-  }
 
-  private def extractAdditionalSettlorsYesNo(hasAdditionalSettlors: Option[Boolean], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractAdditionalSettlorsYesNo(
+    hasAdditionalSettlors: Option[Boolean],
+    answers: UserAnswers
+  ): Try[UserAnswers] =
     (hasAdditionalSettlors, answers.get(AdditionalSettlorsYesNoPage)) match {
       case (Some(false), None) =>
         answers.set(AdditionalSettlorsYesNoPage, false)
-      case _ =>
+      case _                   =>
         Success(answers)
     }
-  }
 
   override def countryOfNationalityYesNoPage: QuestionPage[Boolean] = CountryOfNationalityYesNoPage
 
