@@ -16,7 +16,6 @@
 
 package views.business.add
 
-
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
