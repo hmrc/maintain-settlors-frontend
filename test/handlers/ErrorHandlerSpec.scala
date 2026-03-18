@@ -24,7 +24,7 @@ import play.twirl.api.Html
 import views.html.{ErrorTemplate, PageNotFoundView}
 
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, Future}
 
 class ErrorHandlerSpec extends SpecBase {
 
