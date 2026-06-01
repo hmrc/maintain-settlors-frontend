@@ -593,3 +593,11 @@ deceasedSettlor.checkDetails.title = Check will settlor details
 deceasedSettlor.checkDetails.heading = Check will settlor details
 deceasedSettlor.checkDetails.p1 = You cannot change these details as they are based on {0}’s will.
 deceasedSettlor.checkDetails.p2 = You can only add {0}’s date of death. After this date has been declared, no more changes can be made.
+
+outOfBoundsPageNotFound.title = Page not found
+outOfBoundsPageNotFound.heading = Page not found
+outOfBoundsPageNotFound.p1 = The page you’re looking for cannot be found.
+outOfBoundsPageNotFound.p2 = To continue registering a trust you can:
+outOfBoundsPageNotFound.bullet1 = view your registration progress
+outOfBoundsPageNotFound.bullet2 = add or change details for {0}
+outOfBoundsPageNotFound.bullet2.settlor = a settlor
