@@ -16,15 +16,12 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import config.FrontendAppConfig
 import config.annotations.DeceasedSettlor
 import connectors.TrustConnector
-import controllers.actions.{SettlorNameRequest, StandardActionSets}
 import controllers.actions.individual.deceased.NameRequiredAction
+import controllers.actions.{SettlorNameRequest, StandardActionSets}
 import forms.DateOfDeathFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -33,6 +30,8 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.deceased.DateOfDeathView
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfDeathController @Inject() (

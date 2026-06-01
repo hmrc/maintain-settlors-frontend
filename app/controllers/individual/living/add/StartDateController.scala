@@ -20,7 +20,6 @@ import config.annotations.LivingSettlor
 import controllers.actions.StandardActionSets
 import controllers.actions.individual.living.NameRequiredAction
 import forms.DateAddedToTrustFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.individual.living.StartDatePage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.living.add.StartDateView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class StartDateController @Inject() (

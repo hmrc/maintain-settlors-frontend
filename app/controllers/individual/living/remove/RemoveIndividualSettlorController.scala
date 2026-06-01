@@ -19,8 +19,6 @@ package controllers.individual.living.remove
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
-
-import javax.inject.Inject
 import models.{RemoveSettlor, SettlorType}
 import play.api.Logging
 import play.api.data.Form
@@ -32,6 +30,7 @@ import utils.IndexAndGenericExceptionRecovery
 import views.html.OutOfBoundsPageNotFoundView
 import views.html.individual.living.remove.RemoveIndividualSettlorView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveIndividualSettlorController @Inject() (

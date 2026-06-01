@@ -16,8 +16,9 @@
 
 package models
 
-import java.time.LocalDateTime
 import play.api.libs.json.{Format, OWrites, Reads, __}
+
+import java.time.LocalDateTime
 
 final case class UtrSession(internalId: String, utr: String, updatedAt: LocalDateTime = LocalDateTime.now)
 

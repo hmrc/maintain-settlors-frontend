@@ -19,8 +19,6 @@ package controllers.business.remove
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
-
-import javax.inject.Inject
 import models.{RemoveSettlor, SettlorType}
 import play.api.Logging
 import play.api.data.Form
@@ -29,9 +27,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.IndexAndGenericExceptionRecovery
-import views.html.business.remove.RemoveBusinessSettlorView
 import views.html.OutOfBoundsPageNotFoundView
+import views.html.business.remove.RemoveBusinessSettlorView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveBusinessSettlorController @Inject() (

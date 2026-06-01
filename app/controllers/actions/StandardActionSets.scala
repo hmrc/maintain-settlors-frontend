@@ -16,9 +16,10 @@
 
 package controllers.actions
 
-import javax.inject.Inject
 import models.requests.{DataRequest, IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.{ActionBuilder, AnyContent}
+
+import javax.inject.Inject
 
 class StandardActionSets @Inject() (
   identify: IdentifierAction,

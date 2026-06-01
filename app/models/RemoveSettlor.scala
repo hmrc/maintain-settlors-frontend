@@ -16,10 +16,10 @@
 
 package models
 
-import java.time.LocalDate
-
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
+
+import java.time.LocalDate
 
 case class RemoveSettlor(`type`: SettlorType, index: Int, endDate: LocalDate)
 

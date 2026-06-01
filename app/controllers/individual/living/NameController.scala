@@ -19,7 +19,6 @@ package controllers.individual.living
 import config.annotations.LivingSettlor
 import controllers.actions.StandardActionSets
 import forms.NameFormProvider
-import javax.inject.Inject
 import models.{Mode, Name}
 import navigation.Navigator
 import pages.individual.living.NamePage
@@ -30,6 +29,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.living.NameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject() (

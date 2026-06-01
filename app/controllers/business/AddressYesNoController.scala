@@ -20,7 +20,6 @@ import config.annotations.BusinessSettlor
 import controllers.actions.StandardActionSets
 import controllers.actions.business.NameRequiredAction
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.business.AddressYesNoPage
@@ -30,6 +29,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.business.AddressYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddressYesNoController @Inject() (

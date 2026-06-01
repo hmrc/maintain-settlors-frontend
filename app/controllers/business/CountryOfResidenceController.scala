@@ -20,7 +20,6 @@ import config.annotations.BusinessSettlor
 import controllers.actions.StandardActionSets
 import controllers.actions.business.NameRequiredAction
 import forms.CountryFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.business.CountryOfResidencePage
@@ -32,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.business.CountryOfResidenceView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfResidenceController @Inject() (

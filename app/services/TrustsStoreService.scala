@@ -17,11 +17,10 @@
 package services
 
 import connectors.TrustStoreConnector
-
-import javax.inject.Inject
 import models.TaskStatus.TaskStatus
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustsStoreService @Inject() (trustsStoreConnector: TrustStoreConnector) {

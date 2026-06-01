@@ -20,16 +20,17 @@ import config.annotations.BusinessSettlor
 import controllers.actions.StandardActionSets
 import controllers.actions.business.NameRequiredAction
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
+import pages.business.CountryOfResidenceInTheUkYesNoPage
 import play.api.data.Form
 import play.api.i18n._
 import play.api.mvc._
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.business.CountryOfResidenceInTheUkYesNoView
-import pages.business.CountryOfResidenceInTheUkYesNoPage
+
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryOfResidenceInTheUkYesNoController @Inject() (

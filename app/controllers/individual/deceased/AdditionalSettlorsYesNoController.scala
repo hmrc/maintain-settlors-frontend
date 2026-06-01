@@ -19,7 +19,6 @@ package controllers.individual.deceased
 import config.annotations.DeceasedSettlor
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.AdditionalSettlorsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,6 +27,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.deceased.AdditionalSettlorsYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalSettlorsYesNoController @Inject() (

@@ -17,12 +17,12 @@
 package controllers.actions.business
 
 import controllers.actions.SettlorNameRequest
-import javax.inject.Inject
 import models.requests.DataRequest
 import pages.business.NamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameRequiredAction @Inject() (val executionContext: ExecutionContext, val messagesApi: MessagesApi)

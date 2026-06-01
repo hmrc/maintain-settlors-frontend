@@ -23,6 +23,7 @@ import play.api.mvc.{RequestHeader, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.OutOfBoundsPageNotFoundView
+
 import scala.concurrent.{ExecutionContext, Future}
 
 trait IndexAndGenericExceptionRecovery {

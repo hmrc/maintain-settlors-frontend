@@ -33,8 +33,8 @@ import utils.IndexAndGenericExceptionRecovery
 import utils.mappers.IndividualSettlorMapper
 import utils.print.IndividualSettlorPrintHelper
 import viewmodels.AnswerSection
-import views.html.individual.living.amend.CheckDetailsView
 import views.html.OutOfBoundsPageNotFoundView
+import views.html.individual.living.amend.CheckDetailsView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
