@@ -19,7 +19,6 @@ package controllers.business
 import config.annotations.BusinessSettlor
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.business.CompanyTimePage
@@ -29,6 +28,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.business.CompanyTimeView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyTimeController @Inject() (

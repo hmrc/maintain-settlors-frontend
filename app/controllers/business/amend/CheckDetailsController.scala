@@ -16,11 +16,12 @@
 
 package controllers.business.amend
 
-import config.{ErrorHandler, FrontendAppConfig}
+import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import extractors.BusinessSettlorExtractor
+import handlers.ErrorHandler
 import models.{CheckMode, UserAnswers}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}

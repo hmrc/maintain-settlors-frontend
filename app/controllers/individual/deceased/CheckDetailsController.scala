@@ -16,11 +16,12 @@
 
 package controllers.individual.deceased
 
-import config.{ErrorHandler, FrontendAppConfig}
+import config.FrontendAppConfig
 import connectors.{TrustConnector, TrustStoreConnector}
 import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import extractors.DeceasedSettlorExtractor
+import handlers.ErrorHandler
 import models.BpMatchStatus.FullyMatched
 import models.TaskStatus.Completed
 import models.UserAnswers

@@ -20,7 +20,6 @@ import config.annotations.LivingSettlor
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import forms.NonUkAddressFormProvider
-import javax.inject.Inject
 import models.{Mode, NonUkAddress}
 import navigation.Navigator
 import pages.individual.living.NonUkAddressPage
@@ -32,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.individual.living.NonUkAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NonUkAddressController @Inject() (

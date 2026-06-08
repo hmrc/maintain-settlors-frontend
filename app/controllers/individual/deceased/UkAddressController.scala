@@ -20,7 +20,6 @@ import config.annotations.DeceasedSettlor
 import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.UkAddressFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.individual.deceased.UkAddressPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.deceased.UkAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UkAddressController @Inject() (

@@ -16,13 +16,10 @@
 
 package controllers.individual.deceased
 
-import java.time.LocalDate
-
 import config.annotations.DeceasedSettlor
 import controllers.actions.individual.deceased.NameRequiredAction
 import controllers.actions.{SettlorNameRequest, StandardActionSets}
 import forms.DateOfBirthFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.individual.deceased.{DateOfBirthPage, DateOfDeathPage}
 import play.api.data.Form
@@ -32,6 +29,8 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.deceased.DateOfBirthView
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfBirthController @Inject() (

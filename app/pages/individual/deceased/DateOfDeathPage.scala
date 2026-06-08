@@ -16,10 +16,10 @@
 
 package pages.individual.deceased
 
-import java.time.LocalDate
-
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+
+import java.time.LocalDate
 
 case object DateOfDeathPage extends QuestionPage[LocalDate] {
 

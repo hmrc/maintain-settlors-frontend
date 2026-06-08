@@ -18,10 +18,11 @@ package forms
 
 import config.FrontendAppConfig
 import forms.mappings.{Constraints, Mappings}
-import javax.inject.Inject
 import models.Passport
 import play.api.data.Form
 import play.api.data.Forms.mapping
+
+import javax.inject.Inject
 
 class PassportDetailsFormProvider @Inject() (appConfig: FrontendAppConfig) extends Mappings with Constraints {
   val maxLengthCountryField = 100

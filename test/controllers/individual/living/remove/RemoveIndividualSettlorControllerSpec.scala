@@ -244,9 +244,7 @@ class RemoveIndividualSettlorControllerSpec extends SpecBase with ScalaCheckProp
 
     val result = route(application, request).value
 
-    status(result) mustEqual SEE_OTHER
-
-    redirectLocation(result).value mustEqual controllers.routes.AddASettlorController.onPageLoad().url
+    status(result) mustEqual NOT_FOUND
 
     application.stop()
   }

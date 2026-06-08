@@ -19,7 +19,6 @@ package controllers.business.remove
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.{RemoveSettlor, SettlorType}
 import play.api.Logging
 import play.api.data.Form
@@ -27,8 +26,11 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.IndexAndGenericExceptionRecovery
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.business.remove.RemoveBusinessSettlorView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveBusinessSettlorController @Inject() (
@@ -38,9 +40,10 @@ class RemoveBusinessSettlorController @Inject() (
   formProvider: RemoveIndexFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveBusinessSettlorView,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val messagesPrefix: String = "removeBusinessSettlorYesNo"
 
@@ -53,22 +56,8 @@ class RemoveBusinessSettlorController @Inject() (
       } else {
         Redirect(controllers.routes.AddASettlorController.onPageLoad().url)
       }
-    } recoverWith {
-      case iobe: IndexOutOfBoundsException =>
-        logger.warn(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error getting business settlor $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
-        )
-
-        Future.successful(Redirect(controllers.routes.AddASettlorController.onPageLoad().url))
-      case e                               =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error getting business settlor $index from trusts service ${e.getMessage}"
-        )
-
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
+    } recoverWith
+      recoverIndexAndGenericException("settlor", index, request.userAnswers.identifier, "onPageLoad")
 
   }
 

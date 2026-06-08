@@ -20,7 +20,6 @@ import config.annotations.DeceasedSettlor
 import controllers.actions._
 import controllers.actions.individual.deceased.NameRequiredAction
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.individual.deceased.DateOfDeathYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.deceased.DateOfDeathYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfDeathYesNoController @Inject() (

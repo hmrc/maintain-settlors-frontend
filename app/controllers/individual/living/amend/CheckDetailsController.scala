@@ -16,11 +16,12 @@
 
 package controllers.individual.living.amend
 
-import config.{ErrorHandler, FrontendAppConfig}
+import config.FrontendAppConfig
 import connectors.TrustConnector
 import controllers.actions._
 import controllers.actions.individual.living.NameRequiredAction
 import extractors.IndividualSettlorExtractor
+import handlers.ErrorHandler
 import models.UserAnswers
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,9 +29,11 @@ import play.api.mvc._
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.IndexAndGenericExceptionRecovery
 import utils.mappers.IndividualSettlorMapper
 import utils.print.IndividualSettlorPrintHelper
 import viewmodels.AnswerSection
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.individual.living.amend.CheckDetailsView
 
 import javax.inject.Inject
@@ -49,9 +52,10 @@ class CheckDetailsController @Inject() (
   mapper: IndividualSettlorMapper,
   nameAction: NameRequiredAction,
   extractor: IndividualSettlorExtractor,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
     request: Request[AnyContent]
@@ -60,14 +64,25 @@ class CheckDetailsController @Inject() (
     Ok(view(section, index))
   }
 
-  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.async { implicit request =>
-    service.getIndividualSettlor(request.userAnswers.identifier, index) flatMap { settlor =>
-      for {
-        extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, Some(index)))
-        _          <- playbackRepository.set(extractedF)
-      } yield render(extractedF, index, settlor.name.displayName)
+  def extractAndRender(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForUtr.async { implicit request =>
+      service
+        .getIndividualSettlor(request.userAnswers.identifier, index)
+        .flatMap { settlor =>
+          for {
+            extractedF <- Future.fromTry(extractor(request.userAnswers, settlor, Some(index)))
+            _          <- playbackRepository.set(extractedF)
+          } yield render(extractedF, index, settlor.name.displayName)
+        }
+        .recoverWith {
+          recoverIndexAndGenericException(
+            "settlor",
+            index,
+            request.userAnswers.identifier,
+            "onPageLoad"
+          )
+        }
     }
-  }
 
   def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForUtr.andThen(nameAction) {
     implicit request =>

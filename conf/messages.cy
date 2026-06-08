@@ -533,3 +533,11 @@ deceasedSettlor.checkDetails.title=Gwiriwch fanylion setlwr yr ewyllys
 deceasedSettlor.checkDetails.heading=Gwiriwch fanylion setlwr yr ewyllys
 deceasedSettlor.checkDetails.p1=Ni allwch newid y manylion hyn gan eu bod yn seiliedig ar ewyllys {0}.
 deceasedSettlor.checkDetails.p2=Gallwch ond ychwanegu dyddiad marwolaeth {0}. Ar ôl i’r dyddiad hwn gael ei ddatgan, ni ellir gwneud rhagor o newidiadau.
+
+outOfBoundsPageNotFound.title = Heb ddod o hyd i’r dudalen
+outOfBoundsPageNotFound.heading = Heb ddod o hyd i’r dudalen
+outOfBoundsPageNotFound.p1 = Ni ellir dod o hyd i’r dudalen yr ydych yn chwilio amdani.
+outOfBoundsPageNotFound.p2 = Er mwyn parhau i wneud newidiadau i’ch ymddiriedolaeth gallwch wneud y canlynol:
+outOfBoundsPageNotFound.bullet1 = mynd i drosolwg yr ymddiriedolaeth
+outOfBoundsPageNotFound.bullet2 = ychwanegu neu newid manylion ar gyfer {0}
+outOfBoundsPageNotFound.bullet2.settlor = setlwr

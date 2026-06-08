@@ -19,7 +19,6 @@ package controllers.business
 import config.annotations.BusinessSettlor
 import controllers.actions.StandardActionSets
 import forms.StringFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.business.NamePage
@@ -30,6 +29,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.business.NameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject() (

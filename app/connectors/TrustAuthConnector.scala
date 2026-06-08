@@ -18,12 +18,12 @@ package connectors
 
 import com.google.inject.ImplementedBy
 import config.FrontendAppConfig
-import javax.inject.Inject
 import models.{TrustAuthInternalServerError, TrustAuthResponse}
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[TrustAuthConnectorImpl])

@@ -16,13 +16,10 @@
 
 package controllers.individual.living
 
-import java.time.LocalDate
-
 import config.annotations.LivingSettlor
 import controllers.actions.StandardActionSets
 import controllers.actions.individual.living.NameRequiredAction
 import forms.DateOfBirthFormProvider
-import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
 import pages.individual.living.DateOfBirthPage
@@ -33,6 +30,8 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.individual.living.DateOfBirthView
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DateOfBirthController @Inject() (
