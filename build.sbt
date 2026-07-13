@@ -5,7 +5,7 @@ ThisBuild / scalaVersion := "2.13.18"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = (project in file("."))
-  .enablePlugins(PlayScala, SbtDistributablesPlugin, SbtSassify)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(CodeCoverageSettings())
   .settings(
@@ -28,21 +28,7 @@ lazy val microservice = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9795,
-    libraryDependencies ++= AppDependencies(),
-    Concat.groups := Seq(
-      "javascripts/maintainsettlorsfrontend-app.js" ->
-        group(
-          Seq(
-            "javascripts/maintainsettlorsfrontend.js",
-            "javascripts/iebacklink.js"
-          )
-        )
-    ),
-    uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
-    pipelineStages := Seq(digest),
-    uglifyOps := UglifyOps.singleFile,
-    Assets / pipelineStages := Seq(concat, uglify),
-    uglify / includeFilter := GlobFilter("maintainsettlorsfrontend-*.js")
+    libraryDependencies ++= AppDependencies()
   )
 
 lazy val it = project
