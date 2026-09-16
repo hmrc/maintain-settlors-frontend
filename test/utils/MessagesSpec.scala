@@ -27,7 +27,7 @@ class MessagesSpec extends SpecBase with Logging {
 
   override lazy val fakeApplication: Application = new GuiceApplicationBuilder()
     .configure(
-      Map("application.langs" -> "en,cy", "features.welsh-language-support" -> true)
+      Map[String, Any]("application.langs" -> "en,cy", "features.welsh-language-support" -> true)
     )
     .build()
 
@@ -57,8 +57,8 @@ class MessagesSpec extends SpecBase with Logging {
       }
     "not have the same messages" in {
       val same = defaultMessages.keys.collect {
-        case key if defaultMessages.get(key) == welshMessages.get(key) && !key.contains(".url") =>
-          (key, defaultMessages.get(key))
+        case msgKey if defaultMessages.get(msgKey) == welshMessages.get(msgKey) && !msgKey.contains(".url") =>
+          (msgKey, defaultMessages.get(msgKey))
       }
 
       // 94% of app needs to be translated into Welsh. 94% allows for:
@@ -76,8 +76,10 @@ class MessagesSpec extends SpecBase with Logging {
       assertCorrectUseOfQuotesForWelshMessages()
     }
     "have a resolvable message for keys which take args" in {
-      val englishWithArgsMsgKeys = defaultMessages collect { case (key, value) if countArgs(value) > 0 => key }
-      val welshWithArgsMsgKeys   = welshMessages collect { case (key, value) if countArgs(value) > 0 => key }
+      val englishWithArgsMsgKeys = defaultMessages collect {
+        case (msgKey, msgValue) if countArgs(msgValue) > 0 => msgKey
+      }
+      val welshWithArgsMsgKeys   = welshMessages collect { case (msgKey, msgValue) if countArgs(msgValue) > 0 => msgKey }
       val missingFromEnglish     = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh       = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
       missingFromEnglish foreach { key =>
@@ -90,14 +92,14 @@ class MessagesSpec extends SpecBase with Logging {
     }
     "have the same args in the same order for all keys which take args" in {
       val englishWithArgsMsgKeysAndArgList = defaultMessages collect {
-        case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
+        case (msgKey, msgValue) if countArgs(msgValue) > 0 => (msgKey, listArgs(msgValue))
       }
       val welshWithArgsMsgKeysAndArgList   = welshMessages collect {
-        case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
+        case (msgKey, msgValue) if countArgs(msgValue) > 0 => (msgKey, listArgs(msgValue))
       }
       val mismatchedArgSequences           = englishWithArgsMsgKeysAndArgList collect {
-        case (key, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(key) =>
-          (key, engArgSeq, welshWithArgsMsgKeysAndArgList(key))
+        case (msgKey, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(msgKey) =>
+          (msgKey, engArgSeq, welshWithArgsMsgKeysAndArgList(msgKey))
       }
       mismatchedArgSequences foreach { case (key, engArgSeq, welshArgSeq) =>
         logger.info(

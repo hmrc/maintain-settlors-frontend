@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Session
 
@@ -29,7 +29,6 @@ import scala.concurrent.Future
 class SessionTimeoutController @Inject() (
   val appConfig: FrontendAppConfig,
   val config: Configuration,
-  val env: Environment,
   mcc: MessagesControllerComponents
 ) extends FrontendController(mcc) {
 

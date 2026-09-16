@@ -23,9 +23,6 @@ object Validation {
   val nameRegex: String     = "^[A-Za-z0-9 ,.()/&'-]*$"
   val utrRegex: String      = "^[0-9]*$"
 
-  val ninoRegex: String = """^(?i)[ \t]*[A-Z]{1}[ \t]*[ \t]*[A-Z]{1}[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*""" +
-    """[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[ \t]*[0-9]{1}[ \t]*[A-D]{1}[ \t]*$"""
-
   val addressLineRegex: String            = "^[A-Za-z0-9 ,.()/&'-]*$"
   val validNinoFormat: String             = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]{1}"
   val passportOrIdCardNumberRegEx: String = """^([A-Za-z0-9]{1,30})$"""
