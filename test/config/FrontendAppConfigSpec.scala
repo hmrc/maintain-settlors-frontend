@@ -45,6 +45,12 @@ class FrontendAppConfigSpec extends SpecBase {
           ) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
         }
       }
+
+      ".logoutUrl" must {
+        "append the useServiceNavigation parameter, so the exit survey renders the service navigation component" in {
+          config.logoutUrl mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+        }
+      }
     }
   }
 

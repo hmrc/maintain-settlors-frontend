@@ -38,10 +38,6 @@ trait SettlorExtractor[T <: Settlor] {
       .flatMap(answers => extractIfDefined(settlor.startDate, startDatePage, answers))
       .flatMap(answers => extractIfDefined(index, indexPage, answers))
 
-  def namePage: QuestionPage[String] = new EmptyPage[String]
-
-  def utrPage: QuestionPage[String] = new EmptyPage[String]
-
   def countryOfNationalityYesNoPage: QuestionPage[Boolean]   = new EmptyPage[Boolean]
   def ukCountryOfNationalityYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
   def countryOfNationalityPage: QuestionPage[String]         = new EmptyPage[String]

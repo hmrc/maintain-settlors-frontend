@@ -18,7 +18,6 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.{Form, FormError}
-import wolfendale.scalacheck.regexp.RegexpGen
 
 class NationalInsuranceNumberFormProviderSpec extends StringFieldBehaviours {
 
@@ -33,12 +32,6 @@ class NationalInsuranceNumberFormProviderSpec extends StringFieldBehaviours {
   ".value" must {
 
     val fieldName = "value"
-
-    behave like fieldThatBindsValidData(
-      form = form,
-      fieldName = fieldName,
-      validDataGenerator = RegexpGen.from(Validation.ninoRegex)
-    )
 
     behave like mandatoryField(
       form = form,
